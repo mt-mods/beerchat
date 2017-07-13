@@ -1,6 +1,7 @@
 ## Beerchat
-[Mod]Beerchat[beerchat] is a Minetest mod that supports muting, chat channels/ rooms, message sounds and chat shortcuts.
+[Mod]Beerchat[beerchat] is a dependency Minetest mod that supports chat channels/ chat rooms, colored messages, muting players, message sounds and chat shortcuts.
 
+## Using the Mod In-Game
 ### Channel Management
 Channels are like chat rooms. Messages in channels are only sent to the members of that channel. They can be made private by password protecting it and a color to differentiate from the main chat. Channel management is done via chat commands. Parameters to these commands are comma separated. To create a channel, use the /create_channel or /cc command and supply channel name, optional password and optional color (defaults to white). Channels can be deleted via /delete_channel or /dc and this can only be done by the channel owner. The owner does not need to supply the channel's password to delete the channel. The /my_channels or /mc command shows the channels you are owner/ member of in json format. Some channel management examples below:
 
@@ -47,6 +48,7 @@ You can whisper by starting your message with the $ sign. Only players within a 
     $ Can you hear me now, major Tom?
     $64 Can you heeeeeeeeeere I am floating round my tin can
 
+## Mod Settings, Configuration and Customization
 ### Configuration
 Configuration is currently done in the init.lua so make the changes in there. For the main channel (channel where messages are sent by default if no channel was specified), you can change the name, the owner and the color. Colors are defined in hexadecimal and start with a #.
 
@@ -73,19 +75,19 @@ Whisper settings control the range controlled dollar chats. The default range is
     local whisper_color = "#aaaaaa"
 
 ### Customizing the Message Formats
-In the settings section in the init.lua you can customize formatting of the messages. E.g. you can remove the |#main| from main channel chats by changing:
+In the settings section in the init.lua you can customize formatting of the messages. As you can see, parameters can be specified using ${parameter}:
 
     local main_channel_message_string = "|#${channel_name}| <${from_player}> ${message}"
 
-Into the default chat format from Minetest:
+You can remove the |#main| from main channel chats by removing the ${channel_name} parameter from the above string. This would format main channel messages using the default chat format from Minetest:
 
     local main_channel_message_string = "<${from_player}> ${message}"
 
-As you can see, parameters can be specified using ${parameter}. This allows you to move elements around in the message string, e.g. to move the channel name to the end of the message:
+The use of parameters not only allows you to add or remove elements, it also allows you to move elements around in the message string. E.g. to move the channel name to the end of the message:
 
     local main_channel_message_string = "<${from_player}> ${message} |#${channel_name}|"
 
-You can specify additional parameters in the message string if need be. The following parameters are available:
+The following parameters can be used in the message strings:
 * ${channel_name} name of the channel
 * ${channel_owner} owner of the channel
 * ${channel_password} password to use when joining the channel, used e.g. for invites
@@ -94,5 +96,10 @@ You can specify additional parameters in the message string if need be. The foll
 * ${message} the actual message that is to be sent
 * ${time} the current time in 24 hour format, as returned from os.date("%X")
 
+You can completely customize the formatting of the chat system to your liking, e.g. if you do not like the default use of the | character around channel names, you can change this into whatever you like. The below example uses [ and ] around the channel name in the channel message strings:
+
+    local channel_message_string = "[#${channel_name}] <${from_player}> ${message}"
+    local main_channel_message_string = "[#${channel_name}] <${from_player}> ${message}"
+
 ### About the Code
-Be warned, the code is not pretty and even though it was refactored after spinning it off from the beerarchy subgame, it may need quite some more refactoring. And it would be nicer if it actually supplied an API, but oh well it was hacked together in 2-3 days. Also, it requires Minetest 0.4.16 as it uses both mod storage and player attributes to keep track of the channels and muted players. Otherwise, the code *should* work pretty much out of the box. Have fun and let me know in case of issues!
+Be warned, the code is not pretty and even though it was refactored after spinning it off from the beerarchy subgame, it may need quite some more refactoring. And it would be nicer if it actually supplied an API, but oh well it was hacked together in 2-3 days. Also, it requires Minetest 0.4.16 as it uses both mod storage and player attributes to keep track of the channels and muted players. Otherwise, the code *should* work pretty much out of the box. However be careful when running this mod together with other chat mods, as they could very likely interfere with each other. Have fun and let me know in case of issues!
