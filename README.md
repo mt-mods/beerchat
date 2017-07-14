@@ -1,8 +1,8 @@
 ## [Mod] Beerchat [beerchat]
-[Mod]Beerchat[beerchat] is a dependency free Minetest mod that supports chat channels/ chat rooms, colored messages, muting players, message sounds and chat shortcuts. Full list of features:
+[Mod] Beerchat [beerchat] is a standalone completely dependency free Minetest mod that supports chat channels/ chat rooms, colored messages, muting players, message sounds and chat shortcuts. Full list of features:
 
 * Support for chat rooms, called channels, in which members can privately chat without flooding the main channel
-* The default chat is been turned into a channel as well, called main. You can leave (and rejoin) the main channel, e.g. when you are not interested or it is too spammy
+* The default chat has been turned into a channel as well, called main. You can leave (and rejoin) the main channel, e.g. when you are not interested or it is too spammy
 * Extremely easy to chat in a channel, just start your message with #your channel name: (in case of spaces in the channel name) or #my_channel (no colon needed if there are no spaces in the name)
 * You can still chat the old way. Just enter your message like you used to do and it will appear in the main chat automatically (no need to prepend with #main or do other difficult things to chat like you used to)
 * Channels can be assigned a color so messages in that channel appear in that color. This way you can easily differentiate between main channel chats and private channel chats
