@@ -4,7 +4,7 @@
 * Support for chat rooms, called channels, in which members can privately chat without flooding the main channel
 * The default chat has been turned into a channel as well, called main. You can leave (and rejoin) the main channel, e.g. when you are not interested or it is too spammy
 * Extremely easy to chat in a channel, just start your message with #your channel name: (in case of spaces in the channel name) or #my_channel (no colon needed if there are no spaces in the name)
-* You can still chat the old way. Just enter your message like you used to do and it will appear in the main chat automatically (no need to prepend with #main or do other difficult things to chat like you used to)
+* You can still chat the old way. Just enter your message like you used to do and it will appear in the main chat automatically (no need to prepend with #main or do other difficult things)
 * Channels can be assigned a color so messages in that channel appear in that color. This way you can easily differentiate between main channel chats and private channel chats
 * Distance based chatting, called whispering. Players out of range will not see your message, players in range will see the message in a different color. Ideal to talk to nearby people and to differentiate messages
 * Provides shortcuts: @ for PMs, # for chat room messages and $ to whisper
