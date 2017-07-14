@@ -1,5 +1,33 @@
-## Beerchat
-[Mod]Beerchat[beerchat] is a dependency Minetest mod that supports chat channels/ chat rooms, colored messages, muting players, message sounds and chat shortcuts.
+## [Mod] Beerchat [beerchat]
+[Mod]Beerchat[beerchat] is a dependency free Minetest mod that supports chat channels/ chat rooms, colored messages, muting players, message sounds and chat shortcuts. Full list of features:
+
+* Support for chat rooms, called channels, in which members can privately chat without flooding the main channel
+* The default chat is been turned into a channel as well, called main. You can leave (and rejoin) the main channel, e.g. when you are not interested or it is too spammy
+* Extremely easy to chat in a channel, just start your message with #your channel name: (in case of spaces in the channel name) or #my_channel (no colon needed if there are no spaces in the name)
+* You can still chat the old way. Just enter your message like you used to do and it will appear in the main chat automatically (no need to prepend with #main or do other difficult things to chat like you used to)
+* Channels can be assigned a color so messages in that channel appear in that color. This way you can easily differentiate between main channel chats and private channel chats
+* Distance based chatting, called whispering. Players out of range will not see your message, players in range will see the message in a different color. Ideal to talk to nearby people and to differentiate messages
+* Provides shortcuts: @ for PMs, # for chat room messages and $ to whisper
+* Remebers the last player or last channel a message was sent to. So at first you can @player or #my_channel and after that just use @ or # only to send to that player/ channel again
+* Uses the console/ standard chat "window" for chat messages
+* Message formats fully configurable (currently in the init.lua but really easy to do, all settings are in the top of the file and documented). You can pass parameters to the message strings as well. So if you want to strip the channel name from the main channel you can do so. You can shuffle elements around e.g. placing the channel name at the end of a message. You can add a time. You can put from_player and to_player in all messages or just a few
+* State is stored in mod storage and player attributes so they survive a server restart. E.g. channels you have created and joined will still be there after server restart. Players you have muted will also survive a server restart.
+
+Depends: none
+Requires Minetest 0.4.16 because of mod storage and player attributes support in the mod
+Attribution: Some code used from orwell's atchat: https://forum.minetest.net/viewtopic.php?f=11&t=13593
+
+Future plans:
+
+* Setting a default channel, e.g. messages typed normally will appear in the channel of your choice
+* Beerchat formspec to tweak per player settings such as enabling/ disabling sounds, managing channels, overriding colors, etc.
+* Configurable color for private messages
+* A "talk to" feature where you can send a public message but it will appear as <from_player> to <to_player>, possibly highlighting the message for that player only using a selected color. This to avoid confusion as to who the message was meant for e.g. in the case of <player01> can i use mese ; <player02> can you give me some diamonds ; <player03> yes
+* Shout with ! support
+* Externalizing the settings from the init.lua and support using configuration file and the main minetest.conf
+* Improved channel management by server administrator, e.g. to avoid wild growth of channels. Adding a last used timestamp to identify channel that have not been used in a long time. Automatic cleanup of old unused channels
+* Message highlighting when your name is mentioned in a chat message or when a message contains a certain string a la chat2
+* Option to place certain messages in the HUD a la chat2 and allow users to enable/ disable this feature via preferences formspec on a per message type (PM, channel, name mentions, etc.) basis. Even easier to identify messages of interest
 
 ## Using the Mod In-Game
 ### Channel Management
