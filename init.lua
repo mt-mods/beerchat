@@ -5,7 +5,7 @@ local channels = {}
 -- Mod settings -- Change these to your liking
 --
 local main_channel_name = "main"			-- The main channel is the one you send messages to when no channel is specified
-local main_channel_owner = "Beerholder"		-- The owner of the main channel, usually ADMIN
+local main_channel_owner = "ADMIN"			-- The owner of the main channel, usually ADMIN
 local main_channel_color = "#ffffff"		-- The color in hex of the main channel
 
 local default_channel_color = "#ffffff"		-- The default color of channels when no color is specified
@@ -506,7 +506,7 @@ local msg_override = {
 					if atleastonesent then
 						successplayers = successplayers:sub(1, -2)
 						if (successplayers ~= name) then
-							minetest.chat_send_player(format_message(private_message_sent_string, { to_player = successplayers, message = msg }))
+							minetest.chat_send_player(name, format_message(private_message_sent_string, { to_player = successplayers, message = msg }))
 						end
 					end
 				end
