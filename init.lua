@@ -5,7 +5,7 @@ local channels = {}
 -- Mod settings -- Change these to your liking
 --
 local main_channel_name = "main"			-- The main channel is the one you send messages to when no channel is specified
-local main_channel_owner = "ADMIN"			-- The owner of the main channel, usually ADMIN
+local main_channel_owner = "Beerholder"		-- The owner of the main channel, usually ADMIN
 local main_channel_color = "#ffffff"		-- The color in hex of the main channel
 
 local default_channel_color = "#ffffff"		-- The default color of channels when no color is specified
@@ -44,7 +44,7 @@ local channel_created_string = "|#${channel_name}| Channel created"
 local channel_deleted_string = "|#${channel_name}| Channel deleted"
 local channel_joined_string = "|#${channel_name}| Joined channel"
 local channel_left_string = "|#${channel_name}| Left channel"
-local channel_already_delete_string = "|#${channel_name}| Channel seems to have already been deleted, will unregister channel from your list of channels"
+local channel_already_deleted_string = "|#${channel_name}| Channel seems to have already been deleted, will unregister channel from your list of channels"
 local private_message_string = "[PM] from (${from_player}) ${message}"
 local self_message_string = "(${from_player} utters to him/ herself) ${message}"
 local private_message_sent_string = "[PM] sent to @(${to_player}) ${message}"
@@ -93,6 +93,7 @@ end
 channels = minetest.parse_json(mod_storage:get_string("channels"))
 
 playersChannels = {}
+local currentPlayerChannel = {}
 
 minetest.register_on_joinplayer(function(player)
 	local str = player:get_attribute("beerchat:channels")
@@ -104,11 +105,20 @@ minetest.register_on_joinplayer(function(player)
 		playersChannels[player:get_player_name()][main_channel_name] = "joined"
 		player:set_attribute("beerchat:channels", minetest.write_json(playersChannels[player:get_player_name()]))
 	end
+
+	local current_channel = player:get_attribute("beerchat:current_channel")
+	if current_channel and current_channel ~= "" then
+		currentPlayerChannel[player:get_player_name()] = current_channel
+	else
+		currentPlayerChannel[player:get_player_name()] = main_channel_name
+	end
+
 end)
 
 minetest.register_on_leaveplayer(function(player)
 	playersChannels[player:get_player_name()] = nil
 	atchat_lastrecv[player:get_player_name()] = nil
+	currentPlayerChannel[player:get_player_name()] = nil
 end)
 
 local create_channel = {
@@ -254,7 +264,7 @@ local join_channel = {
 			return false, "ERROR: You already joined "..channel_name..", no need to rejoin"
 		end
 
-		if channels[channel_name].password then
+		if channels[channel_name].password and channels[channel_name].password ~= "" then
 			if #str == 1 then
 				return false, "ERROR: This channel requires that you supply a password. Supply it in the following format: /jc my channel,password01"
 			end
@@ -277,7 +287,7 @@ local join_channel = {
 
 local leave_channel = {
 	params = "<Channel Name>",
-	description = "Leave channel named <Channel Name>. When you leave the channel you can no longer send/ receive messages from that channel. NOTE: You can also the main channel",
+	description = "Leave channel named <Channel Name>. When you leave the channel you can no longer send/ receive messages from that channel. NOTE: You can also leave the main channel",
 	func = function(name, param)
 		if not param or param == "" then
 			return false, "ERROR: Invalid number of arguments. Please supply the channel name"
@@ -520,7 +530,7 @@ minetest.register_chatcommand("msg", msg_override)
 
 local me_override = {
 	params = "<Message>",
-	description = "Send message in the \"* player message\" format, e.g. /me eats pizza becomes |#main| * Player01 eats pizza",
+	description = "Send message in the \"* player message\" format, e.g. /me eats pizza becomes |#"..main_channel_name.."| * Player01 eats pizza",
 	func = function(name, param)
 		local msg = param
 		local channel_name = main_channel_name
@@ -582,9 +592,9 @@ minetest.register_on_chat_message(function(name, message)
 								minetest.chat_send_player(target, format_message(main_channel_message_string, { channel_name = channel_name, from_player = name, message = msg }))
 							else
 								minetest.chat_send_player(target, format_message(channel_message_string, { channel_name = channel_name, from_player = name, message = msg }))
-							end
-							if enable_sounds then
-								minetest.sound_play(channel_message_sound, { to_player = target, gain = 1.0 } )
+								if enable_sounds then
+									minetest.sound_play(channel_message_sound, { to_player = target, gain = 1.0 } )
+								end
 							end
 						end
 					end
@@ -596,6 +606,29 @@ minetest.register_on_chat_message(function(name, message)
 			end
 		end
 		return true
+	else
+		channel_name = string.match(message, "^#(.*)")
+		if channel_name then
+			if not channels[channel_name] then
+				minetest.chat_send_player(name, "Channel "..channel_name.." does not exist")
+			elseif not playersChannels[name][channel_name] then
+				minetest.chat_send_player(name, "You need to join this channel in order to be able to switch to it")
+			else
+				currentPlayerChannel[name] = channel_name
+				minetest.get_player_by_name(name):set_attribute("beerchat:current_channel", channel_name)
+				if channel_name == main_channel_name then
+					minetest.chat_send_player(name, "Switched to channel "..channel_name..", messages will now be sent to this channel")
+				else
+					minetest.chat_send_player(name, "Switched to channel "..channel_name..", messages will now be sent to this channel. To switch back "..
+													"to the main channel, type #"..main_channel_name)
+				end
+
+				if enable_sounds then
+					minetest.sound_play(channel_management_sound, { to_player = name, gain = 1.0 } )
+				end
+			end
+			return true
+		end
 	end
 end)
 
@@ -636,7 +669,15 @@ end)
 
 minetest.register_on_chat_message(function(name, message)
 	local msg = message
-	local channel_name = main_channel_name
+	local channel_name = currentPlayerChannel[name]
+
+	if not channels[channel_name] then
+		minetest.chat_send_player(name, "Channel "..channel_name.." does not exist, switching back to "..main_channel_name..". Please resend your message")
+		currentPlayerChannel[name] = main_channel_name
+		minetest.get_player_by_name(name):set_attribute("beerchat:current_channel", main_channel_name)
+		return true
+	end
+
 	if not channels[channel_name] then
 		minetest.chat_send_player(name, "Channel "..channel_name.." does not exist")
 	elseif msg == "" then
@@ -650,6 +691,9 @@ minetest.register_on_chat_message(function(name, message)
 			if playersChannels[target][channel_name] then
 				if not minetest.get_player_by_name(target):get_attribute("beerchat:muted:"..name) then
 					minetest.chat_send_player(target, format_message(main_channel_message_string, { channel_name = channel_name, from_player = name, message = message }))
+					if channel_name ~= main_channel_name and enable_sounds then
+						minetest.sound_play(channel_message_sound, { to_player = target, gain = 1.0 } )
+					end
 				end
 			end
 		end
