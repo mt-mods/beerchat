@@ -420,6 +420,7 @@ minetest.register_chatcommand("unignore", unmute_player)
 atchat_lastrecv = {}
 
 minetest.register_on_chat_message(function(name, message)
+	minetest.log("action", "CHAT " .. name .. ": " .. message)
 	local players, msg = string.match(message, "^@([^%s:]*)[%s:](.*)")
 	if players and msg then
 		if msg == "" then
@@ -476,6 +477,7 @@ local msg_override = {
 	description = "Send private message to player, for compatibility with the old chat command but with new style chat muting support "..
 				  "(players will not receive your message if they muted you) and multiple (comma separated) player support",
 	func = function(name, param)
+		minetest.log("action", "PM " .. name .. ": " .. param)
 		local players, msg = string.match(param, "^(.-) (.*)")
 		if players and msg then
 			if players == "" then
