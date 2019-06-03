@@ -588,7 +588,7 @@ minetest.register_on_chat_message(function(name, message)
 				for _,player in ipairs(minetest.get_connected_players()) do
 					local target = player:get_player_name()
 					-- Checking if the target is in this channel
-					if playersChannels[target][channel_name] then
+					if  playersChannels[target] and playersChannels[target][channel_name] then
 						if not minetest.get_player_by_name(target):get_attribute("beerchat:muted:"..name) then
 							if channel_name == main_channel_name then
 								minetest.chat_send_player(target, format_message(main_channel_message_string, { channel_name = channel_name, from_player = name, message = msg }))
