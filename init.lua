@@ -684,7 +684,7 @@ minetest.register_on_chat_message(function(name, message)
 		minetest.chat_send_player(name, "Channel "..channel_name.." does not exist")
 	elseif msg == "" then
 		minetest.chat_send_player(name, "Please enter the message you would like to send to the channel")
-	elseif not playersChannels[name][channel_name] then
+	elseif playersChannels[name] and not playersChannels[name][channel_name] then
 		minetest.chat_send_player(name, "You need to join this channel in order to be able to send messages to it")
 	else
 		for _,player in ipairs(minetest.get_connected_players()) do
@@ -694,7 +694,7 @@ minetest.register_on_chat_message(function(name, message)
 				if not minetest.get_player_by_name(target):get_attribute("beerchat:muted:"..name) then
 					minetest.chat_send_player(target, format_message(main_channel_message_string, { channel_name = channel_name, from_player = name, message = message }))
 					if channel_name ~= main_channel_name and enable_sounds then
-						minetest.sound_play(channel_message_sound, { to_player = target, gain = 1.0 } )
+						minetest.sound_play(channel_message_sound, { to_player = target, gain = 0.6 } )
 					end
 				end
 			end
