@@ -260,7 +260,7 @@ local join_channel = {
 			return false, "ERROR: Channel "..channel_name.." does not exist"
 		end
 
-		if playersChannels[name][channel_name] then
+		if playersChannels[name] and playersChannels[name][channel_name] then
 			return false, "ERROR: You already joined "..channel_name..", no need to rejoin"
 		end
 
