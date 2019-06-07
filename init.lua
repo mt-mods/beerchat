@@ -273,6 +273,7 @@ local join_channel = {
 			end
 		end
 
+		playersChannels[name] = playersChannels[name] or {}
 		playersChannels[name][channel_name] = "joined"
 		minetest.get_player_by_name(name):set_attribute("beerchat:channels", minetest.write_json(playersChannels[name]))
 		if enable_sounds then
