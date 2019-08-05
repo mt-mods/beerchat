@@ -138,7 +138,7 @@ local create_channel = {
 			return false, "ERROR: Invalid number of arguments. 4 parameters passed, maximum of 3 allowed: <Channel Name>,<Password>,<Color>"
 		end
 
-		local lchannel_name = string.trim(str[1])
+		local lchannel_name = string.trim(str[1] or "")
 		if lchannel_name == "" then
 			return false, "ERROR: You must supply a channel name"
 		end
