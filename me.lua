@@ -22,7 +22,7 @@ local me_override = {
 					if not minetest.get_player_by_name(target):get_attribute("beerchat:muted:"..name) then
 						minetest.chat_send_player(
 							target,
-							format_message(me_message_string, {
+							beerchat.format_message(me_message_string, {
 								channel_name = channel_name,
 								from_player = name,
 								message = msg

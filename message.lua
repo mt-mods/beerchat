@@ -19,32 +19,7 @@
 -- ${time} the current time in 24 hour format, as returned from os.date("%X")
 --
 
-function format_message(s, tab)
-	local owner
-	local password
-	local color = beerchat.default_channel_color
 
-	if tab.channel_name and beerchat.channels[tab.channel_name] then
-		owner = beerchat.channels[tab.channel_name].owner
-		password = beerchat.channels[tab.channel_name].password
-		color = beerchat.channels[tab.channel_name].color
-	end
-
-	if tab.color then
-		color = tab.color
-	end
-
-	local params = {
-		channel_name = tab.channel_name,
-		channel_owner = owner,
-		channel_password = password,
-		from_player = tab.from_player,
-		to_player = tab.to_player,
-		message = tab.message,
-		time = os.date("%X")
-	}
-	return string.char(0x1b).."(c@"..color..")"..format_string(s, params)
-end
 
 function format_string(s, tab)
   return (s:gsub('($%b{})', function(w) return tab[w:sub(3, -2)] or w end))
@@ -79,7 +54,7 @@ minetest.register_on_chat_message(function(name, message)
 				if not minetest.get_player_by_name(target):get_attribute("beerchat:muted:"..name) then
 					minetest.chat_send_player(
 						target,
-						format_message(
+						beerchat.format_message(
 							beerchat.main_channel_message_string, {
 								channel_name = channel_name,
 								from_player = name,

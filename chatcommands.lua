@@ -74,7 +74,7 @@ local create_channel = {
 		if beerchat.enable_sounds then
 			minetest.sound_play(beerchat.channel_management_sound, { to_player = lowner, gain = 1.0 } )
 		end
-		minetest.chat_send_player(lowner, format_message(channel_created_string, { channel_name = lchannel_name }))
+		minetest.chat_send_player(lowner, beerchat.format_message(channel_created_string, { channel_name = lchannel_name }))
 
 		return true
 	end
@@ -115,7 +115,10 @@ local delete_channel = {
 			minetest.sound_play(beerchat.channel_management_sound, { to_player = name, gain = 1.0 } )
 		end
 
-		minetest.chat_send_player(name, format_message(channel_deleted_string, { channel_name = param, color = color }))
+		minetest.chat_send_player(
+			name,
+			beerchat.format_message(channel_deleted_string, { channel_name = param, color = color })
+		)
 
 		return true
 
@@ -187,7 +190,7 @@ local join_channel = {
 		if beerchat.enable_sounds then
 			minetest.sound_play(join_channel_sound, { to_player = name, gain = 1.0 } )
 		end
-		minetest.chat_send_player(name, format_message(channel_joined_string, { channel_name = channel_name }))
+		minetest.chat_send_player(name, beerchat.format_message(channel_joined_string, { channel_name = channel_name }))
 
 		return true
 
@@ -220,9 +223,15 @@ local leave_channel = {
 			minetest.sound_play(leave_channel_sound, { to_player = name, gain = 1.0 } )
 		end
 		if not beerchat.channels[channel_name] then
-			minetest.chat_send_player(name, format_message(channel_already_deleted_string, { channel_name = channel_name }))
+			minetest.chat_send_player(
+				name,
+				beerchat.format_message(channel_already_deleted_string, { channel_name = channel_name })
+			)
 		else
-			minetest.chat_send_player(name, format_message(channel_left_string, { channel_name = channel_name }))
+			minetest.chat_send_player(
+				name,
+				beerchat.format_message(channel_left_string, { channel_name = channel_name })
+			)
 		end
 
 		return true
@@ -267,7 +276,7 @@ local invite_channel = {
 				-- Sending the message
 				minetest.chat_send_player(
 					player_name,
-					format_message(channel_invitation_string, { channel_name = channel_name, from_player = name })
+					beerchat.format_message(channel_invitation_string, { channel_name = channel_name, from_player = name })
 				)
 			end
 			if beerchat.enable_sounds then
@@ -275,7 +284,7 @@ local invite_channel = {
 			end
 			minetest.chat_send_player(
 				name,
-				format_message(channel_invited_string, { channel_name = channel_name, to_player = player_name })
+				beerchat.format_message(channel_invited_string, { channel_name = channel_name, to_player = player_name })
 			)
 		end
 

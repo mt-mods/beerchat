@@ -30,12 +30,30 @@ minetest.register_on_chat_message(function(name, message)
 						if not minetest.get_player_by_name(target):get_attribute("beerchat:muted:"..name) then
 							if target ~= name then
 								-- Sending the message
-								minetest.chat_send_player(target, format_message(private_message_string, { from_player = name, message = msg }))
+								minetest.chat_send_player(
+									target,
+									beerchat.format_message(
+										private_message_string, {
+											from_player = name,
+											message = msg
+										}
+									)
+								)
+
 								if beerchat.enable_sounds then
 									minetest.sound_play(private_message_sound, { to_player = target, gain = 1.0 } )
 								end
 							else
-								minetest.chat_send_player(target, format_message(self_message_string, { from_player = name, message = msg }))
+								minetest.chat_send_player(
+									target,
+									beerchat.format_message(
+										self_message_string, {
+											from_player = name,
+											message = msg
+										}
+									)
+								)
+
 								if beerchat.enable_sounds then
 									minetest.sound_play(self_message_sound, { to_player = target, gain = 1.0 } )
 								end
@@ -52,7 +70,7 @@ minetest.register_on_chat_message(function(name, message)
 					if (successplayers ~= name) then
 						minetest.chat_send_player(
 							name,
-							format_message(
+							beerchat.format_message(
 								private_message_sent_string, {
 									to_player = successplayers,
 									message = msg
@@ -81,12 +99,29 @@ local send_pm = function(players, name, msg)
 			if not minetest.get_player_by_name(target):get_attribute("beerchat:muted:"..name) then
 				if target ~= name then
 					-- Sending the message
-					minetest.chat_send_player(target, format_message(private_message_string, { from_player = name, message = msg }))
+					minetest.chat_send_player(
+						target,
+						beerchat.format_message(
+							private_message_string, {
+								from_player = name,
+								message = msg
+							}
+						)
+					)
+
 					if beerchat.enable_sounds then
 						minetest.sound_play(private_message_sound, { to_player = target, gain = 1.0 } )
 					end
 				else
-					minetest.chat_send_player(target, format_message(self_message_string, { from_player = name, message = msg }))
+					minetest.chat_send_player(
+						target,
+						beerchat.format_message(
+							self_message_string, {
+								from_player = name,
+								message = msg
+							}
+						)
+					)
 					if beerchat.enable_sounds then
 						minetest.sound_play(self_message_sound, { to_player = target, gain = 1.0 } )
 					end
@@ -103,7 +138,7 @@ local send_pm = function(players, name, msg)
 		if (successplayers ~= name) then
 			minetest.chat_send_player(
 				name,
-				format_message(private_message_sent_string, { to_player = successplayers, message = msg })
+				beerchat.format_message(private_message_sent_string, { to_player = successplayers, message = msg })
 			)
 		end
 	end

@@ -14,7 +14,7 @@ local hash_send_all = function(msg, name, channel_name)
 				if channel_name == beerchat.main_channel_name then
 					minetest.chat_send_player(
 						target,
-						format_message(
+						beerchat.format_message(
 							beerchat.main_channel_message_string, {
 								channel_name = channel_name,
 								from_player = name,
@@ -25,7 +25,7 @@ local hash_send_all = function(msg, name, channel_name)
 				else
 					minetest.chat_send_player(
 						target,
-						format_message(
+						beerchat.format_message(
 							channel_message_string, {
 								channel_name = channel_name,
 								from_player = name,
