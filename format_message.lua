@@ -1,4 +1,8 @@
 
+function format_string(s, tab)
+  return (s:gsub('($%b{})', function(w) return tab[w:sub(3, -2)] or w end))
+end
+
 beerchat.format_message = function(s, tab)
 	local owner
 	local password

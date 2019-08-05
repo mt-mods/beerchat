@@ -21,10 +21,6 @@
 
 
 
-function format_string(s, tab)
-  return (s:gsub('($%b{})', function(w) return tab[w:sub(3, -2)] or w end))
-end
-
 minetest.register_on_chat_message(function(name, message)
 	local msg = message
 	local channel_name = beerchat.currentPlayerChannel[name]
