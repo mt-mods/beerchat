@@ -5,7 +5,8 @@ local whisper_color = "#aaaaaa"			-- Whisper color override
 
 local whisper_string = "|#${channel_name}| <${from_player}> whispers: ${message}"
 
--- $ chat a.k.a. dollar chat code, to whisper messages in chat to nearby players only using $, optionally supplying a radius e.g. $32 Hello
+-- $ chat a.k.a. dollar chat code, to whisper messages in chat to nearby players only using $,
+-- optionally supplying a radius e.g. $32 Hello
 minetest.register_on_chat_message(function(name, message)
 	local dollar, sradius, msg = string.match(message, "^($)(.-) (.*)")
 	if dollar == "$" then

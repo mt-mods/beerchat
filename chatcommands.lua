@@ -1,12 +1,15 @@
 local mod_storage = minetest.get_mod_storage()
 
 local channel_created_string = "|#${channel_name}| Channel created"
-local channel_invitation_string = "|#${channel_name}| Channel invite from (${from_player}), to join the channel, do /jc ${channel_name},${channel_password} after which you can send messages to the channel via #${channel_name}: message"
+local channel_invitation_string = "|#${channel_name}| Channel invite from (${from_player}), " ..
+	"to join the channel, do /jc ${channel_name},${channel_password} after " ..
+	"which you can send messages to the channel via #${channel_name}: message"
 local channel_invited_string = "|#${channel_name}| Invite sent to ${to_player}"
 local channel_deleted_string = "|#${channel_name}| Channel deleted"
 local channel_joined_string = "|#${channel_name}| Joined channel"
 local channel_left_string = "|#${channel_name}| Left channel"
-local channel_already_deleted_string = "|#${channel_name}| Channel seems to have already been deleted, will unregister channel from your list of channels"
+local channel_already_deleted_string = "|#${channel_name}| Channel seems to have already been deleted, " ..
+	"will unregister channel from your list of channels"
 
 local join_channel_sound = "beerchat_chirp"			-- Sound when you join a channel
 local leave_channel_sound = "beerchat_chirp"			-- Sound when you leave a channel
@@ -26,7 +29,8 @@ local create_channel = {
 
 		local str = string.split(param, ",")
 		if #str > 3 then
-			return false, "ERROR: Invalid number of arguments. 4 parameters passed, maximum of 3 allowed: <Channel Name>,<Password>,<Color>"
+			return false, "ERROR: Invalid number of arguments. 4 parameters passed, " ..
+				"maximum of 3 allowed: <Channel Name>,<Password>,<Color>"
 		end
 
 		local lchannel_name = string.trim(str[1])
@@ -39,7 +43,8 @@ local create_channel = {
 		end
 
 		if beerchat.channels[lchannel_name] then
-			return false, "ERROR: Channel "..lchannel_name.." already exists, owned by player "..beerchat.channels[lchannel_name].owner
+			return false, "ERROR: Channel "..lchannel_name.." already exists, owned by player "..
+				beerchat.channels[lchannel_name].owner
 		end
 
 		local arg2 = str[2]
@@ -62,7 +67,10 @@ local create_channel = {
 		mod_storage:set_string("channels", minetest.write_json(beerchat.channels))
 
 		beerchat.playersChannels[lowner][lchannel_name] = "owner"
-		minetest.get_player_by_name(lowner):set_attribute("beerchat:channels", minetest.write_json(beerchat.playersChannels[lowner]))
+		minetest.get_player_by_name(lowner):set_attribute(
+			"beerchat:channels",
+			minetest.write_json(beerchat.playersChannels[lowner])
+		)
 		if beerchat.enable_sounds then
 			minetest.sound_play(beerchat.channel_management_sound, { to_player = lowner, gain = 1.0 } )
 		end
@@ -74,10 +82,9 @@ local create_channel = {
 
 local delete_channel = {
 	params = "<Channel Name>",
-	description = "Delete channel named <Channel Name>. You must be the owner of the channel or you are not allowed to delete the channel",
+	description = "Delete channel named <Channel Name>. " ..
+		"You must be the owner of the channel or you are not allowed to delete the channel",
 	func = function(name, param)
-		local owner = name
-
 		if not param or param == "" then
 			return false, "ERROR: Invalid number of arguments. Please supply the channel name"
 		end
@@ -99,7 +106,10 @@ local delete_channel = {
 		mod_storage:set_string("channels", minetest.write_json(beerchat.channels))
 
 		beerchat.playersChannels[name][param] = nil
-		minetest.get_player_by_name(name):set_attribute("beerchat:channels", minetest.write_json(beerchat.playersChannels[name]))
+		minetest.get_player_by_name(name):set_attribute(
+			"beerchat:channels",
+			minetest.write_json(beerchat.playersChannels[name])
+		)
 
 		if beerchat.enable_sounds then
 			minetest.sound_play(beerchat.channel_management_sound, { to_player = name, gain = 1.0 } )
@@ -114,7 +124,8 @@ local delete_channel = {
 
 local my_channels = {
 	params = "<Channel Name optional>",
-	description = "List the channels you have joined or are the owner of, or show channel information when passing channel name as argument",
+	description = "List the channels you have joined or are the owner of, " ..
+		"or show channel information when passing channel name as argument",
 	func = function(name, param)
 		if not param or param == "" then
 			if beerchat.enable_sounds then
@@ -138,7 +149,8 @@ local my_channels = {
 
 local join_channel = {
 	params = "<Channel Name>,<Password (only mandatory if channel was created using a password)>",
-	description = "Join channel named <Channel Name>. After joining you will see messages sent to that channel (in addition to the other channels you have joined)",
+	description = "Join channel named <Channel Name>. " ..
+		"After joining you will see messages sent to that channel (in addition to the other channels you have joined)",
 	func = function(name, param)
 		if not param or param == "" then
 			return false, "ERROR: Invalid number of arguments. Please supply the channel name as a minimum"
@@ -157,7 +169,8 @@ local join_channel = {
 
 		if beerchat.channels[channel_name].password and beerchat.channels[channel_name].password ~= "" then
 			if #str == 1 then
-				return false, "ERROR: This channel requires that you supply a password. Supply it in the following format: /jc my channel,password01"
+				return false, "ERROR: This channel requires that you supply a password. " ..
+					"Supply it in the following format: /jc my channel,password01"
 			end
 			if str[2] ~= beerchat.channels[channel_name].password then
 				return false, "ERROR: Invalid password"
@@ -166,7 +179,11 @@ local join_channel = {
 
 		beerchat.playersChannels[name] = beerchat.playersChannels[name] or {}
 		beerchat.playersChannels[name][channel_name] = "joined"
-		minetest.get_player_by_name(name):set_attribute("beerchat:channels", minetest.write_json(beerchat.playersChannels[name]))
+		minetest.get_player_by_name(name):set_attribute(
+			"beerchat:channels",
+			minetest.write_json(beerchat.playersChannels[name])
+		)
+
 		if beerchat.enable_sounds then
 			minetest.sound_play(join_channel_sound, { to_player = name, gain = 1.0 } )
 		end
@@ -179,7 +196,9 @@ local join_channel = {
 
 local leave_channel = {
 	params = "<Channel Name>",
-	description = "Leave channel named <Channel Name>. When you leave the channel you can no longer send/ receive messages from that channel. NOTE: You can also leave the main channel",
+	description = "Leave channel named <Channel Name>. " ..
+		"When you leave the channel you can no longer send/ receive messages from that channel. " ..
+		"NOTE: You can also leave the main channel",
 	func = function(name, param)
 		if not param or param == "" then
 			return false, "ERROR: Invalid number of arguments. Please supply the channel name"
@@ -192,7 +211,10 @@ local leave_channel = {
 		end
 
 		beerchat.playersChannels[name][channel_name] = nil
-		minetest.get_player_by_name(name):set_attribute("beerchat:channels", minetest.write_json(beerchat.playersChannels[name]))
+		minetest.get_player_by_name(name):set_attribute(
+			"beerchat:channels",
+			minetest.write_json(beerchat.playersChannels[name])
+		)
 
 		if beerchat.enable_sounds then
 			minetest.sound_play(leave_channel_sound, { to_player = name, gain = 1.0 } )
@@ -210,10 +232,9 @@ local leave_channel = {
 
 local invite_channel = {
 	params = "<Channel Name>,<Player Name>",
-	description = "Invite player named <Player Name> to channel named <Channel Name>. You must be the owner of the channel in order to do invites",
+	description = "Invite player named <Player Name> to channel named <Channel Name>. " ..
+		"You must be the owner of the channel in order to do invites",
 	func = function(name, param)
-		local owner = name
-
 		if not param or param == "" then
 			return false, "ERROR: Invalid number of arguments. Please supply the channel name and the player name"
 		end
@@ -244,12 +265,18 @@ local invite_channel = {
 					minetest.sound_play(channel_invite_sound, { to_player = player_name, gain = 1.0 } )
 				end
 				-- Sending the message
-				minetest.chat_send_player(player_name, format_message(channel_invitation_string, { channel_name = channel_name, from_player = name }))
+				minetest.chat_send_player(
+					player_name,
+					format_message(channel_invitation_string, { channel_name = channel_name, from_player = name })
+				)
 			end
 			if beerchat.enable_sounds then
 				minetest.sound_play(channel_invite_sound, { to_player = name, gain = 1.0 } )
 			end
-			minetest.chat_send_player(name, format_message(channel_invited_string, { channel_name = channel_name, to_player = player_name }))
+			minetest.chat_send_player(
+				name,
+				format_message(channel_invited_string, { channel_name = channel_name, to_player = player_name })
+			)
 		end
 
 		return true
@@ -258,7 +285,8 @@ local invite_channel = {
 
 local mute_player = {
 	params = "<Player Name>",
-	description = "Mute a player. After muting a player, you will no longer see chat messages of this user, regardless of what channel his user sends messages to",
+	description = "Mute a player. After muting a player, you will no longer see chat messages of this user, " ..
+		"regardless of what channel his user sends messages to",
 	func = function(name, param)
 		if not param or param == "" then
 			return false, "ERROR: Invalid number of arguments. Please supply the name of the user to mute"

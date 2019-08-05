@@ -3,7 +3,8 @@ local me_message_string = "|#${channel_name}| * ${from_player} ${message}"
 
 local me_override = {
 	params = "<Message>",
-	description = "Send message in the \"* player message\" format, e.g. /me eats pizza becomes |#"..beerchat.main_channel_name.."| * Player01 eats pizza",
+	description = "Send message in the \"* player message\" format, e.g. /me eats pizza becomes |#"..
+		beerchat.main_channel_name.."| * Player01 eats pizza",
 	func = function(name, param)
 		local msg = param
 		local channel_name = beerchat.main_channel_name
@@ -19,7 +20,14 @@ local me_override = {
 				-- Checking if the target is in this channel
 				if beerchat.playersChannels[target] and beerchat.playersChannels[target][channel_name] then
 					if not minetest.get_player_by_name(target):get_attribute("beerchat:muted:"..name) then
-						minetest.chat_send_player(target, format_message(me_message_string, { channel_name = channel_name, from_player = name, message = msg }))
+						minetest.chat_send_player(
+							target,
+							format_message(me_message_string, {
+								channel_name = channel_name,
+								from_player = name,
+								message = msg
+							})
+						)
 					end
 				end
 			end
