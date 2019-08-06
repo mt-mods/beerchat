@@ -1,4 +1,3 @@
-local mod_storage = minetest.get_mod_storage()
 
 local channel_created_string = "|#${channel_name}| Channel created"
 local channel_invitation_string = "|#${channel_name}| Channel invite from (${from_player}), " ..
@@ -64,7 +63,7 @@ local create_channel = {
 		end
 
 		beerchat.channels[lchannel_name] = { owner = lowner, name = lchannel_name, password = lpassword, color = lcolor }
-		mod_storage:set_string("channels", minetest.write_json(beerchat.channels))
+		beerchat.mod_storage:set_string("channels", minetest.write_json(beerchat.channels))
 
 		beerchat.playersChannels[lowner][lchannel_name] = "owner"
 		minetest.get_player_by_name(lowner):set_attribute(
@@ -103,7 +102,7 @@ local delete_channel = {
 
 		local color = beerchat.channels[param].color
 		beerchat.channels[param] = nil
-		mod_storage:set_string("channels", minetest.write_json(beerchat.channels))
+		beerchat.mod_storage:set_string("channels", minetest.write_json(beerchat.channels))
 
 		beerchat.playersChannels[name][param] = nil
 		minetest.get_player_by_name(name):set_attribute(

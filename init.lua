@@ -20,6 +20,8 @@ beerchat = {
 
 	main_channel_message_string = "|#${channel_name}| <${from_player}> ${message}",
 
+	mod_storage = minetest.get_mod_storage(),
+
 	channels = {},
 	playersChannels = {},
 	currentPlayerChannel = {}
