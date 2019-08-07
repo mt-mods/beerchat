@@ -27,5 +27,6 @@ beerchat.format_message = function(s, tab)
 		message = tab.message,
 		time = os.date("%X")
 	}
-	return string.char(0x1b).."(c@"..color..")"..format_string(s, params)
+
+	return minetest.colorize(color, format_string(s, params))
 end
