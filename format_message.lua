@@ -3,6 +3,14 @@ function format_string(s, tab)
   return (s:gsub('($%b{})', function(w) return tab[w:sub(3, -2)] or w end))
 end
 
+function colorize_target_name(s, target)
+  if not target then
+    return s
+  end
+
+  return s:gsub(target, minetest.colorize("#ff0000", target))
+end
+
 beerchat.format_message = function(s, tab)
 	local owner
 	local password
@@ -23,8 +31,8 @@ beerchat.format_message = function(s, tab)
 		channel_owner = owner,
 		channel_password = password,
 		from_player = tab.from_player,
-		to_player = minetest.colorize("#ff0000", tab.to_player),
-		message = tab.message,
+		to_player = tab.to_player,
+		message = colorize_target_name(tab.message, tab.to_player),
 		time = os.date("%X")
 	}
 
