@@ -19,14 +19,14 @@ beerchat.format_message = function(s, tab)
 	end
 
 	local params = {
-		channel_name = tab.channel_name,
+		channel_name = minetest.colorize(color, tab.channel_name),
 		channel_owner = owner,
 		channel_password = password,
 		from_player = tab.from_player,
-		to_player = tab.to_player,
+		to_player = minetest.colorize("#ff0000", tab.to_player),
 		message = tab.message,
 		time = os.date("%X")
 	}
 
-	return minetest.colorize(color, format_string(s, params))
+	return format_string(s, params)
 end

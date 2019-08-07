@@ -30,7 +30,11 @@ minetest.register_on_chat_message(function(name, message)
 					if beerchat.playersChannels[target] and beerchat.playersChannels[target][beerchat.main_channel_name] then
 						if not minetest.get_player_by_name(target):get_attribute("beerchat:muted:"..name) then
 							minetest.chat_send_player(target, beerchat.format_message(whisper_string, {
-								channel_name = beerchat.main_channel_name, from_player = name, message = msg, color = whisper_color
+								channel_name = beerchat.main_channel_name,
+								from_player = name,
+								to_player = target,
+								message = msg,
+								color = whisper_color
 							}))
 						end
 					end

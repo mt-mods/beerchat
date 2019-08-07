@@ -53,6 +53,7 @@ minetest.register_on_chat_message(function(name, message)
 						beerchat.format_message(
 							beerchat.main_channel_message_string, {
 								channel_name = channel_name,
+								to_player = target,
 								from_player = name,
 								message = message
 							}

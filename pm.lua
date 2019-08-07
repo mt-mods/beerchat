@@ -35,6 +35,7 @@ minetest.register_on_chat_message(function(name, message)
 									beerchat.format_message(
 										private_message_string, {
 											from_player = name,
+											to_player = target,
 											message = msg
 										}
 									)
@@ -49,6 +50,7 @@ minetest.register_on_chat_message(function(name, message)
 									beerchat.format_message(
 										self_message_string, {
 											from_player = name,
+											to_player = target,
 											message = msg
 										}
 									)

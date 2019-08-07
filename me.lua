@@ -23,6 +23,7 @@ local me_override = {
 						minetest.chat_send_player(
 							target,
 							beerchat.format_message(me_message_string, {
+								to_player = target,
 								channel_name = channel_name,
 								from_player = name,
 								message = msg
