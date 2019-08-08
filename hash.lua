@@ -6,6 +6,8 @@ local channel_message_string = "|#${channel_name}| <${from_player}> ${message}"
 hashchat_lastrecv = {}
 
 local hash_send_all = function(msg, name, channel_name)
+	beerchat.on_channel_message(channel_name, name, msg)
+
 	for _,player in ipairs(minetest.get_connected_players()) do
 		local target = player:get_player_name()
 		-- Checking if the target is in this channel

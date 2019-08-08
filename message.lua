@@ -43,6 +43,8 @@ minetest.register_on_chat_message(function(name, message)
 	elseif beerchat.playersChannels[name] and not beerchat.playersChannels[name][channel_name] then
 		minetest.chat_send_player(name, "You need to join this channel in order to be able to send messages to it")
 	else
+		beerchat.on_channel_message(channel_name, name, message)
+
 		for _,player in ipairs(minetest.get_connected_players()) do
 			local target = player:get_player_name()
 			-- Checking if the target is in this channel

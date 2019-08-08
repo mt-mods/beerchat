@@ -29,6 +29,7 @@ beerchat = {
 
 local MP = minetest.get_modpath("beerchat")
 dofile(MP.."/format_message.lua")
+dofile(MP.."/hooks.lua")
 dofile(MP.."/storage.lua")
 dofile(MP.."/session.lua")
 dofile(MP.."/pm.lua")
