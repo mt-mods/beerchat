@@ -4,7 +4,7 @@ function format_string(s, tab)
 end
 
 function colorize_target_name(s, target)
-  if not target then
+  if not target or not s then
     return s
   end
 
