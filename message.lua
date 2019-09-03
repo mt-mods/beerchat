@@ -63,7 +63,7 @@ minetest.register_on_chat_message(function(name, message)
 					)
 
 					if channel_name ~= beerchat.main_channel_name and beerchat.enable_sounds then
-						minetest.sound_play(beerchat.channel_message_sound, { to_player = target, gain = 0.6 } )
+						minetest.sound_play(beerchat.channel_message_sound, { to_player = target, gain = 0.3 } )
 					end
 				end
 			end
