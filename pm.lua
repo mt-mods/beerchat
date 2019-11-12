@@ -42,7 +42,7 @@ minetest.register_on_chat_message(function(name, message)
 								)
 
 								if beerchat.enable_sounds then
-									minetest.sound_play(private_message_sound, { to_player = target, gain = 1.0 } )
+									minetest.sound_play(private_message_sound, { to_player = target, gain = beerchat.sounds_default_gain } )
 								end
 							else
 								minetest.chat_send_player(
@@ -57,7 +57,7 @@ minetest.register_on_chat_message(function(name, message)
 								)
 
 								if beerchat.enable_sounds then
-									minetest.sound_play(self_message_sound, { to_player = target, gain = 1.0 } )
+									minetest.sound_play(self_message_sound, { to_player = target, gain = beerchat.sounds_default_gain } )
 								end
 							end
 						end
@@ -112,7 +112,7 @@ local send_pm = function(players, name, msg)
 					)
 
 					if beerchat.enable_sounds then
-						minetest.sound_play(private_message_sound, { to_player = target, gain = 1.0 } )
+						minetest.sound_play(private_message_sound, { to_player = target, gain = beerchat.sounds_default_gain } )
 					end
 				else
 					minetest.chat_send_player(
@@ -125,7 +125,7 @@ local send_pm = function(players, name, msg)
 						)
 					)
 					if beerchat.enable_sounds then
-						minetest.sound_play(self_message_sound, { to_player = target, gain = 1.0 } )
+						minetest.sound_play(self_message_sound, { to_player = target, gain = beerchat.sounds_default_gain } )
 					end
 				end
 			end

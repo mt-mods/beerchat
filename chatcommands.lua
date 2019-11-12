@@ -70,7 +70,7 @@ local create_channel = {
 			minetest.write_json(beerchat.playersChannels[lowner])
 		)
 		if beerchat.enable_sounds then
-			minetest.sound_play(beerchat.channel_management_sound, { to_player = lowner, gain = 1.0 } )
+			minetest.sound_play(beerchat.channel_management_sound, { to_player = lowner, gain = beerchat.sounds_default_gain } )
 		end
 		minetest.chat_send_player(lowner, beerchat.format_message(channel_created_string, { channel_name = lchannel_name }))
 
@@ -110,7 +110,7 @@ local delete_channel = {
 		)
 
 		if beerchat.enable_sounds then
-			minetest.sound_play(beerchat.channel_management_sound, { to_player = name, gain = 1.0 } )
+			minetest.sound_play(beerchat.channel_management_sound, { to_player = name, gain = beerchat.sounds_default_gain } )
 		end
 
 		minetest.chat_send_player(
@@ -130,13 +130,13 @@ local my_channels = {
 	func = function(name, param)
 		if not param or param == "" then
 			if beerchat.enable_sounds then
-				minetest.sound_play(beerchat.channel_management_sound, { to_player = name, gain = 1.0 } )
+				minetest.sound_play(beerchat.channel_management_sound, { to_player = name, gain = beerchat.sounds_default_gain } )
 			end
 			minetest.chat_send_player(name, dump2(beerchat.playersChannels[name]))
 		else
 			if beerchat.playersChannels[name][param] then
 				if beerchat.enable_sounds then
-					minetest.sound_play(beerchat.channel_management_sound, { to_player = name, gain = 1.0 } )
+					minetest.sound_play(beerchat.channel_management_sound, { to_player = name, gain = beerchat.sounds_default_gain } )
 				end
 				minetest.chat_send_player(name, dump2(beerchat.channels[param]))
 			else
@@ -186,7 +186,7 @@ local join_channel = {
 		)
 
 		if beerchat.enable_sounds then
-			minetest.sound_play(join_channel_sound, { to_player = name, gain = 1.0 } )
+			minetest.sound_play(join_channel_sound, { to_player = name, gain = beerchat.sounds_default_gain } )
 		end
 		minetest.chat_send_player(name, beerchat.format_message(channel_joined_string, { channel_name = channel_name }))
 
@@ -218,7 +218,7 @@ local leave_channel = {
 		)
 
 		if beerchat.enable_sounds then
-			minetest.sound_play(leave_channel_sound, { to_player = name, gain = 1.0 } )
+			minetest.sound_play(leave_channel_sound, { to_player = name, gain = beerchat.sounds_default_gain } )
 		end
 		if not beerchat.channels[channel_name] then
 			minetest.chat_send_player(
@@ -269,7 +269,7 @@ local invite_channel = {
 		else
 			if not beerchat.has_player_muted_player(player_name, name) then
 				if beerchat.enable_sounds then
-					minetest.sound_play(channel_invite_sound, { to_player = player_name, gain = 1.0 } )
+					minetest.sound_play(channel_invite_sound, { to_player = player_name, gain = beerchat.sounds_default_gain } )
 				end
 				-- Sending the message
 				minetest.chat_send_player(
@@ -278,7 +278,7 @@ local invite_channel = {
 				)
 			end
 			if beerchat.enable_sounds then
-				minetest.sound_play(channel_invite_sound, { to_player = name, gain = 1.0 } )
+				minetest.sound_play(channel_invite_sound, { to_player = name, gain = beerchat.sounds_default_gain } )
 			end
 			minetest.chat_send_player(
 				name,

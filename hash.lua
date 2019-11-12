@@ -100,7 +100,7 @@ minetest.register_on_chat_message(function(name, message)
 				end
 
 				if beerchat.enable_sounds then
-					minetest.sound_play(beerchat.channel_management_sound, { to_player = name, gain = 1.0 } )
+					minetest.sound_play(beerchat.channel_management_sound, { to_player = name, gain = beerchat.sounds_default_gain } )
 				end
 			end
 			return true
