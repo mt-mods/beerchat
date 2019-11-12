@@ -38,6 +38,7 @@ dofile(MP.."/me.lua")
 dofile(MP.."/whisper.lua")
 dofile(MP.."/message.lua")
 dofile(MP.."/chatcommands.lua")
+dofile(MP.."/moveAttributesToMeta.lua")
 
 
 
