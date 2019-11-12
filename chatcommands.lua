@@ -331,6 +331,37 @@ local unmute_player = {
 	end
 }
 
+local list_muted = {
+	params = "",
+	description = "Show list of muted players.",
+	func = function(name, param)
+
+		local player = minetest.get_player_by_name(name)
+		local tMeta = player:get_meta():to_table()
+
+		if nil == tMeta or nil == tMeta.fields then return false end
+
+		local sOut = ""
+		for sKey, _ in pairs(tMeta.fields) do
+			if "beerchat:muted:" == sKey:sub(1, 15) then
+				sOut = sOut .. sKey:sub(16, -1) .. ', '
+			end
+		end
+
+		if 0 == #sOut then
+			sOut = "You have not muted any players."
+		else
+			-- remove trailing comma and space
+			sOut = sOut:sub(1, -3)
+		end
+
+		minetest.chat_send_player(name, sOut)
+
+		return true
+
+	end
+}
+
 minetest.register_chatcommand("cc", create_channel)
 minetest.register_chatcommand("create_channel", create_channel)
 minetest.register_chatcommand("dc", delete_channel)
@@ -350,4 +381,5 @@ minetest.register_chatcommand("mute", mute_player)
 minetest.register_chatcommand("ignore", mute_player)
 minetest.register_chatcommand("unmute", unmute_player)
 minetest.register_chatcommand("unignore", unmute_player)
+minetest.register_chatcommand("list_muted", list_muted)
 
