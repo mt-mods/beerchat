@@ -1,7 +1,3 @@
-
-
-
-
 -- Message string formats -- Change these if you would like different formatting
 --
 -- These can be changed to show "~~~#mychannel~~~ <player01> message" instead of "|#mychannel| or any
@@ -23,9 +19,9 @@ beerchat.send_on_channel = function(name, channel_name, message)
 	for _,player in ipairs(minetest.get_connected_players()) do
 		local target = player:get_player_name()
 		-- Checking if the target is in this channel
-		if beerchat.playersChannels[target] and beerchat.playersChannels[target][channel_name] then
-			if not minetest.get_player_by_name(target):get_attribute("beerchat:muted:"..name) then
-				minetest.chat_send_player(
+		if beerchat.is_player_subscribed_to_channel(target, channel_name) then
+			if not beerchat.has_player_muted_player(target, name) then
+				beerchat.send_message(
 					target,
 					beerchat.format_message(
 						beerchat.main_channel_message_string, {
@@ -34,12 +30,9 @@ beerchat.send_on_channel = function(name, channel_name, message)
 							from_player = name,
 							message = message
 						}
-					)
+					),
+					channel_name
 				)
-
-				if channel_name ~= beerchat.main_channel_name and beerchat.enable_sounds then
-					minetest.sound_play(beerchat.channel_message_sound, { to_player = target, gain = 0.3 } )
-				end
 			end
 		end
 	end
@@ -56,19 +49,23 @@ minetest.register_on_chat_message(function(name, message)
 				beerchat.main_channel_name..". Please resend your message"
 		)
 		beerchat.currentPlayerChannel[name] = beerchat.main_channel_name
-		minetest.get_player_by_name(name):set_attribute("beerchat:current_channel", beerchat.main_channel_name)
+		minetest.get_player_by_name(name):get_meta():set_string(
+			"beerchat:current_channel", beerchat.main_channel_name)
 		return true
 	end
 
 	if not beerchat.channels[channel_name] then
 		minetest.chat_send_player(name, "Channel "..channel_name.." does not exist")
 	elseif message == "" then
-		minetest.chat_send_player(name, "Please enter the message you would like to send to the channel")
-	elseif beerchat.playersChannels[name] and not beerchat.playersChannels[name][channel_name] then
-		minetest.chat_send_player(name, "You need to join this channel in order to be able to send messages to it")
+		minetest.chat_send_player(name,
+			"Please enter the message you would like to send to the channel")
+	elseif not beerchat.is_player_subscribed_to_channel(name, channel_name) then
+		minetest.chat_send_player(name,
+			"You need to join this channel in order to be able to send messages to it")
 	else
 		beerchat.on_channel_message(channel_name, name, message)
 		beerchat.send_on_channel(name, channel_name, message)
 	end
 	return true
 end)
+

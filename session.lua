@@ -1,27 +1,32 @@
 
 
 minetest.register_on_joinplayer(function(player)
-	local str = player:get_attribute("beerchat:channels")
+
+	local name = player:get_player_name()
+	local meta = player:get_meta()
+
+	local str = meta:get_string("beerchat:channels")
 	if str and str ~= "" then
-		beerchat.playersChannels[player:get_player_name()] = {}
-		beerchat.playersChannels[player:get_player_name()] = minetest.parse_json(str) or {}
+		beerchat.playersChannels[name] = minetest.parse_json(str) or {}
 	else
-		beerchat.playersChannels[player:get_player_name()] = {}
-		beerchat.playersChannels[player:get_player_name()][beerchat.main_channel_name] = "joined"
-		player:set_attribute("beerchat:channels", minetest.write_json(beerchat.playersChannels[player:get_player_name()]))
+		beerchat.playersChannels[name] = {}
+		beerchat.playersChannels[name][beerchat.main_channel_name] = "joined"
+		meta:set_string("beerchat:channels", minetest.write_json(beerchat.playersChannels[name]))
 	end
 
-	local current_channel = player:get_attribute("beerchat:current_channel")
+	local current_channel = meta:get_string("beerchat:current_channel")
 	if current_channel and current_channel ~= "" then
-		beerchat.currentPlayerChannel[player:get_player_name()] = current_channel
+		beerchat.currentPlayerChannel[name] = current_channel
 	else
-		beerchat.currentPlayerChannel[player:get_player_name()] = beerchat.main_channel_name
+		beerchat.currentPlayerChannel[name] = beerchat.main_channel_name
 	end
 
 end)
 
 minetest.register_on_leaveplayer(function(player)
-	beerchat.playersChannels[player:get_player_name()] = nil
-	atchat_lastrecv[player:get_player_name()] = nil
-	beerchat.currentPlayerChannel[player:get_player_name()] = nil
+	local name = player:get_player_name()
+	beerchat.playersChannels[name] = nil
+	atchat_lastrecv[name] = nil
+	beerchat.currentPlayerChannel[name] = nil
 end)
+

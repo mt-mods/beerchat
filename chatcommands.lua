@@ -1,4 +1,3 @@
-
 local channel_created_string = "|#${channel_name}| Channel created"
 local channel_invitation_string = "|#${channel_name}| Channel invite from (${from_player}), " ..
 	"to join the channel, do /jc ${channel_name},${channel_password} after " ..
@@ -66,7 +65,7 @@ local create_channel = {
 		beerchat.mod_storage:set_string("channels", minetest.write_json(beerchat.channels))
 
 		beerchat.playersChannels[lowner][lchannel_name] = "owner"
-		minetest.get_player_by_name(lowner):set_attribute(
+		minetest.get_player_by_name(lowner):get_meta():set_string(
 			"beerchat:channels",
 			minetest.write_json(beerchat.playersChannels[lowner])
 		)
@@ -105,7 +104,7 @@ local delete_channel = {
 		beerchat.mod_storage:set_string("channels", minetest.write_json(beerchat.channels))
 
 		beerchat.playersChannels[name][param] = nil
-		minetest.get_player_by_name(name):set_attribute(
+		minetest.get_player_by_name(name):get_meta():set_string(
 			"beerchat:channels",
 			minetest.write_json(beerchat.playersChannels[name])
 		)
@@ -181,7 +180,7 @@ local join_channel = {
 
 		beerchat.playersChannels[name] = beerchat.playersChannels[name] or {}
 		beerchat.playersChannels[name][channel_name] = "joined"
-		minetest.get_player_by_name(name):set_attribute(
+		minetest.get_player_by_name(name):get_meta():set_string(
 			"beerchat:channels",
 			minetest.write_json(beerchat.playersChannels[name])
 		)
@@ -213,7 +212,7 @@ local leave_channel = {
 		end
 
 		beerchat.playersChannels[name][channel_name] = nil
-		minetest.get_player_by_name(name):set_attribute(
+		minetest.get_player_by_name(name):get_meta():set_string(
 			"beerchat:channels",
 			minetest.write_json(beerchat.playersChannels[name])
 		)
@@ -268,7 +267,7 @@ local invite_channel = {
 		if not minetest.get_player_by_name(player_name) then
 			return false, "ERROR: "..player_name.." does not exist or is not online"
 		else
-			if not minetest.get_player_by_name(player_name):get_attribute("beerchat:muted:"..name) then
+			if not beerchat.has_player_muted_player(player_name, name) then
 				if beerchat.enable_sounds then
 					minetest.sound_play(channel_invite_sound, { to_player = player_name, gain = 1.0 } )
 				end
@@ -300,8 +299,12 @@ local mute_player = {
 			return false, "ERROR: Invalid number of arguments. Please supply the name of the user to mute"
 		end
 
-		minetest.get_player_by_name(name):set_attribute("beerchat:muted:"..param, "true")
-		minetest.chat_send_player(name, "Muted player "..param)
+		if beerchat.has_player_muted_player(name, param) then
+			minetest.chat_send_player(name, "Player " .. param .. " is already muted.")
+		else
+			minetest.get_player_by_name(name):get_meta():set_string("beerchat:muted:" .. param, "true")
+			minetest.chat_send_player(name, "Muted player " .. param .. ".")
+		end
 
 		return true
 
@@ -313,11 +316,15 @@ local unmute_player = {
 	description = "Unmute a player. After unmuting a player, you will again see chat messages of this user",
 	func = function(name, param)
 		if not param or param == "" then
-			return false, "ERROR: Invalid number of arguments. Please supply the name of the user to mute"
+			return false, "ERROR: Invalid number of arguments. Please supply the name of the user to mute."
 		end
 
-		minetest.get_player_by_name(name):set_attribute("beerchat:muted:"..param, nil)
-		minetest.chat_send_player(name, "Unmuted player "..param)
+		if beerchat.has_player_muted_player(name, param) then
+			minetest.get_player_by_name(name):get_meta():set_string("beerchat:muted:" .. param, nil)
+			minetest.chat_send_player(name, "Unmuted player " .. param .. ".")
+		else
+			minetest.chat_send_player(name, "Player " .. param .. " was not muted.")
+		end
 
 		return true
 
@@ -343,3 +350,4 @@ minetest.register_chatcommand("mute", mute_player)
 minetest.register_chatcommand("ignore", mute_player)
 minetest.register_chatcommand("unmute", unmute_player)
 minetest.register_chatcommand("unignore", unmute_player)
+

@@ -27,7 +27,7 @@ minetest.register_on_chat_message(function(name, message)
 					if not minetest.get_player_by_name(target) then
 						minetest.chat_send_player(name, ""..target.." is not online")
 					else
-						if not minetest.get_player_by_name(target):get_attribute("beerchat:muted:"..name) then
+						if not beerchat.has_player_muted_player(target, name) then
 							if target ~= name then
 								-- Sending the message
 								minetest.chat_send_player(
@@ -98,7 +98,7 @@ local send_pm = function(players, name, msg)
 		if not minetest.get_player_by_name(target) then
 			minetest.chat_send_player(name, ""..target.." is not online")
 		else
-			if not minetest.get_player_by_name(target):get_attribute("beerchat:muted:"..name) then
+			if not beerchat.has_player_muted_player(target, name) then
 				if target ~= name then
 					-- Sending the message
 					minetest.chat_send_player(

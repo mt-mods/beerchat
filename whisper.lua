@@ -27,15 +27,19 @@ minetest.register_on_chat_message(function(name, message)
 				if player:is_player() then
 					local target = player:get_player_name()
 					-- Checking if the target is in this channel
-					if beerchat.playersChannels[target] and beerchat.playersChannels[target][beerchat.main_channel_name] then
-						if not minetest.get_player_by_name(target):get_attribute("beerchat:muted:"..name) then
-							minetest.chat_send_player(target, beerchat.format_message(whisper_string, {
-								channel_name = beerchat.main_channel_name,
-								from_player = name,
-								to_player = target,
-								message = msg,
-								color = whisper_color
-							}))
+					if beerchat.is_player_subscribed_to_channel(target, beerchat.main_channel_name) then
+						if not beerchat.has_player_muted_player(target, name) then
+							beerchat.send_message(
+								target,
+								beerchat.format_message(whisper_string, {
+									channel_name = beerchat.main_channel_name,
+									from_player = name,
+									to_player = target,
+									message = msg,
+									color = whisper_color
+								}),
+								beerchat.main_channel_name
+							)
 						end
 					end
 				end
@@ -44,3 +48,4 @@ minetest.register_on_chat_message(function(name, message)
 		end
 	end
 end)
+
