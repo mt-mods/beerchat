@@ -1,6 +1,7 @@
 
 
 minetest.register_on_joinplayer(function(player)
+	beerchat.moveAttributesToMeta(player)
 	local str = player:get_attribute("beerchat:channels")
 	if str and str ~= "" then
 		beerchat.playersChannels[player:get_player_name()] = {}
