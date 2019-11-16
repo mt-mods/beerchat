@@ -388,7 +388,7 @@ beerchat.force_player_to_channel = function(name, param)
 		local meta = player:get_meta()
 		-- force join
 		beerchat.playersChannels[player_name] = beerchat.playersChannels[player_name] or {}
-		beerchat.playersChannels[name][channel_name] = "joined"
+		beerchat.playersChannels[player_name][channel_name] = "joined"
 		meta:set_string(
 			"beerchat:channels",
 			minetest.write_json(beerchat.playersChannels[player_name])
