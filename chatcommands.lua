@@ -367,7 +367,7 @@ beerchat.force_player_to_channel = function(name, param)
 		return false, "ERROR: Invalid number of arguments. Please supply the channel name and the player name."
 	end
 
-	local channel_name, player_name = string.match(param, "(.*), (.*)")
+	local channel_name, player_name = string.match(param, "(.*), ?(.*)")
 
 	if not channel_name or channel_name == "" then
 		return false, "ERROR: Channel name is empty."
