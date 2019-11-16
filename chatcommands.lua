@@ -418,6 +418,12 @@ local force_player_to_channel = {
 	func = beerchat.force_player_to_channel
 }
 
+local whisper = {
+	params = "<message>",
+	description = "Whisper command for those who can't use $",
+	func = function(name, param) beerchat.whisper(name, "$ " .. param) end
+}
+
 minetest.register_chatcommand("cc", create_channel)
 minetest.register_chatcommand("create_channel", create_channel)
 minetest.register_chatcommand("dc", delete_channel)
@@ -440,4 +446,6 @@ minetest.register_chatcommand("unignore", unmute_player)
 minetest.register_chatcommand("list_muted", list_muted)
 
 minetest.register_chatcommand("force2channel", force_player_to_channel)
+
+minetest.register_chatcommand("whis", whisper)
 
