@@ -12,6 +12,9 @@ beerchat = {
 	-- Global flag to enable/ disable sounds
 	enable_sounds = true,
 
+	-- how loud the sounds should be by default (0.0 = low, 1.0 = max)
+	sounds_default_gain = 0.3,
+
 	-- General sound when managing channels like /cc, /dc etc
 	channel_management_sound = "beerchat_chirp",
 
@@ -28,6 +31,7 @@ beerchat = {
 }
 
 local MP = minetest.get_modpath("beerchat")
+dofile(MP.."/common.lua")
 dofile(MP.."/format_message.lua")
 dofile(MP.."/hooks.lua")
 dofile(MP.."/storage.lua")

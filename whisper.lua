@@ -7,40 +7,49 @@ local whisper_string = "|#${channel_name}| <${from_player}> whispers: ${message}
 
 -- $ chat a.k.a. dollar chat code, to whisper messages in chat to nearby players only using $,
 -- optionally supplying a radius e.g. $32 Hello
-minetest.register_on_chat_message(function(name, message)
+beerchat.whisper = function(name, message)
 	local dollar, sradius, msg = string.match(message, "^($)(.-) (.*)")
-	if dollar == "$" then
-		local radius = tonumber(sradius)
-		if not radius then
-			radius = whisper_default_range
-		end
+	if dollar ~= "$" then
+		return false
+	end
+	local radius = tonumber(sradius)
+	if not radius then
+		radius = whisper_default_range
+	end
 
-		if radius > whisper_max_range then
-			minetest.chat_send_player(name, "You cannot whisper outside of a radius of "..whisper_max_range.." blocks")
-		elseif msg == "" then
-			minetest.chat_send_player(name, "Please enter the message you would like to whisper to nearby players")
-		else
-			local pl = minetest.get_player_by_name(name)
-			local all_objects = minetest.get_objects_inside_radius({x=pl:getpos().x, y=pl:getpos().y, z=pl:getpos().z}, radius)
+	if radius > whisper_max_range then
+		minetest.chat_send_player(name, "You cannot whisper outside of a radius of "..whisper_max_range.." nodes")
+	elseif msg == "" then
+		minetest.chat_send_player(name, "Please enter the message you would like to whisper to nearby players")
+	else
+		local pl = minetest.get_player_by_name(name)
+		local pl_pos = pl:getpos()
+		local all_objects = minetest.get_objects_inside_radius({x=pl_pos.x, y=pl_pos.y, z=pl_pos.z}, radius)
 
-			for _,player in ipairs(all_objects) do
-				if player:is_player() then
-					local target = player:get_player_name()
-					-- Checking if the target is in this channel
-					if beerchat.playersChannels[target] and beerchat.playersChannels[target][beerchat.main_channel_name] then
-						if not minetest.get_player_by_name(target):get_attribute("beerchat:muted:"..name) then
-							minetest.chat_send_player(target, beerchat.format_message(whisper_string, {
+		for _,player in ipairs(all_objects) do
+			if player:is_player() then
+				local target = player:get_player_name()
+				-- Checking if the target is in this channel
+				if beerchat.is_player_subscribed_to_channel(target, beerchat.main_channel_name) then
+					if not beerchat.has_player_muted_player(target, name) then
+						beerchat.send_message(
+							target,
+							beerchat.format_message(whisper_string, {
 								channel_name = beerchat.main_channel_name,
 								from_player = name,
 								to_player = target,
 								message = msg,
 								color = whisper_color
-							}))
-						end
+							}),
+							beerchat.main_channel_name
+						)
 					end
 				end
 			end
-			return true
 		end
+		return true
 	end
-end)
+end
+
+minetest.register_on_chat_message(beerchat.whisper)
+
