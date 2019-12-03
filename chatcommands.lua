@@ -413,7 +413,7 @@ end
 local force_player_to_channel = {
 	params = "<Channel Name>, <Player Name>",
 	description = "Force player named <Player Name> to channel named <Channel Name>. " ..
-		"You must hav ban priv to use this.",
+		"You must have ban priv to use this.",
 	privs = { ban = true },
 	func = beerchat.force_player_to_channel
 }
