@@ -1,49 +1,7 @@
 
-local channel_message_string = "|#${channel_name}| <${from_player}> ${message}"
-
 -- # chat a.k.a. hash chat/ channel chat code, to send messages in chat channels using #
 -- e.g. #my channel: hello everyone in my channel!
 hashchat_lastrecv = {}
-
-local hash_send_all = function(msg, name, channel_name)
-	beerchat.on_channel_message(channel_name, name, msg)
-
-	for _,player in ipairs(minetest.get_connected_players()) do
-		local target = player:get_player_name()
-		-- Checking if the target is in this channel
-		if beerchat.is_player_subscribed_to_channel(target, channel_name) then
-			if not beerchat.has_player_muted_player(target, name) then
-				if channel_name == beerchat.main_channel_name then
-					beerchat.send_message(
-						target,
-						beerchat.format_message(
-							beerchat.main_channel_message_string, {
-								channel_name = channel_name,
-								from_player = name,
-								message = msg
-							}
-						),
-						channel_name
-					)
-				else
-					beerchat.send_message(
-						target,
-						beerchat.format_message(
-							channel_message_string, {
-								channel_name = channel_name,
-								from_player = name,
-								message = msg
-							}
-						),
-						channel_name
-					)
-				end
-			end
-		end
-	end
-	-- Register the chat in the target persons last spoken to table
-	hashchat_lastrecv[name] = channel_name
-end
 
 minetest.register_on_chat_message(function(name, message)
 	local channel_name, msg = string.match(message, "^#(.-): (.*)")
@@ -68,7 +26,8 @@ minetest.register_on_chat_message(function(name, message)
 				channel_name = hashchat_lastrecv[name]
 			end
 			if channel_name and channel_name ~= "" then
-				hash_send_all(msg, name, channel_name)
+				beerchat.on_channel_message(channel_name, name, msg)
+				beerchat.send_on_channel(name, channel_name, msg)
 			else
 				return false
 			end
@@ -108,4 +67,3 @@ minetest.register_on_chat_message(function(name, message)
 		return false
 	end
 end)
-
