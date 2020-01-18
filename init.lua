@@ -51,8 +51,10 @@ dofile(MP.."/whisper.lua")
 dofile(MP.."/message.lua")
 dofile(MP.."/chatcommands.lua")
 
-if beerchat.web then
+if beerchat.http then
 	-- load web stuff
+	print("beerchat connects to proxy-endpoint at: " .. beerchat.url)
+
 	dofile(MP.."/web/executor.lua")
 	dofile(MP.."/web/tx.lua")
 	dofile(MP.."/web/rx.lua")
