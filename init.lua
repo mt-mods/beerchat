@@ -2,6 +2,9 @@
 --
 -- Mod settings -- Change these to your liking
 
+
+local http = minetest.request_http_api()
+
 beerchat = {
 	-- The main channel is the one you send messages to when no channel is specified
 	main_channel_name = "main",
@@ -27,7 +30,12 @@ beerchat = {
 
 	channels = {},
 	playersChannels = {},
-	currentPlayerChannel = {}
+	currentPlayerChannel = {},
+
+	-- web settings
+	url = minetest.settings:get("beerchat.url") or "http://127.0.0.1:8080",
+	http = http -- will be removed after init
+
 }
 
 local MP = minetest.get_modpath("beerchat")
@@ -42,6 +50,16 @@ dofile(MP.."/me.lua")
 dofile(MP.."/whisper.lua")
 dofile(MP.."/message.lua")
 dofile(MP.."/chatcommands.lua")
+
+if beerchat.web then
+	-- load web stuff
+	dofile(MP.."/web/executor.lua")
+	dofile(MP.."/web/tx.lua")
+	dofile(MP.."/web/rx.lua")
+end
+
+-- remove http ref
+beerchat.http = nil
 
 
 
