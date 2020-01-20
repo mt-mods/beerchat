@@ -3,22 +3,14 @@ local http = beerchat.http
 local recv_loop
 
 function handle_data(data)
-	if not data or not data.channel or not data.username or not data.message then
+	if not data or not data.source or not data.target
+		or not data.message or not data.source_system then
 		return
 	end
 
-	if data.direct then
-		-- direct message to bot
-		local playername = data.username .. "@Remote"
-		-- TODO: /login command over irc and name mapping
-		local success, msg = beerchat.executor(data.message, playername)
-
-		-- TODO return values
-		return success, msg
-	end
-
-	local name = data.username .. "@Remote"
-	beerchat.send_on_channel(name, data.channel, data.message)
+	-- TODO: "direct" / pm / system-exec message
+	local name = data.source .. "@" .. data.source_system
+	beerchat.send_on_channel(name, data.target, data.message)
 end
 
 
@@ -29,7 +21,16 @@ recv_loop = function()
 	}, function(res)
 		if res.succeeded and res.code == 200 then
 			local data = minetest.parse_json(res.data)
-			handle_data(data)
+			if #data > 0 then
+				-- array received
+				for _, item in ipairs(data) do
+					handle_data(item)
+				end
+			else
+				-- single item received
+				handle_data(data)
+			end
+
 			minetest.after(0.5, recv_loop)
 		else
 			-- ignore errors
