@@ -3,14 +3,14 @@ local http = beerchat.http
 local recv_loop
 
 function handle_data(data)
-	if not data or not data.source or not data.target
-		or not data.message or not data.source_system then
+	if not data or not data.username or not data.channel
+		or not data.message or not data.type then
 		return
 	end
 
 	-- TODO: "direct" / pm / system-exec message
-	local name = data.source .. "@" .. data.source_system
-	beerchat.send_on_channel(name, data.target, data.message)
+	local name = data.username .. "@" .. data.type
+	beerchat.send_on_channel(name, data.channel, data.message)
 end
 
 

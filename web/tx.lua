@@ -4,9 +4,8 @@ local http = beerchat.http
 beerchat.on_channel_message = function(channel, playername, message)
 
 	local data = {
-		source_system = "minetest",
-		source_channel = channel,
-		target = playername,
+		channel = channel,
+		username = playername,
 		message = message
 	}
 
