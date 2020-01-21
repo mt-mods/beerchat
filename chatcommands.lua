@@ -334,7 +334,7 @@ local unmute_player = {
 local list_muted = {
 	params = "",
 	description = "Show list of muted players.",
-	func = function(name, param)
+	func = function(name)
 
 		local player = minetest.get_player_by_name(name)
 		local tMeta = player:get_meta():to_table()
@@ -448,4 +448,3 @@ minetest.register_chatcommand("list_muted", list_muted)
 minetest.register_chatcommand("force2channel", force_player_to_channel)
 
 minetest.register_chatcommand("whis", whisper)
-
