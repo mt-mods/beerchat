@@ -59,3 +59,11 @@ minetest.register_on_cheat(function(player, cheat)
 		"' triggered anticheat: '" .. (type or "<unknown>") ..
 		"' at position: " .. minetest.pos_to_string(vector.floor(player:get_pos())))
 end)
+
+-- prejoin
+minetest.register_on_prejoinplayer(function(name, ip)
+	beerchat.on_channel_message("audit", nil, "Player '" .. name ..
+		"' from ip " .. ip .. " prejoins")
+end)
+
+
