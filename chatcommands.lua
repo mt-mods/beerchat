@@ -88,7 +88,7 @@ local delete_channel = {
 		end
 
 		if param == beerchat.main_channel_name then
-			return false, "ERROR: Cannot delete the main channel!!"
+			return false, "ERROR: Cannot delete the main channel!"
 		end
 
 		if not beerchat.channels[param] then
