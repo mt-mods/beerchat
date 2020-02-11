@@ -16,28 +16,40 @@ beerchat.register_callback('before_invite', function(sender, recipient, channel)
 	if beerchat.is_player_jailed(player_name) then
 		return false, player_name .. " is in chat-jail, no inviting."
 	end
-	return true
 end)
 
 beerchat.register_callback('before_mute', function(name, target)
 	if beerchat.is_player_jailed(name) then
 		return false, "You are in chat-jail, no muting for you."
 	end
-	return true
 end)
 
 beerchat.register_callback('before_join', function(name, channel)
 	if beerchat.is_player_jailed(name) then
 		return false, "You are in chat-jail, no joining channels for you."
 	end
-	return true
 end)
 
 beerchat.register_callback('before_leave', function(name, channel)
 	if beerchat.is_player_jailed(name) then
 		return false, "You are in chat-jail, no leaving for you."
 	end
-	return true
+end)
+
+beerchat.register_callback('before_send', function(name, message, channel)
+	local jailed = beerchat.is_player_jailed(name)
+	local is_jail_channel = channel == beerchat.jail_channel_name
+	if jailed and not is_jail_channel then
+		-- override default send method to mute pings for jailed users
+		minetest.chat_send_player(name, message)
+		return false
+	end
+end)
+
+beerchat.register_callback('before_check_muted', function(name, muted)
+	if beerchat.is_player_jailed(name) then
+		return false
+	end
 end)
 
 beerchat.register_callback('on_forced_join', function(name, target, channel, target_meta)
@@ -49,5 +61,4 @@ beerchat.register_callback('on_forced_join', function(name, target, channel, tar
 		target_meta:set_int("beerchat:jailed", 0)
 		beerchat.jail_list[target] = nil
 	end
-	return true
 end)

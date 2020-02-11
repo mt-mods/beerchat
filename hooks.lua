@@ -1,12 +1,13 @@
 
 beerchat.cb = {} -- all custom callbacks
 
-beerchat.cb.before_send 	= {} -- executed before sending message
-beerchat.cb.before_receive 	= {} -- executed before receiving message
-beerchat.cb.before_join 	= {} -- executed before channel is joined
-beerchat.cb.before_leave 	= {} -- executed before channel is leaved
-beerchat.cb.before_invite 	= {} -- excuted before channel invitation takes place
-beerchat.cb.on_forced_join 	= {} -- executed right after player is forced to channel
+beerchat.cb.before_send 		= {} -- executed before sending message
+beerchat.cb.before_receive 		= {} -- executed before receiving message
+beerchat.cb.before_join 		= {} -- executed before channel is joined
+beerchat.cb.before_leave 		= {} -- executed before channel is leaved
+beerchat.cb.before_invite 		= {} -- excuted before channel invitation takes place
+beerchat.cb.before_check_muted 	= {} -- executed before has_player_muted_player checks
+beerchat.cb.on_forced_join 		= {} -- executed right after player is forced to channel
 
 beerchat.register_callback = function(trigger, fn)
 	if type(fn) ~= 'function' then
@@ -32,7 +33,7 @@ beerchat.register_callback = function(trigger, fn)
 	table.insert(cb[callback_key], fn)
 end
 
-beerchat.execute_callbacks = function(trigger)
+beerchat.execute_callbacks = function(trigger, ...)
 	local cb_list = beerchat.cb[trigger]
 	if not cb_list then
 		print('Error: Invalid trigger argument for beerchat.execute_callbacks')
@@ -40,8 +41,9 @@ beerchat.execute_callbacks = function(trigger)
 		return false
 	end
 	for _,fn in ipairs(cb_list) do
-		if not fn(unpack(arg) then
-			return false
+		local result = fn(unpack(arg)
+		if result ~= nil then
+			return result
 		end
 	end
 	return true
