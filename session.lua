@@ -20,7 +20,7 @@ minetest.register_on_joinplayer(function(player)
 	else
 		beerchat.currentPlayerChannel[name] = beerchat.main_channel_name
 	end
-	
+
 	local jailed = meta:get_int("beerchat:jailed")
 	if jailed then
 		beerchat.jail_list[name] = true

@@ -408,7 +408,7 @@ beerchat.force_player_to_channel = function(name, param)
 		-- force default channel
 		beerchat.currentPlayerChannel[player_name] = channel_name
 		meta:set_string("beerchat:current_channel", channel_name)
-		
+
 		-- going to/from jail?
 		if channel_name == beerchat.jail_channel_name then
 			meta:set_int("beerchat:jailed", 1)
