@@ -20,6 +20,15 @@ minetest.register_on_joinplayer(function(player)
 	else
 		beerchat.currentPlayerChannel[name] = beerchat.main_channel_name
 	end
+	
+	local jailed = meta:get_int("beerchat:jailed")
+	if jailed then
+		beerchat.jail_list[name] = true
+		beerchat.currentPlayerChannel[name] = beerchat.jail_channel_name
+		beerchat.playersChannels[name][beerchat.jail_channel_name] = "joined"
+	else
+		beerchat.jail_list[name] = nil
+	end
 
 end)
 
@@ -28,5 +37,6 @@ minetest.register_on_leaveplayer(function(player)
 	beerchat.playersChannels[name] = nil
 	atchat_lastrecv[name] = nil
 	beerchat.currentPlayerChannel[name] = nil
+	beerchat.jail_list[name] = nil
 end)
 

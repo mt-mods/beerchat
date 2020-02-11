@@ -9,6 +9,8 @@ beerchat = {
 	-- The main channel is the one you send messages to when no channel is specified
 	main_channel_name = "main",
 
+	jail_channel_name = "wail",
+
 	-- The default color of channels when no color is specified
 	default_channel_color = "#ffffff",
 
@@ -43,6 +45,7 @@ dofile(MP.."/common.lua")
 dofile(MP.."/format_message.lua")
 dofile(MP.."/hooks.lua")
 dofile(MP.."/storage.lua")
+dofile(MP.."/jail.lua")
 dofile(MP.."/session.lua")
 dofile(MP.."/pm.lua")
 dofile(MP.."/hash.lua")
