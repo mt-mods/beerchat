@@ -7,9 +7,10 @@ local http = minetest.request_http_api()
 
 beerchat = {
 	-- The main channel is the one you send messages to when no channel is specified
-	main_channel_name = "main",
+	main_channel_name = minetest.settings:get("beerchat.main_channel_name"),
 
-	jail_channel_name = "wail",
+	-- Jail channel is where you put annoying missbehaving users with /force2channel
+	jail_channel_name = minetest.settings:get("beerchat.jail_channel_name"),
 
 	-- The default color of channels when no color is specified
 	default_channel_color = "#ffffff",
@@ -39,6 +40,10 @@ beerchat = {
 	http = http -- will be removed after init
 
 }
+
+if nil == beerchat.main_channel_name or "" == beerchat.main_channel_name then
+	beerchat.main_channel_name = "main"
+end
 
 local MP = minetest.get_modpath("beerchat")
 dofile(MP.."/jail.lua")
