@@ -12,6 +12,9 @@ beerchat.whisper = function(name, message)
 	if dollar ~= "$" then
 		return false
 	end
+	if beerchat.is_player_jailed(name) then
+		return false
+	end
 	local radius = tonumber(sradius)
 	if not radius then
 		radius = whisper_default_range
