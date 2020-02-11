@@ -13,7 +13,7 @@ beerchat.whisper = function(name, message)
 		return false
 	end
 	if beerchat.is_player_jailed(name) then
-		return false, "You are in chat-jail, no whispering for you."
+		return false
 	end
 	local radius = tonumber(sradius)
 	if not radius then

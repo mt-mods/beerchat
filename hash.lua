@@ -14,7 +14,7 @@ minetest.register_on_chat_message(function(name, message)
 
 	if channel_name and msg then
 		if beerchat.is_player_jailed(name) then
-			return false, "You are in chat-jail, no channels for you."
+			return false
 		end
 		if not beerchat.channels[channel_name] then
 			minetest.chat_send_player(name, "Channel "..channel_name.." does not exist. Make sure the channel still "..
@@ -40,7 +40,7 @@ minetest.register_on_chat_message(function(name, message)
 		channel_name = string.match(message, "^#(.*)")
 		if channel_name then
 			if beerchat.is_player_jailed(name) then
-				return false, "You are in chat-jail, no switching channels for you."
+				return false
 			end
 			if not beerchat.channels[channel_name] then
 				minetest.chat_send_player(name, "Channel "..channel_name.." does not exist")

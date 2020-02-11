@@ -13,7 +13,7 @@ minetest.register_on_chat_message(function(name, message)
 	local players, msg = string.match(message, "^@([^%s:]*)[%s:](.*)")
 	if players and msg then
 		if beerchat.is_player_jailed(name) then
-			return false, "You are in chat-jail, no @ messages for you."
+			return false
 		end
 		if msg == "" then
 			minetest.chat_send_player(name, "Please enter the private message you would like to send")
@@ -72,7 +72,7 @@ minetest.register_on_chat_message(function(name, message)
 				atchat_lastrecv[name] = players
 				if atleastonesent then
 					if beerchat.is_player_jailed(name) then
-						return false, "You are in chat-jail, no @ messages for you."
+						return false
 					end
 					successplayers = successplayers:sub(1, -2)
 					if (successplayers ~= name) then
