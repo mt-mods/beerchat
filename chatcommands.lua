@@ -153,7 +153,6 @@ local join_channel = {
 	description = "Join channel named <Channel Name>. " ..
 		"After joining you will see messages sent to that channel (in addition to the other channels you have joined)",
 	func = function(name, param)
-
 		if not param or param == "" then
 			return false, "ERROR: Invalid number of arguments. Please supply the channel name as a minimum"
 		end
@@ -207,7 +206,6 @@ local leave_channel = {
 		"When you leave the channel you can no longer send/ receive messages from that channel. " ..
 		"NOTE: You can also leave the main channel",
 	func = function(name, param)
-
 		if not param or param == "" then
 			return false, "ERROR: Invalid number of arguments. Please supply the channel name"
 		end

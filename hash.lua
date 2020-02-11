@@ -12,10 +12,11 @@ minetest.register_on_chat_message(function(name, message)
 		channel_name = hashchat_lastrecv[name]
 	end
 
+	if not beerchat.execute_callbacks('before_send', name, channel_name, message) then
+		return false
+	end
+
 	if channel_name and msg then
-		if beerchat.is_player_jailed(name) then
-			return false
-		end
 		if not beerchat.channels[channel_name] then
 			minetest.chat_send_player(name, "Channel "..channel_name.." does not exist. Make sure the channel still "..
 											"exists and you format its name properly, e.g. #channel message or #my channel: message")
@@ -39,9 +40,6 @@ minetest.register_on_chat_message(function(name, message)
 	else
 		channel_name = string.match(message, "^#(.*)")
 		if channel_name then
-			if beerchat.is_player_jailed(name) then
-				return false
-			end
 			if not beerchat.channels[channel_name] then
 				minetest.chat_send_player(name, "Channel "..channel_name.." does not exist")
 			elseif not beerchat.is_player_subscribed_to_channel(name, channel_name) then

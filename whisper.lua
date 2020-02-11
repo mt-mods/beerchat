@@ -12,9 +12,6 @@ beerchat.whisper = function(name, message)
 	if dollar ~= "$" then
 		return false
 	end
-	if beerchat.is_player_jailed(name) then
-		return false
-	end
 	local radius = tonumber(sradius)
 	if not radius then
 		radius = whisper_default_range
@@ -25,6 +22,11 @@ beerchat.whisper = function(name, message)
 	elseif msg == "" then
 		minetest.chat_send_player(name, "Please enter the message you would like to whisper to nearby players")
 	else
+		local cb_result, cb_message = beerchat.execute_callbacks('before_send_whisper', name, msg, beerchat.main_channel_name, radius)
+		if not cb_result then
+			return cb_message and (false, cb_message) or false
+		end
+
 		local pl = minetest.get_player_by_name(name)
 		local pl_pos = pl:getpos()
 		local all_objects = minetest.get_objects_inside_radius({x=pl_pos.x, y=pl_pos.y, z=pl_pos.z}, radius)

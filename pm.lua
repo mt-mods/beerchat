@@ -12,12 +12,13 @@ minetest.register_on_chat_message(function(name, message)
 	minetest.log("action", "CHAT " .. name .. ": " .. message)
 	local players, msg = string.match(message, "^@([^%s:]*)[%s:](.*)")
 	if players and msg then
-		if beerchat.is_player_jailed(name) then
-			return false
-		end
 		if msg == "" then
 			minetest.chat_send_player(name, "Please enter the private message you would like to send")
 		else
+			local cb_result, cb_message = beerchat.execute_callbacks('before_send_pm', name, msg, players)
+			if not cb_result then
+				return cb_message and (false, cb_message) or false
+			end
 			if players == "" then--reply
 				-- We need to get the target
 				players = atchat_lastrecv[name]
@@ -71,9 +72,6 @@ minetest.register_on_chat_message(function(name, message)
 				-- Register the chat in the target persons last spoken to table
 				atchat_lastrecv[name] = players
 				if atleastonesent then
-					if beerchat.is_player_jailed(name) then
-						return false
-					end
 					successplayers = successplayers:sub(1, -2)
 					if (successplayers ~= name) then
 						minetest.chat_send_player(
@@ -159,9 +157,6 @@ local msg_override = {
 				"for compatibility with the old chat command but with new style chat muting support "..
 				  "(players will not receive your message if they muted you) and multiple (comma separated) player support",
 	func = function(name, param)
-		if beerchat.is_player_jailed(name) then
-			return false, "You are in chat-jail, no PMs for you."
-		end
 		minetest.log("action", "PM " .. name .. ": " .. param)
 		local players, msg = string.match(param, "^(.-) (.*)")
 		if players and msg then
@@ -172,6 +167,10 @@ local msg_override = {
 				minetest.chat_send_player(name, "ERROR: Please enter the private message you would like to send")
 				return false
 			else
+				local cb_result, cb_message = beerchat.execute_callbacks('before_send_pm', name, msg, players)
+				if not cb_result then
+					return cb_message and (false, cb_message) or false
+				end
 				if players and players ~= "" then
 					send_pm(players, name, msg)
 				end

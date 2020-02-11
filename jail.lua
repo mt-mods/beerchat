@@ -12,6 +12,26 @@ beerchat.is_player_jailed = function(name)
 	return true == beerchat.jail_list[name]
 end
 
+minetest.register_on_joinplayer(function(player)
+	local name = player:get_player_name()
+	local meta = player:get_meta()
+
+	local jailed = 1 == meta:get_int("beerchat:jailed")
+	if jailed then
+		beerchat.jail_list[name] = true
+		beerchat.currentPlayerChannel[name] = beerchat.jail_channel_name
+		beerchat.playersChannels[name][beerchat.jail_channel_name] = "joined"
+	else
+		beerchat.jail_list[name] = nil
+	end
+
+end)
+
+minetest.register_on_leaveplayer(function(player)
+	local name = player:get_player_name()
+	beerchat.jail_list[name] = nil
+end)
+
 beerchat.register_callback('before_invite', function(sender, recipient, channel)
 	if beerchat.is_player_jailed(player_name) then
 		return false, player_name .. " is in chat-jail, no inviting."
@@ -45,6 +65,24 @@ beerchat.register_callback('before_send', function(name, message, channel)
 		return false
 	end
 end)
+
+beerchat.register_callback('before_send_pm', function(name, message, target)
+	if beerchat.is_player_jailed(name) then
+		return false, "You are in chat-jail, no PMs for you."
+	end
+end)
+
+beerchat.register_callback('before_send_me', function(name, message, channel)
+	if beerchat.is_player_jailed(name) then
+		return false, "You are in chat-jail, you may not use /me command."
+	end
+end)
+
+beerchat.register_callback('before_send_whisper', function(name, message, channel, range)
+	if beerchat.is_player_jailed(name) then
+		return false
+	end
+end
 
 beerchat.register_callback('before_check_muted', function(name, muted)
 	if beerchat.is_player_jailed(name) then

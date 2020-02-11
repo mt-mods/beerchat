@@ -2,7 +2,9 @@
 beerchat.cb = {} -- all custom callbacks
 
 beerchat.cb.before_send 		= {} -- executed before sending message
-beerchat.cb.before_receive 		= {} -- executed before receiving message
+beerchat.cb.before_send_pm 		= {} -- executed before sending private message
+beerchat.cb.before_send_me		= {} -- executed before /me message is sent
+beerchat.cb.before_whisper		= {} -- executed before whisper message is sent
 beerchat.cb.before_join 		= {} -- executed before channel is joined
 beerchat.cb.before_leave 		= {} -- executed before channel is leaved
 beerchat.cb.before_invite 		= {} -- excuted before channel invitation takes place
@@ -18,10 +20,10 @@ beerchat.register_callback = function(trigger, fn)
 		print('Error: Invalid trigger argument for beerchat.register_callback, must be string')
 		return
 	end
-	
+
 	local cb = beerchat.cb
 	local callback_key = trigger
-	
+
 	if not cb[callback_key] then
 		print('Error: Invalid callback trigger event, possible triggers:')
 		for k,_ in pairs(cb) do
@@ -29,7 +31,7 @@ beerchat.register_callback = function(trigger, fn)
 		end
 		return
 	end
-		
+
 	table.insert(cb[callback_key], fn)
 end
 
