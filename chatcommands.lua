@@ -412,10 +412,10 @@ beerchat.force_player_to_channel = function(name, param)
 		-- going to/from jail?
 		if channel_name == beerchat.jail_channel_name then
 			meta:set_int("beerchat:jailed", 1)
-			beerchat.jail_list[name] = true
+			beerchat.jail_list[player_name] = true
 		elseif beerchat.is_player_jailed(player_name) then
 			meta:set_int("beerchat:jailed", 0)
-			beerchat.jail_list[name] = nil
+			beerchat.jail_list[player_name] = nil
 		end
 
 		-- inform user
