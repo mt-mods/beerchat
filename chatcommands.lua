@@ -153,6 +153,9 @@ local join_channel = {
 	description = "Join channel named <Channel Name>. " ..
 		"After joining you will see messages sent to that channel (in addition to the other channels you have joined)",
 	func = function(name, param)
+		if beerchat.is_player_jailed(name) then
+			return false, "You are in chat-jail, no joining channels for you."
+		end
 		if not param or param == "" then
 			return false, "ERROR: Invalid number of arguments. Please supply the channel name as a minimum"
 		end
@@ -201,6 +204,9 @@ local leave_channel = {
 		"When you leave the channel you can no longer send/ receive messages from that channel. " ..
 		"NOTE: You can also leave the main channel",
 	func = function(name, param)
+		if beerchat.is_player_jailed(name) then
+			return false, "You are in chat-jail, no leaving for you."
+		end
 		if not param or param == "" then
 			return false, "ERROR: Invalid number of arguments. Please supply the channel name"
 		end
@@ -267,6 +273,9 @@ local invite_channel = {
 		if not minetest.get_player_by_name(player_name) then
 			return false, "ERROR: "..player_name.." does not exist or is not online"
 		else
+			if beerchat.is_player_jailed(player_name) then
+				return false, player_name .. " is in chat-jail, no inviting."
+			end
 			if not beerchat.has_player_muted_player(player_name, name) then
 				if beerchat.enable_sounds then
 					minetest.sound_play(channel_invite_sound, { to_player = player_name, gain = beerchat.sounds_default_gain } )
@@ -295,6 +304,9 @@ local mute_player = {
 	description = "Mute a player. After muting a player, you will no longer see chat messages of this user, " ..
 		"regardless of what channel his user sends messages to",
 	func = function(name, param)
+		if beerchat.is_player_jailed(name) then
+			return false, "You are in chat-jail, no muting for you."
+		end
 		if not param or param == "" then
 			return false, "ERROR: Invalid number of arguments. Please supply the name of the user to mute"
 		end
@@ -396,6 +408,15 @@ beerchat.force_player_to_channel = function(name, param)
 		-- force default channel
 		beerchat.currentPlayerChannel[player_name] = channel_name
 		meta:set_string("beerchat:current_channel", channel_name)
+
+		-- going to/from jail?
+		if channel_name == beerchat.jail_channel_name then
+			meta:set_int("beerchat:jailed", 1)
+			beerchat.jail_list[player_name] = true
+		elseif beerchat.is_player_jailed(player_name) then
+			meta:set_int("beerchat:jailed", 0)
+			beerchat.jail_list[player_name] = nil
+		end
 
 		-- inform user
 		minetest.chat_send_player(player_name, name .. " has set your default channel to "

@@ -6,6 +6,9 @@ local me_override = {
 	description = "Send message in the \"* player message\" format, e.g. /me eats pizza becomes |#"..
 		beerchat.main_channel_name.."| * Player01 eats pizza",
 	func = function(name, param)
+		if beerchat.is_player_jailed(name) then
+			return false, "You are in chat-jail, you may not use /me command."
+		end
 		local msg = param
 		local channel_name = beerchat.main_channel_name
 		if not beerchat.channels[channel_name] then
