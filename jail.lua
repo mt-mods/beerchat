@@ -60,9 +60,18 @@ end)
 beerchat.register_callback('before_send', function(name, message, channel)
 	local jailed = beerchat.is_player_jailed(name)
 	local is_jail_channel = channel == beerchat.jail_channel_name
-	if jailed and not is_jail_channel then
-		-- override default send method to mute pings for jailed users
-		minetest.chat_send_player(name, message)
+	if jailed then
+		if is_jail_channel then
+			-- override default send method to mute pings for jailed users
+			-- but allow chatting without pings on jail channel
+			minetest.chat_send_player(name, message)
+		end
+		return false
+	end
+end)
+
+beerchat.register_callback('before_switch_chan', function(name, oldchannel, newchannel)
+	if beerchat.is_player_jailed(name) then
 		return false
 	end
 end)

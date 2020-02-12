@@ -12,11 +12,10 @@ minetest.register_on_chat_message(function(name, message)
 		channel_name = hashchat_lastrecv[name]
 	end
 
-	if not beerchat.execute_callbacks('before_send', name, msg, channel_name) then
-		return false
-	end
-
 	if channel_name and msg then
+		if not beerchat.execute_callbacks('before_send', name, msg, channel_name) then
+			return false
+		end
 		if not beerchat.channels[channel_name] then
 			minetest.chat_send_player(name, "Channel "..channel_name.." does not exist. Make sure the channel still "..
 											"exists and you format its name properly, e.g. #channel message or #my channel: message")
@@ -45,6 +44,9 @@ minetest.register_on_chat_message(function(name, message)
 			elseif not beerchat.is_player_subscribed_to_channel(name, channel_name) then
 				minetest.chat_send_player(name, "You need to join this channel in order to be able to switch to it")
 			else
+				if not beerchat.execute_callbacks('before_switch_chan', name, beerchat.currentPlayerChannel[name], channel_name) then
+					return false
+				end
 				beerchat.currentPlayerChannel[name] = channel_name
 				minetest.get_player_by_name(name):get_meta():set_string("beerchat:current_channel", channel_name)
 				if channel_name == beerchat.main_channel_name then

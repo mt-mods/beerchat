@@ -7,6 +7,7 @@ beerchat.cb.before_send_me		= {} -- executed before /me message is sent
 beerchat.cb.before_whisper		= {} -- executed before whisper message is sent
 beerchat.cb.before_join 		= {} -- executed before channel is joined
 beerchat.cb.before_leave 		= {} -- executed before channel is leaved
+beerchat.cb.before_switch_chan 	= {} -- executed before channel is changed
 beerchat.cb.before_invite 		= {} -- excuted before channel invitation takes place
 beerchat.cb.before_mute 		= {} -- executed before player is muted
 beerchat.cb.before_check_muted 	= {} -- executed before has_player_muted_player checks
