@@ -79,7 +79,7 @@ beerchat.register_callback('before_send_me', function(name, message, channel)
 	end
 end)
 
-beerchat.register_callback('before_send_whisper', function(name, message, channel, range)
+beerchat.register_callback('before_whisper', function(name, message, channel, range)
 	if beerchat.is_player_jailed(name) then
 		return false
 	end

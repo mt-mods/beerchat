@@ -12,7 +12,7 @@ minetest.register_on_chat_message(function(name, message)
 		channel_name = hashchat_lastrecv[name]
 	end
 
-	if not beerchat.execute_callbacks('before_send', name, channel_name, message) then
+	if not beerchat.execute_callbacks('before_send', name, msg, channel_name) then
 		return false
 	end
 

@@ -22,7 +22,7 @@ beerchat.whisper = function(name, message)
 	elseif msg == "" then
 		minetest.chat_send_player(name, "Please enter the message you would like to whisper to nearby players")
 	else
-		local cb_result, cb_message = beerchat.execute_callbacks('before_send_whisper', name, msg, beerchat.main_channel_name, radius)
+		local cb_result, cb_message = beerchat.execute_callbacks('before_whisper', name, msg, beerchat.main_channel_name, radius)
 		if not cb_result then
 			if cb_message then return false, cb_message else return false end
 		end
