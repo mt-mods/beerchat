@@ -83,7 +83,7 @@ beerchat.register_callback('before_send_whisper', function(name, message, channe
 	if beerchat.is_player_jailed(name) then
 		return false
 	end
-end
+end)
 
 beerchat.register_callback('before_check_muted', function(name, muted)
 	if beerchat.is_player_jailed(name) then
