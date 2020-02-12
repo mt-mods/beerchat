@@ -17,7 +17,7 @@ minetest.register_on_chat_message(function(name, message)
 		else
 			local cb_result, cb_message = beerchat.execute_callbacks('before_send_pm', name, msg, players)
 			if not cb_result then
-				return cb_message and (false, cb_message) or false
+				if cb_message then return false, cb_message else return false end
 			end
 			if players == "" then--reply
 				-- We need to get the target
@@ -169,7 +169,7 @@ local msg_override = {
 			else
 				local cb_result, cb_message = beerchat.execute_callbacks('before_send_pm', name, msg, players)
 				if not cb_result then
-					return cb_message and (false, cb_message) or false
+					if cb_message then return false, cb_message else return false end
 				end
 				if players and players ~= "" then
 					send_pm(players, name, msg)

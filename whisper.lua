@@ -24,7 +24,7 @@ beerchat.whisper = function(name, message)
 	else
 		local cb_result, cb_message = beerchat.execute_callbacks('before_send_whisper', name, msg, beerchat.main_channel_name, radius)
 		if not cb_result then
-			return cb_message and (false, cb_message) or false
+			if cb_message then return false, cb_message else return false end
 		end
 
 		local pl = minetest.get_player_by_name(name)

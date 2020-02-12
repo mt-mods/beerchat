@@ -18,7 +18,7 @@ local me_override = {
 		else
 			local cb_result, cb_message = beerchat.execute_callbacks('before_send_me', name, msg, channel_name)
 			if not cb_result then
-				return cb_message and (false, cb_message) or false
+				if cb_message then return false, cb_message else return false end
 			end
 			for _,player in ipairs(minetest.get_connected_players()) do
 				local target = player:get_player_name()

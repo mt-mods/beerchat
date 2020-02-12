@@ -43,7 +43,7 @@ beerchat.execute_callbacks = function(trigger, ...)
 		return false
 	end
 	for _,fn in ipairs(cb_list) do
-		local result = fn(unpack(arg)
+		local result = fn(unpack(arg))
 		if result ~= nil then
 			return result
 		end

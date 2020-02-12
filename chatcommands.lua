@@ -180,7 +180,7 @@ local join_channel = {
 
 		local cb_result, cb_message = beerchat.execute_callbacks('before_join', name, channel_name)
 		if not cb_result then
-			return cb_message and (false, cb_message) or false
+			if cb_message then return false, cb_message else return false end
 		end
 
 		beerchat.playersChannels[name] = beerchat.playersChannels[name] or {}
@@ -218,7 +218,7 @@ local leave_channel = {
 
 		local cb_result, cb_message = beerchat.execute_callbacks('before_leave', name, channel_name)
 		if not cb_result then
-			return cb_message and (false, cb_message) or false
+			if cb_message then return false, cb_message else return false end
 		end
 
 		beerchat.playersChannels[name][channel_name] = nil
@@ -279,7 +279,7 @@ local invite_channel = {
 		else
 			local cb_result, cb_message = beerchat.execute_callbacks('before_invite', name, player_name, channel_name)
 			if not cb_result then
-				return cb_message and (false, cb_message) or false
+				if cb_message then return false, cb_message else return false end
 			end
 			if not beerchat.has_player_muted_player(player_name, name) then
 				if beerchat.enable_sounds then
@@ -312,7 +312,7 @@ local mute_player = {
 
 		local cb_result, cb_message = beerchat.execute_callbacks('before_mute', name, param)
 		if not cb_result then
-			return cb_message and (false, cb_message) or false
+			if cb_message then return false, cb_message else return false end
 		end
 
 		if not param or param == "" then
@@ -419,7 +419,7 @@ beerchat.force_player_to_channel = function(name, param)
 
 		local cb_result, cb_message = beerchat.execute_callbacks('on_forced_join', name, player_name, channel_name, meta)
 		if not cb_result then
-			return cb_message and (false, cb_message) or false
+			if cb_message then return false, cb_message else return false end
 		end
 
 		-- inform user

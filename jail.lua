@@ -2,11 +2,12 @@
 beerchat.jail_channel_name = minetest.settings:get("beerchat.jail_channel_name") or "grounded"
 beerchat.jail_channel_name = beerchat.jail_channel_name or "grounded"
 
-beerchat.jail_list = {}
+beerchat.channels[beerchat.jail_channel_name] = {
+	owner = main_channel_owner,
+	color = main_channel_color
+}
 
-if nil == beerchat.jail_channel_name or "" == beerchat.jail_channel_name then
-	beerchat.jail_channel_name = "wail"
-end
+beerchat.jail_list = {}
 
 beerchat.is_player_jailed = function(name)
 	return true == beerchat.jail_list[name]
