@@ -68,7 +68,7 @@ end
 beerchat.http = nil
 
 -- integrated extensions (could also be different mod)
-if minetest.settings:get("beerchat.enable_jail") then
+if minetest.settings:get_bool("beerchat.enable_jail") then
 	dofile(MP.."/jail.lua")
 end
 
