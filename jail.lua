@@ -108,9 +108,9 @@ minetest.register_on_leaveplayer(function(player)
 	beerchat.jail.list[name] = nil
 end)
 
-beerchat.register_callback('before_invite', function(sender, recipient, channel)
-	if beerchat.is_player_jailed(player_name) then
-		return false, player_name .. " is in chat-jail, no inviting."
+beerchat.register_callback('before_invite', function(name, recipient, channel)
+	if beerchat.is_player_jailed(name) then
+		return false, name .. " is in chat-jail, no inviting."
 	end
 end)
 
