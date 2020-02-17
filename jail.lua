@@ -35,19 +35,22 @@ beerchat.jail.chat_jail = function(name, param)
 	end
 
 	if not beerchat.channels[beerchat.jail.channel_name] then
-		return false, "ERROR: Channel " .. beerchat.jail.channel_name .. " does not exist. Someone deleted it... fix by adding before_delete_chan event :)"
+		return false, "ERROR: Channel " .. beerchat.jail.channel_name
+			.. " does not exist. Someone deleted it... fix by adding "
+			.. "before_delete_chan event :)"
 	end
 
 	local player_names = string.gmatch(param, "%S+")
 	for player_name in player_names do
-		beerchat.force_player_to_channel(name, string.format('%s, %s', beerchat.jail.channel_name, player_name))
+		beerchat.force_player_to_channel(name, string.format('%s, %s',
+			beerchat.jail.channel_name, player_name))
 	end
 	return true
 end
 minetest.register_chatcommand("chat_jail", {
 	params = "<Player Name> [<Player Name> ...]",
-	description = string.format("Move players <Player Name> to jail channel. " ..
-		"You must have %s priv to use this.", beerchat.jail.priv),
+	description = string.format("Move players <Player Name> to jail channel. "
+		.. "You must have %s priv to use this.", beerchat.jail.priv),
 	privs = { [beerchat.jail.priv] = true },
 	func = beerchat.jail.chat_jail
 })
@@ -65,19 +68,22 @@ beerchat.jail.chat_unjail = function(name, param)
 			local meta = player:get_meta()
 			beerchat.jail.handle_jail_lock(player_name, meta, false)
 			-- inform user
-			minetest.chat_send_player(player_name, "You have been released from chat jail. Use #main to get back to main channel.")
+			minetest.chat_send_player(player_name, "You have been released from chat jail. "
+				.. "Use #" .. beerchat.main_channel_name .. " to get back to main channel.")
 			-- feedback to mover
 			minetest.chat_send_player(name, "Released " .. player_name .. " from chat jail.")
 			-- inform admin
-			minetest.log("action", "CHAT " .. name .. " released " .. player_name .. " from jail channel " .. beerchat.jail.channel_name)
+			minetest.log("action", "CHAT " .. name .. " released " .. player_name
+				.. " from jail channel " .. beerchat.jail.channel_name)
 		end
 	end
 	return true
 end
 minetest.register_chatcommand("chat_unjail", {
 	params = "<Player Name> [<Player Name> ...]",
-	description = string.format("Release players <Player Name> from jail. Players *can* switch " ..
-		"channel after this. You must have %s priv to use this.", beerchat.jail.priv),
+	description = string.format("Release players <Player Name> from jail. Players *can* "
+		.. "switch channel after this. You must have %s priv to use this.",
+		beerchat.jail.priv),
 	privs = { [beerchat.jail.priv] = true },
 	func = beerchat.jail.chat_unjail
 })
@@ -170,5 +176,6 @@ beerchat.register_callback('before_check_muted', function(name, muted)
 end)
 
 beerchat.register_callback('on_forced_join', function(name, target, channel, target_meta)
-	beerchat.jail.handle_jail_lock(target, target_meta, channel == beerchat.jail.channel_name)
+	beerchat.jail.handle_jail_lock(target, target_meta,
+		channel == beerchat.jail.channel_name)
 end)
