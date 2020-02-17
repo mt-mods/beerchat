@@ -18,24 +18,29 @@ beerchat.whisper = function(name, message)
 	end
 
 	if radius > whisper_max_range then
-		minetest.chat_send_player(name, "You cannot whisper outside of a radius of "..whisper_max_range.." nodes")
+		minetest.chat_send_player(name, "You cannot whisper outside of a radius of "
+			.. whisper_max_range .. " nodes")
 	elseif msg == "" then
-		minetest.chat_send_player(name, "Please enter the message you would like to whisper to nearby players")
+		minetest.chat_send_player(name, "Please enter the message you would like to "
+			.. "whisper to nearby players")
 	else
-		local cb_result, cb_message = beerchat.execute_callbacks('before_whisper', name, msg, beerchat.main_channel_name, radius)
+		local cb_result, cb_message = beerchat.execute_callbacks('before_whisper',
+			name, msg, beerchat.main_channel_name, radius)
 		if not cb_result then
 			if cb_message then return false, cb_message else return false end
 		end
 
 		local pl = minetest.get_player_by_name(name)
 		local pl_pos = pl:getpos()
-		local all_objects = minetest.get_objects_inside_radius({x=pl_pos.x, y=pl_pos.y, z=pl_pos.z}, radius)
+		local all_objects = minetest.get_objects_inside_radius(
+			{ x = pl_pos.x, y = pl_pos.y, z = pl_pos.z }, radius)
 
 		for _,player in ipairs(all_objects) do
 			if player:is_player() then
 				local target = player:get_player_name()
 				-- Checking if the target is in this channel
-				if beerchat.is_player_subscribed_to_channel(target, beerchat.main_channel_name) then
+				if beerchat.is_player_subscribed_to_channel(target,
+					beerchat.main_channel_name) then
 					if not beerchat.has_player_muted_player(target, name) then
 						beerchat.send_message(
 							target,
