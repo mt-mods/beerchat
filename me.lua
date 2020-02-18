@@ -6,9 +6,6 @@ local me_override = {
 	description = "Send message in the \"* player message\" format, e.g. /me eats pizza becomes |#"..
 		beerchat.main_channel_name.."| * Player01 eats pizza",
 	func = function(name, param)
-		if beerchat.is_player_jailed(name) then
-			return false, "You are in chat-jail, you may not use /me command."
-		end
 		local msg = param
 		local channel_name = beerchat.main_channel_name
 		if not beerchat.channels[channel_name] then
@@ -19,6 +16,10 @@ local me_override = {
 			minetest.chat_send_player(name, "You need to join channel " .. channel_name
 				.. " in order to be able to send messages to it")
 		else
+			local cb_result, cb_message = beerchat.execute_callbacks('before_send_me', name, msg, channel_name)
+			if not cb_result then
+				if cb_message then return false, cb_message else return false end
+			end
 			for _,player in ipairs(minetest.get_connected_players()) do
 				local target = player:get_player_name()
 				-- Checking if the target is in this channel

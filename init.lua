@@ -9,9 +9,6 @@ beerchat = {
 	-- The main channel is the one you send messages to when no channel is specified
 	main_channel_name = minetest.settings:get("beerchat.main_channel_name"),
 
-	-- Jail channel is where you put annoying missbehaving users with /force2channel
-	jail_channel_name = minetest.settings:get("beerchat.jail_channel_name"),
-
 	-- The default color of channels when no color is specified
 	default_channel_color = "#ffffff",
 
@@ -46,7 +43,6 @@ if nil == beerchat.main_channel_name or "" == beerchat.main_channel_name then
 end
 
 local MP = minetest.get_modpath("beerchat")
-dofile(MP.."/jail.lua")
 dofile(MP.."/common.lua")
 dofile(MP.."/format_message.lua")
 dofile(MP.."/hooks.lua")
@@ -71,6 +67,9 @@ end
 -- remove http ref
 beerchat.http = nil
 
-
+-- integrated extensions (could also be different mod)
+if minetest.settings:get_bool("beerchat.enable_jail") then
+	dofile(MP.."/jail.lua")
+end
 
 print("[OK] beerchat")
