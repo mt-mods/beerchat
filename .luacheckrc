@@ -17,3 +17,5 @@ read_globals = {
 	-- Deps
 
 }
+
+files["jail.lua"] = { unused_args = false }
