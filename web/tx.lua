@@ -22,10 +22,28 @@ beerchat.on_channel_message = function(channel, playername, message)
 
 end
 
+-- map to players -> new == true
+local new_player_map = {}
+
+-- check on prejoin if the player is new
+minetest.register_on_prejoinplayer(function(name)
+	if minetest.player_exists(name) then
+		new_player_map[name] = true
+	end
+end)
+
 -- join player message
 minetest.register_on_joinplayer(function(player)
-	beerchat.on_channel_message(nil, nil, "Player " .. player:get_player_name() ..
-		" joined the game")
+	local playername = player:get_player_name()
+
+	local msg = "Player " .. playername .. " joined the game"
+	if new_player_map[playername] then
+		msg = msg .. " (new player)"
+		-- clear new-player flag
+		new_player_map[playername] = nil
+	end
+
+	beerchat.on_channel_message(nil, nil, msg)
 end)
 
 -- leave player message
