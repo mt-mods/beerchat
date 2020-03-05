@@ -27,7 +27,7 @@ local new_player_map = {}
 
 -- check on prejoin if the player is new
 minetest.register_on_prejoinplayer(function(name)
-	if minetest.player_exists(name) then
+	if not minetest.player_exists(name) then
 		new_player_map[name] = true
 	end
 end)
