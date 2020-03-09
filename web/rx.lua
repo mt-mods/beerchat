@@ -16,7 +16,17 @@ function handle_data(data)
 
 	elseif data.target_name == "minetest" then
 			-- direct message
-			local _, msg = beerchat.executor(data.message, name)
+			local success, msg = beerchat.executor(data.message, name)
+
+			if not success and not msg then
+				-- failed without command
+				msg = "Command failed!"
+			end
+
+			if not msg then
+				-- no result, ignore
+				return
+			end
 
 			local tx_data = {
 				target_name = data.name,
