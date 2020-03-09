@@ -23,7 +23,7 @@ beerchat.executor = function(str, playername)
 	end)
 
 	if not status then
-		message = dump(err)
+		message = "Command crashed: " .. dump(err)
 		result = false
 	end
 
