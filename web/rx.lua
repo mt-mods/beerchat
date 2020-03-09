@@ -8,7 +8,6 @@ function handle_data(data)
 	end
 
 	local name = data.username .. "@" .. data.name
-	-- TODO: allow /login to override generated username
 
 	if data.channel and data.channel ~= "" then
 		-- channel message
