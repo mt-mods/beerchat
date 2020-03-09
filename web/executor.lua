@@ -1,6 +1,14 @@
+local has_xban2_mod = minetest.get_modpath("xban2")
 
 beerchat.executor = function(str, playername)
 	local mapped_playername = beerchat.get_mapped_username(playername)
+
+	if has_xban2_mod then
+		local xbanentry = xban.find_entry(mapped_playername)
+		if xbanentry and xbanentry.banned then
+			return false, "You are banned!"
+		end
+	end
 
 	minetest.log("action", "[beerchat] executing: '" .. str .. "' as " .. mapped_playername
 		.. " (mapped from '" .. playername .. "')")

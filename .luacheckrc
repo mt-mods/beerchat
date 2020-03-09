@@ -12,10 +12,10 @@ read_globals = {
 	-- Minetest
 	"minetest",
 	"vector", "ItemStack",
-	"dump", "dump2"
+	"dump", "dump2",
 
 	-- Deps
-
+	"xban"
 }
 
 files["jail.lua"] = { unused_args = false }
