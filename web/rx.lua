@@ -8,16 +8,32 @@ function handle_data(data)
 	end
 
 	local name = data.username .. "@" .. data.name
+	-- TODO: allow /login to override generated username
 
 	if data.channel and data.channel ~= "" then
 		-- channel message
 		beerchat.send_on_channel(name, data.channel, data.message)
 
-	elseif data.direct then
+	elseif data.target_name == "minetest" then
 			-- direct message
-			beerchat.executor(data.message, name)
+			local _, msg = beerchat.executor(data.message, name)
 
-			-- TODO:  return value
+			local tx_data = {
+				target_name = data.name,
+				target_username = data.username,
+				message = msg
+			}
+
+			local json = minetest.write_json(tx_data)
+
+			http.fetch({
+				url = beerchat.url,
+				extra_headers = { "Content-Type: application/json" },
+				timeout = 5,
+				post_data = json
+			}, function()
+				-- ignore errors
+			end)
 	end
 end
 
