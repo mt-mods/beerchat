@@ -34,8 +34,11 @@ beerchat = {
 
 	-- web settings
 	url = minetest.settings:get("beerchat.url") or "http://127.0.0.1:8080",
-	http = http -- will be removed after init
+	http = http, -- will be removed after init
 
+	-- mapped remote users (irc, discord)
+	-- data: local user => remote user
+	remote_username_map = {}
 }
 
 if nil == beerchat.main_channel_name or "" == beerchat.main_channel_name then
@@ -62,6 +65,10 @@ if beerchat.http then
 	dofile(MP.."/web/executor.lua")
 	dofile(MP.."/web/tx.lua")
 	dofile(MP.."/web/rx.lua")
+	dofile(MP.."/web/login.lua")
+	dofile(MP.."/web/logout.lua")
+	dofile(MP.."/web/common.lua")
+	dofile(MP.."/web/tan.lua")
 end
 
 -- remove http ref
