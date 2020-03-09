@@ -16,5 +16,16 @@ beerchat.executor = function(str, playername)
 		return false, "Not enough privileges!"
 	end
 
-	return command.func(playername, (params or ""))
+	local result, message
+
+	local status, err = pcall(function()
+		result, message = command.func(playername, (params or ""))
+	end)
+
+	if not status then
+		message = dump(err)
+		result = false
+	end
+
+	return result, message
 end
