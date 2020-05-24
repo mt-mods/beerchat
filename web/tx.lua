@@ -1,12 +1,14 @@
 
 local http = beerchat.http
 
+-- normal message in chat channel
 beerchat.on_channel_message = function(channel, playername, message)
 
 	local data = {
 		channel = channel,
 		username = playername,
-		message = message
+		message = message,
+		type = "message"
 	}
 
 	local json = minetest.write_json(data)
@@ -20,6 +22,27 @@ beerchat.on_channel_message = function(channel, playername, message)
 		-- ignore errors
 	end)
 
+end
+
+-- /me message in chat channel
+beerchat.on_me_message = function(channel, playername, message)
+	local data = {
+		channel = channel,
+		username = playername,
+		message = message,
+		type = "me"
+	}
+
+	local json = minetest.write_json(data)
+
+	http.fetch({
+		url = beerchat.url,
+		extra_headers = { "Content-Type: application/json" },
+		timeout = 5,
+		post_data = json
+	}, function()
+		-- ignore errors
+	end)
 end
 
 -- map to players -> new == true

@@ -17,6 +17,7 @@ local me_override = {
 				.. " in order to be able to send messages to it")
 		else
 			local cb_result, cb_message = beerchat.execute_callbacks('before_send_me', name, msg, channel_name)
+			beerchat.on_me_message(channel_name, name, msg)
 			if not cb_result then
 				if cb_message then return false, cb_message else return false end
 			end
@@ -44,4 +45,3 @@ local me_override = {
 }
 
 minetest.register_chatcommand("me", me_override)
-

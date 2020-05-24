@@ -62,7 +62,14 @@ beerchat.execute_callbacks = function(trigger, ...)
 	return true
 end
 
+-- TODO: harmonize callbacks
+
 -- called on every channel message
 -- params: channel, playername, message
 beerchat.on_channel_message = function()
+end
+
+-- called on every /me message
+-- params: channel, playername, message
+beerchat.on_me_message = function()
 end
