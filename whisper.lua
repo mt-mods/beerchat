@@ -48,8 +48,10 @@ beerchat.whisper = function(name, message)
 
 					-- check if muted
 					if not beerchat.has_player_muted_player(target, name) then
-						-- mark as sent
-						successful = true
+						-- mark as sent if anyone else is hearing it
+						if name ~= other_player:get_player_name() then
+							successful = true
+						end
 
 						-- deliver message
 						beerchat.send_message(
