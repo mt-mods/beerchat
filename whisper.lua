@@ -73,7 +73,7 @@ beerchat.whisper = function(name, message)
 		if successful then
 			return true
 		else
-			return false, "no one heard you whispering!"
+			return true, "no one heard you whispering!"
 		end
 	end
 end
