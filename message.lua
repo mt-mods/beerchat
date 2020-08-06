@@ -42,6 +42,11 @@ end
 minetest.register_on_chat_message(function(name, message)
 	local channel_name = beerchat.currentPlayerChannel[name]
 
+	if not minetest.check_player_privs(name, "shout") then
+		-- the player does not have the shout priv, skip processing to channels
+		return false -- mark as "not handled"
+	end
+
 	if not beerchat.channels[channel_name] then
 		minetest.chat_send_player(
 			name,
@@ -68,4 +73,3 @@ minetest.register_on_chat_message(function(name, message)
 	end
 	return true
 end)
-
