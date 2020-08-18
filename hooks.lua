@@ -13,6 +13,9 @@ beerchat.cb.before_mute 		= {} -- executed before player is muted
 beerchat.cb.before_check_muted 	= {} -- executed before has_player_muted_player checks
 beerchat.cb.on_forced_join 		= {} -- executed right after player is forced to channel
 
+-- Callbacks that can edit message contents
+beerchat.cb.on_receive 			= {} -- executed when new message is received
+
 beerchat.register_callback = function(trigger, fn)
 	if type(fn) ~= 'function' then
 		print('Error: Invalid fn argument for beerchat.register_callback, must be function. Got ' .. type(fn))
