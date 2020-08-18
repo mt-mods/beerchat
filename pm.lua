@@ -10,6 +10,14 @@ atchat_lastrecv = {}
 
 minetest.register_on_chat_message(function(name, message)
 	minetest.log("action", "CHAT " .. name .. ": " .. message)
+
+	local msg_data = {name=name,message=message}
+	if beerchat.execute_callbacks('on_receive', msg_data) then
+		message = msg_data.message
+	else
+		return false
+	end
+
 	local players, msg = string.match(message, "^@([^%s:]*)[%s:](.*)")
 	if players and msg then
 		if msg == "" then

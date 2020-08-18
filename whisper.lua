@@ -8,6 +8,14 @@ local whisper_string = "|#${channel_name}| <${from_player}> whispers: ${message}
 -- $ chat a.k.a. dollar chat code, to whisper messages in chat to nearby players only using $,
 -- optionally supplying a radius e.g. $32 Hello
 beerchat.whisper = function(name, message)
+
+	local msg_data = {name=name,message=message}
+	if beerchat.execute_callbacks('on_receive', msg_data) then
+		message = msg_data.message
+	else
+		return false
+	end
+
 	local dollar, sradius, msg = string.match(message, "^($)(.-) (.*)")
 	if dollar ~= "$" then
 		return false
