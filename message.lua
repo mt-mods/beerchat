@@ -40,6 +40,14 @@ end
 
 
 minetest.register_on_chat_message(function(name, message)
+
+	local msg_data = {name=name,message=message}
+	if beerchat.execute_callbacks('on_receive', msg_data) then
+		message = msg_data.message
+	else
+		return false
+	end
+
 	local channel_name = beerchat.currentPlayerChannel[name]
 
 	if not minetest.check_player_privs(name, "shout") then
