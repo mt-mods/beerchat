@@ -79,6 +79,10 @@ if minetest.settings:get_bool("beerchat.enable_jail") then
 	dofile(MP.."/jail.lua")
 end
 
+if minetest.settings:get_bool("beerchat.enable_cleaner") then
+	dofile(MP.."/cleaner.lua")
+end
+
 if minetest.settings:get_bool("enable_beerchat_integration_test") then
   dofile(MP.."/integration_test.lua")
 end

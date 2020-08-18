@@ -4,6 +4,13 @@
 hashchat_lastrecv = {}
 
 minetest.register_on_chat_message(function(name, message)
+	local msg_data = {name=name,message=message}
+	if beerchat.execute_callbacks('on_receive', msg_data) then
+		message = msg_data.message
+	else
+		return false
+	end
+
 	local channel_name, msg = string.match(message, "^#(.-): (.*)")
 	if not beerchat.channels[channel_name] then
 		channel_name, msg = string.match(message, "^#(.-) (.*)")
