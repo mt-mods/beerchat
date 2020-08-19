@@ -26,32 +26,20 @@ beerchat.register_callback = function(trigger, fn)
 		return
 	end
 
-	local cb = beerchat.cb
-
-	if not cb[trigger] then
+	if not beerchat.cb[trigger] then
 		print(string.format('Error: Invalid callback trigger event %s, possible triggers:', trigger))
-		for k,_ in pairs(cb) do
+		for k,_ in pairs(beerchat.cb) do
 			print(' ->   ' .. k)
 		end
 		return
 	end
 
-	table.insert(cb[trigger], fn)
+	table.insert(beerchat.cb[trigger], fn)
 end
 
 beerchat.execute_callbacks = function(trigger, ...)
 	local cb_list = beerchat.cb[trigger]
-	if not cb_list then
-		print('Error: Invalid trigger argument for beerchat.execute_callbacks')
-		-- This is internal error / dev error, stop processing current event
-		return false
-	end
 	local arg = {...}
-	if arg == nil then
-		print('Error: Missing arguments for beerchat.execute_callbacks')
-		-- This is internal error / dev error, stop processing current event
-		return false
-	end
 	for _,fn in ipairs(cb_list) do
 		local result, msg = fn(unpack(arg))
 		if result ~= nil then
