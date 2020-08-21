@@ -78,11 +78,10 @@ beerchat.whisper = function(name, message)
 			end
 		end
 
-		if successful then
-			return true
-		else
-			return true, "no one heard you whispering!"
+		if not successful then
+			minetest.chat_send_player(name, "no one heard you whispering!")
 		end
+		return true
 	end
 end
 
