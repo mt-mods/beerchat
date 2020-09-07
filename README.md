@@ -24,6 +24,7 @@ Features
 # Documentation
 
 * [Manual](./doc/manual.md)
+* [Web-API](./doc/web-api.md)
 
 # License
 
