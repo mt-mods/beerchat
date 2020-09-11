@@ -64,6 +64,7 @@ if beerchat.http then
 
 	dofile(MP.."/web/executor.lua")
 	dofile(MP.."/web/tx.lua")
+	dofile(MP.."/web/audit.lua")
 	dofile(MP.."/web/rx.lua")
 	dofile(MP.."/web/login.lua")
 	dofile(MP.."/web/logout.lua")
