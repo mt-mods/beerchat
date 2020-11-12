@@ -40,7 +40,7 @@ beerchat.jail.chat_jail = function(name, param)
 			.. "before_delete_chan event :)"
 	end
 
-	local player_names = string.gmatch(param, "%S+")
+	local player_names = string.gmatch(param, "[^%s,]+")
 	for player_name in player_names do
 		beerchat.force_player_to_channel(name, string.format('%s, %s',
 			beerchat.jail.channel_name, player_name))
@@ -59,7 +59,7 @@ beerchat.jail.chat_unjail = function(name, param)
 	if not param or param == "" then
 		return false, "ERROR: Invalid number of arguments. Please supply the player name(s)."
 	end
-	local player_names = string.gmatch(param, "%S+")
+	local player_names = string.gmatch(param, "[^%s,]+")
 	for player_name in player_names do
 		local player = minetest.get_player_by_name(player_name)
 		if not player then
