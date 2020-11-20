@@ -471,6 +471,13 @@ beerchat.force_player_to_channel = function(name, param)
 		-- feedback to mover
 		minetest.chat_send_player(name, "Set default channel of " .. player_name
 			.. " to " .. channel_name .. ".")
+		-- inform moderators, if moderator channel is set
+		if beerchat.moderator_channel_name then
+			beerchat.send_on_channel(beerchat.channels[beerchat.main_channel_name].owner,
+				beerchat.moderator_channel_name,
+				name .. " has set default channel of " .. player_name .. " to "
+				.. channel_name .. ".")
+		end
 		-- inform admin
 		minetest.log("action", "CHAT " .. name .. " moved " .. player_name
 			.. " to channel " .. channel_name)
@@ -516,3 +523,4 @@ minetest.register_chatcommand("list_muted", list_muted)
 minetest.register_chatcommand("force2channel", force_player_to_channel)
 
 minetest.register_chatcommand("whis", whisper)
+
