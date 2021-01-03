@@ -1,9 +1,9 @@
 
-function format_string(s, tab)
+local function format_string(s, tab)
   return (s:gsub('($%b{})', function(w) return tab[w:sub(3, -2)] or w end))
 end
 
-function colorize_target_name(s, target)
+local function colorize_target_name(s, target)
   if not target or not s then
     return s
   end

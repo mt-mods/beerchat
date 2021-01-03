@@ -6,7 +6,14 @@ local private_message_sound = "beerchat_chime"		-- Sound when you receive a priv
 local self_message_sound = "beerchat_utter"			-- Sound when you send a private message to yourself
 
 -- @ chat a.k.a. at chat/ PM chat code, to PM players using @player1 only you can read this player1!!
-atchat_lastrecv = {}
+local atchat_lastrecv = {}
+
+-- cleanup upon leave
+minetest.register_on_leaveplayer(function(player)
+	local name = player:get_player_name()
+	atchat_lastrecv[name] = nil
+end)
+
 
 minetest.register_on_chat_message(function(name, message)
 	minetest.log("action", "CHAT " .. name .. ": " .. message)

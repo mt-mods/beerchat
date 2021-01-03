@@ -2,7 +2,7 @@
 local http = beerchat.http
 local recv_loop
 
-function handle_data(data)
+local function handle_data(data)
 	if not data or not data.username or not data.message or not data.name then
 		return
 	end

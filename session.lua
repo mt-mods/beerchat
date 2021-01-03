@@ -26,7 +26,5 @@ end)
 minetest.register_on_leaveplayer(function(player)
 	local name = player:get_player_name()
 	beerchat.playersChannels[name] = nil
-	atchat_lastrecv[name] = nil
 	beerchat.currentPlayerChannel[name] = nil
 end)
-

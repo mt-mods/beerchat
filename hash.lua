@@ -1,7 +1,7 @@
 
 -- # chat a.k.a. hash chat/ channel chat code, to send messages in chat channels using #
 -- e.g. #my channel: hello everyone in my channel!
-hashchat_lastrecv = {}
+local hashchat_lastrecv = {}
 
 minetest.register_on_chat_message(function(name, message)
 	local msg_data = {name=name,message=message}
