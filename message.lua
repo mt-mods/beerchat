@@ -16,6 +16,14 @@
 --
 
 beerchat.send_on_channel = function(name, channel_name, message)
+	local msg_data = {name=name, channel=channel_name,message=message}
+	if beerchat.execute_callbacks('on_send_on_channel', msg_data) then
+		name = msg_data.name
+		channel_name = msg_data.channel_name
+		message = msg_data.message
+	else
+		return false
+	end
 	for _,player in ipairs(minetest.get_connected_players()) do
 		local target = player:get_player_name()
 		-- Checking if the target is in this channel
