@@ -15,6 +15,8 @@ beerchat.cb.on_forced_join 		= {} -- executed right after player is forced to ch
 
 -- Callbacks that can edit message contents
 beerchat.cb.on_receive 			= {} -- executed when new message is received
+beerchat.cb.on_http_receive 		= {} -- executed when new message is received through http polling
+beerchat.cb.on_send_on_channel		= {} -- executed before sending message to channel
 
 beerchat.register_callback = function(trigger, fn)
 	if type(fn) ~= 'function' then
