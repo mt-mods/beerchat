@@ -142,9 +142,6 @@ beerchat.register_callback('before_send', function(name, message, channel)
 			-- override default send method to mute pings for jailed users
 			-- but allow chatting without pings on jail channel
 			minetest.chat_send_player(name, message)
-		else
-			-- Inform player if trying to send  to other channels
-			return false, "You are in chat-jail, no changing channels for you."
 		end
 		return false
 	end
