@@ -7,6 +7,10 @@ local function handle_data(data)
 		return
 	end
 
+	if not beerchat.execute_callbacks('on_http_receive', data) then
+		return
+	end
+
 	local name = data.username .. "@" .. data.name
 
 	if data.channel and data.channel ~= "" then

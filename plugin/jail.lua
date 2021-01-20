@@ -1,3 +1,5 @@
+--luacheck: no_unused_args
+
 -- Jail channel is where you put annoying missbehaving users with /force2channel
 beerchat.jail = {}
 
@@ -140,6 +142,9 @@ beerchat.register_callback('before_send', function(name, message, channel)
 			-- override default send method to mute pings for jailed users
 			-- but allow chatting without pings on jail channel
 			minetest.chat_send_player(name, message)
+		else
+			-- Inform player if trying to send  to other channels
+			return false, "You are in chat-jail, no changing channels for you."
 		end
 		return false
 	end
@@ -147,7 +152,7 @@ end)
 
 beerchat.register_callback('before_switch_chan', function(name, oldchannel, newchannel)
 	if beerchat.is_player_jailed(name) then
-		return false
+		return false, "You are in chat-jail, no changing channels for you."
 	end
 end)
 
@@ -165,7 +170,7 @@ end)
 
 beerchat.register_callback('before_whisper', function(name, message, channel, range)
 	if beerchat.is_player_jailed(name) then
-		return false
+		return false, "You are in chat-jail, you may not whisper."
 	end
 end)
 

@@ -79,12 +79,14 @@ beerchat.http = nil
 
 -- integrated extensions (could also be different mod)
 if minetest.settings:get_bool("beerchat.enable_jail") then
-	dofile(MP.."/jail.lua")
+	dofile(MP.."/plugin/jail.lua")
 end
 
 if minetest.settings:get_bool("beerchat.enable_cleaner") then
-	dofile(MP.."/cleaner.lua")
+	dofile(MP.."/plugin/cleaner.lua")
 end
+
+dofile(MP.."/plugin/override.lua")
 
 if minetest.settings:get_bool("enable_beerchat_integration_test") then
   dofile(MP.."/integration_test.lua")
