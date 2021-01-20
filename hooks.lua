@@ -45,7 +45,10 @@ beerchat.execute_callbacks = function(trigger, ...)
 	for _,fn in ipairs(cb_list) do
 		local result, msg = fn(unpack(arg))
 		if result ~= nil then
-			return result, msg
+			if msg and type(arg[1]) == "string" then
+				minetest.chat_send_player(arg[1], msg)
+			end
+			return result
 		end
 	end
 	if trigger == 'before_check_muted' then

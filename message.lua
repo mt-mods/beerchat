@@ -16,36 +16,31 @@
 --
 
 beerchat.send_on_channel = function(name, channel_name, message)
-	local msg_data = {name=name, channel=channel_name,message=message}
-	if beerchat.execute_callbacks('on_send_on_channel', msg_data) then
-		name = msg_data.name
-		channel_name = msg_data.channel_name
-		message = msg_data.message
-	else
-		return false
-	end
+	local msg = {name=name, channel=channel_name,message=message}
 	for _,player in ipairs(minetest.get_connected_players()) do
 		local target = player:get_player_name()
 		-- Checking if the target is in this channel
-		if beerchat.is_player_subscribed_to_channel(target, channel_name) then
-			if not beerchat.has_player_muted_player(target, name) then
-				beerchat.send_message(
-					target,
-					beerchat.format_message(
-						beerchat.main_channel_message_string, {
-							channel_name = channel_name,
-							to_player = target,
-							from_player = name,
-							message = message
-						}
-					),
-					channel_name
-				)
-			end
+		if beerchat.execute_callbacks('on_send_on_channel', msg, target) then
+			beerchat.send_message(
+				target,
+				beerchat.format_message(
+					beerchat.main_channel_message_string, {
+						channel_name = msg.channel,
+						to_player = target,
+						from_player = msg.name,
+						message = msg.message
+					}
+				),
+				msg.channel
+			)
 		end
 	end
 end
 
+beerchat.register_callback("on_send_on_channel", function(msg, target)
+	return beerchat.is_player_subscribed_to_channel(target, msg.channel)
+		and not beerchat.has_player_muted_player(target, msg.name)
+end)
 
 minetest.register_on_chat_message(function(name, message)
 

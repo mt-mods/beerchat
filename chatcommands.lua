@@ -191,14 +191,8 @@ local join_channel = {
 			end
 		end
 
-		local cb_result, cb_message = beerchat.execute_callbacks(
-			'before_join', name, channel_name)
-		if not cb_result then
-			if cb_message then
-				return false, cb_message
-			else
-				return false
-			end
+		if not beerchat.execute_callbacks('before_join', name, channel_name) then
+			return false
 		end
 
 		beerchat.playersChannels[name] = beerchat.playersChannels[name] or {}
@@ -236,14 +230,8 @@ local leave_channel = {
 				.. ", no need to leave."
 		end
 
-		local cb_result, cb_message = beerchat.execute_callbacks(
-			'before_leave', name, channel_name)
-		if not cb_result then
-			if cb_message then
-				return false, cb_message
-			else
-				return false
-			end
+		if not beerchat.execute_callbacks('before_leave', name, channel_name) then
+			return false
 		end
 
 		beerchat.playersChannels[name][channel_name] = nil
@@ -304,14 +292,8 @@ local invite_channel = {
 		if not minetest.get_player_by_name(player_name) then
 			return false, "ERROR: " .. player_name .. " does not exist or is not online."
 		else
-			local cb_result, cb_message = beerchat.execute_callbacks(
-				'before_invite', name, player_name, channel_name)
-			if not cb_result then
-				if cb_message then
-					return false, cb_message
-				else
-					return false
-				end
+			if not beerchat.execute_callbacks('before_invite', name, player_name, channel_name) then
+				return false
 			end
 			if not beerchat.has_player_muted_player(player_name, name) then
 				if beerchat.enable_sounds then
@@ -345,13 +327,8 @@ local mute_player = {
 		.. "messages of this user, regardless of what channel his user sends messages to.",
 	func = function(name, param)
 
-		local cb_result, cb_message = beerchat.execute_callbacks('before_mute', name, param)
-		if not cb_result then
-			if cb_message then
-				return false, cb_message
-			else
-				return false
-			end
+		if not beerchat.execute_callbacks('before_mute', name, param) then
+			return false
 		end
 
 		if not param or param == "" then
@@ -455,14 +432,8 @@ beerchat.force_player_to_channel = function(name, param)
 		beerchat.currentPlayerChannel[player_name] = channel_name
 		meta:set_string("beerchat:current_channel", channel_name)
 
-		local cb_result, cb_message = beerchat.execute_callbacks(
-			'on_forced_join', name, player_name, channel_name, meta)
-		if not cb_result then
-			if cb_message then
-				return false, cb_message
-			else
-				return false
-			end
+		if not beerchat.execute_callbacks('on_forced_join', name, player_name, channel_name, meta) then
+			return false
 		end
 
 		-- inform user

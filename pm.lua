@@ -30,9 +30,8 @@ minetest.register_on_chat_message(function(name, message)
 		if msg == "" then
 			minetest.chat_send_player(name, "Please enter the private message you would like to send")
 		else
-			local cb_result, cb_message = beerchat.execute_callbacks('before_send_pm', name, msg, players)
-			if not cb_result then
-				if cb_message then return false, cb_message else return false end
+			if not beerchat.execute_callbacks('before_send_pm', name, msg, players) then
+				return false
 			end
 			if players == "" then--reply
 				-- We need to get the target
@@ -182,9 +181,8 @@ local msg_override = {
 				minetest.chat_send_player(name, "ERROR: Please enter the private message you would like to send")
 				return false
 			else
-				local cb_result, cb_message = beerchat.execute_callbacks('before_send_pm', name, msg, players)
-				if not cb_result then
-					if cb_message then return false, cb_message else return false end
+				if not beerchat.execute_callbacks('before_send_pm', name, msg, players) then
+					return false
 				end
 				if players and players ~= "" then
 					send_pm(players, name, msg)

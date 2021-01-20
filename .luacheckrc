@@ -16,5 +16,3 @@ read_globals = {
 	-- Deps
 	"xban"
 }
-
-files["jail.lua"] = { unused_args = false }
