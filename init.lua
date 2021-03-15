@@ -3,7 +3,7 @@
 -- Mod settings -- Change these to your liking
 
 
-local http = minetest.request_http_api()
+local http = QoS and QoS(minetest.request_http_api(), 1) or minetest.request_http_api()
 
 beerchat = {
 	-- The main channel is the one you send messages to when no channel is specified
