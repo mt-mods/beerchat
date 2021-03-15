@@ -14,5 +14,5 @@ read_globals = {
 	"dump", "dump2",
 
 	-- Deps
-	"xban"
+	"xban", "QoS"
 }
