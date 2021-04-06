@@ -18,7 +18,7 @@ beerchat.register_on_chat_message(function(name, message)
 		minetest.chat_send_player(name, "You cannot whisper outside of a radius of " .. whisper_max_range .. " nodes")
 	elseif msg == "" then
 		minetest.chat_send_player(name, "Please enter the message you would like to whisper to nearby players")
-	elseif not beerchat.whisper(name, message, radius) then
+	elseif not beerchat.whisper(name, msg, radius) then
 		minetest.chat_send_player(name, "no one heard you whispering!")
 	end
 
