@@ -42,14 +42,12 @@ beerchat.register_callback("on_send_on_channel", function(msg, target)
 		and not beerchat.has_player_muted_player(target, msg.name)
 end)
 
-minetest.register_on_chat_message(function(name, message)
+-- FIXME: Add default message handler last, on_mods_loaded hack should
+-- be replaced by calling default handler directly from router.lua
+-- This hack does not take into account that other mods might attempt to do same.
 
-	local msg_data = {name=name,message=message}
-	if beerchat.execute_callbacks('on_receive', msg_data) then
-		message = msg_data.message
-	else
-		return false
-	end
+minetest.register_on_mods_loaded(function()
+beerchat.register_on_chat_message(function(name, message)
 
 	local channel_name = beerchat.currentPlayerChannel[name]
 
@@ -83,4 +81,5 @@ minetest.register_on_chat_message(function(name, message)
 		beerchat.send_on_channel(name, channel_name, message)
 	end
 	return true
+end)
 end)
