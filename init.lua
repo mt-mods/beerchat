@@ -92,6 +92,7 @@ if minetest.settings:get_bool("enable_beerchat_integration_test") then
   dofile(MP.."/integration_test.lua")
 end
 
+dofile(MP.."/plugin/colorize.lua")
 
 print("[OK] beerchat")
 
