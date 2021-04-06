@@ -38,8 +38,10 @@ beerchat.send_on_channel = function(name, channel_name, message)
 end
 
 beerchat.register_callback("on_send_on_channel", function(msg, target)
-	return beerchat.is_player_subscribed_to_channel(target, msg.channel)
-		and not beerchat.has_player_muted_player(target, msg.name)
+	if not beerchat.is_player_subscribed_to_channel(target, msg.channel)
+		or beerchat.has_player_muted_player(target, msg.name) then
+		return false
+	end
 end)
 
 -- FIXME: Add default message handler last, on_mods_loaded hack should
