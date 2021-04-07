@@ -7,7 +7,7 @@ local http = QoS and QoS(minetest.request_http_api(), 1) or minetest.request_htt
 
 beerchat = {
 	-- The main channel is the one you send messages to when no channel is specified
-	main_channel_name = minetest.settings:get("beerchat.main_channel_name"),
+	main_channel_name = minetest.settings:get("beerchat.main_channel_name") or "main",
 
 	-- The default color of channels when no color is specified
 	default_channel_color = "#ffffff",
@@ -42,10 +42,6 @@ beerchat = {
 	-- data: local user => remote user
 	remote_username_map = {}
 }
-
-if nil == beerchat.main_channel_name or "" == beerchat.main_channel_name then
-	beerchat.main_channel_name = "main"
-end
 
 local MP = minetest.get_modpath("beerchat")
 dofile(MP.."/router.lua")
