@@ -4,10 +4,10 @@
 local MP = minetest.get_modpath("beerchat")
 local function load_plugin(name, enable_default)
 	if minetest.settings:get_bool("beerchat.enable_"..name, enable_default) then
-		print("Loading beerchat plugin: " .. name)
+		minetest.log("info", "Loading beerchat extension: " .. name)
 		dofile(MP.."/plugin/"..name..".lua")
 	else
-		print("Beerchat plugin disabled: " .. name)
+		minetest.log("info", "Beerchat extension disabled: " .. name)
 	end
 end
 

@@ -8,6 +8,32 @@ function beerchat.register_on_chat_message(func)
 	table.insert(on_chat_message_handlers, func)
 end
 
+local function default_message_handler(name, message)
+	-- Do not allow players without shout priv to chat in channels
+	if not minetest.check_player_privs(name, "shout") then
+		return true
+	end
+
+	local channel_name = beerchat.currentPlayerChannel[name]
+	if not beerchat.channels[channel_name] then
+		minetest.chat_send_player(
+			name,
+			"Channel "..channel_name.." does not exist, switching back to "..
+				beerchat.main_channel_name..". Please resend your message"
+		)
+		beerchat.currentPlayerChannel[name] = beerchat.main_channel_name
+		minetest.get_player_by_name(name):get_meta():set_string("beerchat:current_channel", beerchat.main_channel_name)
+	elseif message == "" then
+		minetest.chat_send_player(name, "Please enter the message you would like to send to the channel")
+	elseif not beerchat.is_player_subscribed_to_channel(name, channel_name) then
+		minetest.chat_send_player(name, "You need to join this channel in order to be able to send messages to it")
+	else
+		beerchat.on_channel_message(channel_name, name, message)
+		beerchat.send_on_channel(name, channel_name, message)
+	end
+	return true
+end
+
 -- All messages are handled either by sending to channel or through special plugin function.
 minetest.register_on_chat_message(function(name, message)
 
@@ -17,7 +43,7 @@ minetest.register_on_chat_message(function(name, message)
 		message = msg_data.message
 		name = msg_data.name
 	else
-		print("Beerchat message discarded by on_receive hook, contents went to /dev/null")
+		minetest.log("verbose", "Beerchat message discarded by on_receive hook, contents went to /dev/null")
 		return true
 	end
 
@@ -28,9 +54,6 @@ minetest.register_on_chat_message(function(name, message)
 			return true
 		end
 	end
-
-	-- This should never happen, beerchat must handle all messages.
-	-- FIXME: Call default handler directly here instead of using hacky on_mods_loaded hook in message.lua
-	error("Beerchat was unable to handle message: " .. dump(name) .. ", " .. dump(message))
-
+	-- None of extensions handled current message, call through default message handler
+	return default_message_handler(name, message)
 end)
