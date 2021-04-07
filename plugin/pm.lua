@@ -14,8 +14,7 @@ minetest.register_on_leaveplayer(function(player)
 	atchat_lastrecv[name] = nil
 end)
 
-
-minetest.register_on_chat_message(function(name, message)
+beerchat.register_on_chat_message(function(name, message)
 	minetest.log("action", "CHAT " .. name .. ": " .. message)
 
 	local msg_data = {name=name,message=message}

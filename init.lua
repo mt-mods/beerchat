@@ -48,15 +48,13 @@ if nil == beerchat.main_channel_name or "" == beerchat.main_channel_name then
 end
 
 local MP = minetest.get_modpath("beerchat")
+dofile(MP.."/router.lua")
+
 dofile(MP.."/common.lua")
 dofile(MP.."/format_message.lua")
 dofile(MP.."/hooks.lua")
 dofile(MP.."/storage.lua")
 dofile(MP.."/session.lua")
-dofile(MP.."/pm.lua")
-dofile(MP.."/hash.lua")
-dofile(MP.."/me.lua")
-dofile(MP.."/whisper.lua")
 dofile(MP.."/message.lua")
 dofile(MP.."/chatcommands.lua")
 
@@ -77,22 +75,11 @@ end
 -- remove http ref
 beerchat.http = nil
 
--- integrated extensions (could also be different mod)
-if minetest.settings:get_bool("beerchat.enable_jail") then
-	dofile(MP.."/plugin/jail.lua")
-end
-
-if minetest.settings:get_bool("beerchat.enable_cleaner") then
-	dofile(MP.."/plugin/cleaner.lua")
-end
-
-dofile(MP.."/plugin/override.lua")
+-- Load beerchat extensions
+dofile(MP.."/plugin/init.lua")
 
 if minetest.settings:get_bool("enable_beerchat_integration_test") then
   dofile(MP.."/integration_test.lua")
 end
 
-dofile(MP.."/plugin/colorize.lua")
-
 print("[OK] beerchat")
-

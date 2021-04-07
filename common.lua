@@ -22,7 +22,6 @@ beerchat.is_player_subscribed_to_channel = function(name, channel)
 end -- is_player_subscribed_to_channel
 
 beerchat.send_message = function(name, message, channel)
-
 	if not beerchat.execute_callbacks('before_send', name, message, channel) then
 		return
 	end
@@ -33,4 +32,3 @@ beerchat.send_message = function(name, message, channel)
 		minetest.sound_play(beerchat.channel_message_sound, { to_player = name, gain = beerchat.sounds_default_gain } )
 	end
 end -- send_message
-
