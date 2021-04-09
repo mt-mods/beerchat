@@ -14,22 +14,16 @@ local function default_message_handler(name, message)
 		return true
 	end
 
-	local channel_name = beerchat.currentPlayerChannel[name]
-	if not beerchat.channels[channel_name] then
-		minetest.chat_send_player(
-			name,
-			"Channel "..channel_name.." does not exist, switching back to "..
-				beerchat.main_channel_name..". Please resend your message"
-		)
-		beerchat.currentPlayerChannel[name] = beerchat.main_channel_name
-		minetest.get_player_by_name(name):get_meta():set_string("beerchat:current_channel", beerchat.main_channel_name)
+	local channel = beerchat.get_player_channel(name)
+	if not channel then
+		beerchat.fix_player_channel(name, true)
 	elseif message == "" then
 		minetest.chat_send_player(name, "Please enter the message you would like to send to the channel")
-	elseif not beerchat.is_player_subscribed_to_channel(name, channel_name) then
+	elseif not beerchat.is_player_subscribed_to_channel(name, channel) then
 		minetest.chat_send_player(name, "You need to join this channel in order to be able to send messages to it")
 	else
-		beerchat.on_channel_message(channel_name, name, message)
-		beerchat.send_on_channel(name, channel_name, message)
+		beerchat.on_channel_message(channel, name, message)
+		beerchat.send_on_channel(name, channel, message)
 	end
 	return true
 end

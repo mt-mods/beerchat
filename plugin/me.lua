@@ -7,34 +7,34 @@ local me_override = {
 		beerchat.main_channel_name.."| * Player01 eats pizza",
 	func = function(name, param)
 		local msg = param
-		local channel_name = beerchat.main_channel_name
-		if not beerchat.channels[channel_name] then
-			minetest.chat_send_player(name, "Channel "..channel_name.." does not exist.")
+		local channel = beerchat.get_player_channel(name)
+		if not channel then
+			beerchat.fix_player_channel(name, true)
 		elseif msg == "" then
 			minetest.chat_send_player(name, "Please enter the message you would like to send.")
-		elseif not beerchat.playersChannels[name][channel_name] then
-			minetest.chat_send_player(name, "You need to join channel " .. channel_name
+		elseif not beerchat.playersChannels[name][channel] then
+			minetest.chat_send_player(name, "You need to join channel " .. channel
 				.. " in order to be able to send messages to it")
 		else
-			local cb_result, cb_message = beerchat.execute_callbacks('before_send_me', name, msg, channel_name)
-			beerchat.on_me_message(channel_name, name, msg)
+			local cb_result, cb_message = beerchat.execute_callbacks('before_send_me', name, msg, channel)
+			beerchat.on_me_message(channel, name, msg)
 			if not cb_result then
 				if cb_message then return false, cb_message else return false end
 			end
 			for _,player in ipairs(minetest.get_connected_players()) do
 				local target = player:get_player_name()
 				-- Checking if the target is in this channel
-				if beerchat.is_player_subscribed_to_channel(target, channel_name) then
+				if beerchat.is_player_subscribed_to_channel(target, channel) then
 					if not beerchat.has_player_muted_player(target, name) then
 						beerchat.send_message(
 							target,
 							beerchat.format_message(me_message_string, {
 								to_player = target,
-								channel_name = channel_name,
+								channel_name = channel,
 								from_player = name,
 								message = msg
 							}),
-							channel_name
+							channel
 						)
 					end
 				end

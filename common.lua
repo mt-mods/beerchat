@@ -1,4 +1,25 @@
 
+beerchat.get_player_channel = function(name)
+	if type(name) == "string" then
+		local channel = beerchat.currentPlayerChannel[name]
+		if channel and beerchat.channels[channel] then
+			return channel
+		end
+	end
+end
+
+beerchat.fix_player_channel = function(name, notify)
+	if notify or notify == nil then
+		minetest.chat_send_player(
+			name,
+			"Channel "..beerchat.currentPlayerChannel[name].." does not exist, switching back to "..
+				beerchat.main_channel_name..". Please resend your message"
+		)
+	end
+	beerchat.currentPlayerChannel[name] = beerchat.main_channel_name
+	minetest.get_player_by_name(name):get_meta():set_string("beerchat:current_channel", beerchat.main_channel_name)
+end
+
 beerchat.has_player_muted_player = function(name, other_name)
 	local cb_result = beerchat.execute_callbacks('before_check_muted', name, other_name)
 	if cb_result ~= nil then
@@ -14,12 +35,12 @@ beerchat.has_player_muted_player = function(name, other_name)
 	local key = "beerchat:muted:" .. other_name
 	local meta = player:get_meta()
 	return "true" == meta:get_string(key)
-end -- has_player_muted_player
+end
 
 beerchat.is_player_subscribed_to_channel = function(name, channel)
 	return (nil ~= beerchat.playersChannels[name])
 		and (nil ~= beerchat.playersChannels[name][channel])
-end -- is_player_subscribed_to_channel
+end
 
 beerchat.send_message = function(name, message, channel)
 	if not beerchat.execute_callbacks('before_send', name, message, channel) then
@@ -27,8 +48,8 @@ beerchat.send_message = function(name, message, channel)
 	end
 
 	minetest.chat_send_player(name, message)
--- TODO: read player settings for channel sounds
+	-- TODO: read player settings for channel sounds
 	if beerchat.enable_sounds and channel ~= beerchat.main_channel_name then
 		minetest.sound_play(beerchat.channel_message_sound, { to_player = name, gain = beerchat.sounds_default_gain } )
 	end
-end -- send_message
+end
