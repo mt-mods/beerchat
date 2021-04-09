@@ -27,7 +27,7 @@ local create_channel = {
 				.. "name as a minimum."
 		end
 
-		local str = string.split(param, ",")
+		local str = string.split(param:gsub("^#",""), ",")
 		if #str > 3 then
 			return false, "ERROR: Invalid number of arguments. 4 parameters passed, "
 				.. "maximum of 3 allowed: <Channel Name>,<Password>,<Color>"
@@ -169,7 +169,7 @@ local join_channel = {
 				.. "name as a minimum."
 		end
 
-		local str = string.split(param, ",")
+		local str = string.split(param:gsub("^#",""), ",")
 		local channel_name = str[1] or "<empty>"
 
 		if not beerchat.channels[channel_name] then
@@ -271,7 +271,7 @@ local invite_channel = {
 				.. "name and the player name."
 		end
 
-		local channel_name, player_name = string.match(param, "(.*),(.*)")
+		local channel_name, player_name = string.match(param, "#?(.*),(.*)")
 
 		if not channel_name or channel_name == "" then
 			return false, "ERROR: Channel name is empty."
