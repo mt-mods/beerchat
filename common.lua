@@ -50,6 +50,12 @@ beerchat.send_message = function(name, message, channel)
 	minetest.chat_send_player(name, message)
 	-- TODO: read player settings for channel sounds
 	if beerchat.enable_sounds and channel ~= beerchat.main_channel_name then
-		minetest.sound_play(beerchat.channel_message_sound, { to_player = name, gain = beerchat.sounds_default_gain } )
+		minetest.sound_play(
+			beerchat.channel_message_sound, {
+				to_player = name,
+				gain = beerchat.sounds_default_gain
+			},
+			true
+		)
 	end
 end
