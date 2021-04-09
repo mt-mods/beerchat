@@ -10,8 +10,6 @@ local me_override = {
 		local channel = beerchat.get_player_channel(name)
 		if not channel then
 			beerchat.fix_player_channel(name, true)
-		elseif not beerchat.channels[channel] then
-			minetest.chat_send_player(name, "Channel "..channel.." does not exist.")
 		elseif msg == "" then
 			minetest.chat_send_player(name, "Please enter the message you would like to send.")
 		elseif not beerchat.playersChannels[name][channel] then
