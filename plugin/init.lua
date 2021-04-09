@@ -34,3 +34,6 @@ load_plugin("override", false)
 
 -- Allows colorizing messages on specified channels
 load_plugin("colorize", true)
+
+-- Set server wide announcements
+load_plugin("announce", false)
