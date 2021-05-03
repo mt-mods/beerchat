@@ -30,10 +30,13 @@ load_plugin("jail", false)
 load_plugin("cleaner", false)
 
 -- Overrides for message handlers provided by other mods
-load_plugin("override", false)
+load_plugin("override", true)
 
 -- Allows colorizing messages on specified channels
 load_plugin("colorize", true)
 
 -- Set server wide announcements
 load_plugin("announce", false)
+
+-- Adds command "/force2channel channel,player"
+load_plugin("force2channel", true)

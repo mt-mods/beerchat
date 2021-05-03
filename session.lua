@@ -21,6 +21,8 @@ minetest.register_on_joinplayer(function(player)
 		beerchat.currentPlayerChannel[name] = beerchat.main_channel_name
 	end
 
+	beerchat.execute_callbacks("after_joinplayer", name, meta)
+
 end)
 
 minetest.register_on_leaveplayer(function(player)

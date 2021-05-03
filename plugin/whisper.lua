@@ -72,3 +72,9 @@ beerchat.whisper = function(name, message)
 end
 
 beerchat.register_on_chat_message(beerchat.whisper)
+
+minetest.register_chatcommand("whis", {
+	params = "<message>",
+	description = "Whisper command for those who can't use $",
+	func = function(name, param) beerchat.whisper(name, "$ " .. param) end
+})
