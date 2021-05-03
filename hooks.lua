@@ -13,6 +13,9 @@ beerchat.cb.before_mute 		= {} -- executed before player is muted
 beerchat.cb.before_check_muted 	= {} -- executed before has_player_muted_player checks
 beerchat.cb.on_forced_join 		= {} -- executed right after player is forced to channel
 
+-- Special events
+beerchat.cb.after_joinplayer	= {} -- executed after player has joined and configurations loaded
+
 -- Callbacks that can edit message contents
 beerchat.cb.on_receive 			= {} -- executed when new message is received
 beerchat.cb.on_http_receive 		= {} -- executed when new message is received through http polling

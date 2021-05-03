@@ -46,11 +46,4 @@ describe("Chatting", function()
 		assert.is_nil(beerchat.channels["foo"])
 	end)
 
-	it("whispers", function()
-		pending("Spy is not working correctly here, possibly it cannot track indirect calls")
-		spy.on(beerchat, "whisper")
-		SX:send_chat_message("$ Everyone ignore me, this is just a test")
-		assert.spy(beerchat.whisper).was.called()
-	end)
-
 end)
