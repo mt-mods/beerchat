@@ -1,4 +1,32 @@
 
+-- Add/join player to channel
+beerchat.add_player_channel = function(name, channel)
+	if not beerchat.playersChannels[name][channel] then
+		local meta = minetest.get_player_by_name(name):get_meta()
+		beerchat.playersChannels[name][channel] = "joined"
+		meta:set_string("beerchat:channels", minetest.write_json(beerchat.playersChannels[name]))
+	end
+end
+
+-- Remove/part player from channel
+beerchat.remove_player_channel = function(name, channel)
+	if beerchat.playersChannels[name][channel] then
+		local meta = minetest.get_player_by_name(name):get_meta()
+		beerchat.playersChannels[name][channel] = nil
+		meta:set_string("beerchat:channels", minetest.write_json(beerchat.playersChannels[name]))
+	end
+end
+
+-- Set active channel of player, join player to channel if not already joined
+beerchat.set_player_channel = function(name, channel)
+	if beerchat.currentPlayerChannel[name] ~= channel then
+		beerchat.add_player_channel(name, channel)
+		local meta = minetest.get_player_by_name(name):get_meta()
+		beerchat.currentPlayerChannel[name] = channel
+		meta:set_string("beerchat:current_channel", channel)
+	end
+end
+
 beerchat.get_player_channel = function(name)
 	if type(name) == "string" then
 		local channel = beerchat.currentPlayerChannel[name]

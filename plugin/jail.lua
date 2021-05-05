@@ -23,10 +23,14 @@ end
 beerchat.jail.handle_jail_lock = function(name, meta, jailing)
 	-- going to/from jail?
 	if jailing then
-		meta:set_int("beerchat:jailed", 1)
+		meta:set_string("beerchat:jailed", beerchat.get_player_channel(name) or beerchat.main_channel_name)
 		beerchat.jail.list[name] = true
 	elseif beerchat.is_player_jailed(name) then
-		meta:set_int("beerchat:jailed", 0)
+		-- remove jail channel from player channels
+		beerchat.remove_player_channel(name, beerchat.jail.channel_name)
+		beerchat.set_player_channel(name, meta:get("beerchat:jailed") or beerchat.main_channel_name)
+		-- remove player from chat jail
+		meta:set_string("beerchat:jailed", "")
 		beerchat.jail.list[name] = nil
 	end
 end
@@ -70,8 +74,7 @@ beerchat.jail.chat_unjail = function(name, param)
 			local meta = player:get_meta()
 			beerchat.jail.handle_jail_lock(player_name, meta, false)
 			-- inform user
-			minetest.chat_send_player(player_name, "You have been released from chat jail. "
-				.. "Use #" .. beerchat.main_channel_name .. " to get back to main channel.")
+			minetest.chat_send_player(player_name, "You have been released from chat jail.")
 			-- feedback to mover
 			minetest.chat_send_player(name, "Released " .. player_name .. " from chat jail.")
 			-- inform admin
@@ -94,7 +97,14 @@ minetest.register_on_joinplayer(function(player)
 	local name = player:get_player_name()
 	local meta = player:get_meta()
 
-	local jailed = 1 == meta:get_int("beerchat:jailed")
+	local jailed = meta:get("beerchat:jailed")
+
+	-- Remove old 0 value indicating that playes has been jailed before but is not currently jailed
+	if jailed == "0" then
+		meta:set_string("beerchat:jailed", "")
+		jailed = nil
+	end
+
 	if jailed then
 		beerchat.jail.list[name] = true
 		beerchat.currentPlayerChannel[name] = beerchat.jail.channel_name
