@@ -40,3 +40,6 @@ load_plugin("announce", false)
 
 -- Adds command "/force2channel channel,player"
 load_plugin("force2channel", true)
+
+-- Adds logging and info messages for certain events
+load_plugin("event-logging", true)

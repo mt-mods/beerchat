@@ -23,42 +23,14 @@ beerchat.force_player_to_channel = function(name, param)
 		return false, "ERROR: Channel " .. channel_name .. " does not exist."
 	end
 
-	local player = minetest.get_player_by_name(player_name)
-	if not player then
+	if not minetest.get_player_by_name(player_name) then
 		return false, "ERROR: " .. player_name .. " does not exist or is not online."
 	else
-		local meta = player:get_meta()
-		-- force join
-		beerchat.playersChannels[player_name] = beerchat.playersChannels[player_name] or {}
-		beerchat.playersChannels[player_name][channel_name] = "joined"
-		meta:set_string(
-			"beerchat:channels",
-			minetest.write_json(beerchat.playersChannels[player_name])
-		)
-		-- force default channel
-		beerchat.currentPlayerChannel[player_name] = channel_name
-		meta:set_string("beerchat:current_channel", channel_name)
-
-		if not beerchat.execute_callbacks('on_forced_join', name, player_name, channel_name, meta) then
-			return false
-		end
-
-		-- inform user
-		minetest.chat_send_player(player_name, name .. " has set your default channel to "
-			.. channel_name .. ".")
-		-- feedback to mover
-		minetest.chat_send_player(name, "Set default channel of " .. player_name
-			.. " to " .. channel_name .. ".")
-		-- inform moderators, if moderator channel is set
-		if beerchat.moderator_channel_name then
-			beerchat.send_on_channel(beerchat.channels[beerchat.main_channel_name].owner,
-				beerchat.moderator_channel_name,
-				name .. " has set default channel of " .. player_name .. " to "
-				.. channel_name .. ".")
-		end
-		-- inform admin
-		minetest.log("action", "CHAT " .. name .. " moved " .. player_name
-			.. " to channel " .. channel_name)
+		local from_channel = beerchat.get_player_channel(player_name) or beerchat.main_channel_name
+		-- force join and set default channel
+		beerchat.set_player_channel(player_name, channel_name)
+		-- execute callbacks after action
+		beerchat.execute_callbacks('on_forced_join', name, player_name, channel_name, from_channel)
 	end
 	return true
 end

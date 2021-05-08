@@ -45,5 +45,13 @@ describe("force2channel command", function()
 		assert.equals("notmain", XX:get_meta():get_string("beerchat:current_channel"))
 	end)
 
+	it("handles jail channel name", function()
+		local oldchannel = XX:get_meta():get_string("beerchat:current_channel")
+		SX:send_chat_message("/force2channel jailchannel, XX")
+		assert.equals("main", beerchat.get_player_channel("SX"))
+		assert.equals("jailchannel", beerchat.get_player_channel("XX"))
+		assert.equals("jailchannel", XX:get_meta():get_string("beerchat:current_channel"))
+		assert.equals(oldchannel, XX:get_meta():get_string("beerchat:jailed"))
+	end)
 
 end)

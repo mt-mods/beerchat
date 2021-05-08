@@ -55,9 +55,7 @@ beerchat.register_on_chat_message(function(name, message)
 					beerchat.currentPlayerChannel[name], channel_name) then
 					return false
 				end
-				beerchat.currentPlayerChannel[name] = channel_name
-				minetest.get_player_by_name(name):get_meta():set_string(
-					"beerchat:current_channel", channel_name)
+				beerchat.set_player_channel(name, channel_name)
 				if channel_name == beerchat.main_channel_name then
 					minetest.chat_send_player(
 						name,
