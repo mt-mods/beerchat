@@ -1,9 +1,9 @@
 
 -- Add/join player to channel
-beerchat.add_player_channel = function(name, channel)
+beerchat.add_player_channel = function(name, channel, mode)
 	if not beerchat.playersChannels[name][channel] then
 		local meta = minetest.get_player_by_name(name):get_meta()
-		beerchat.playersChannels[name][channel] = "joined"
+		beerchat.playersChannels[name][channel] = mode or "joined"
 		meta:set_string("beerchat:channels", minetest.write_json(beerchat.playersChannels[name]))
 	end
 end
