@@ -23,8 +23,7 @@ local create_channel = {
 		local lowner = lname
 
 		if not param or param == "" then
-			return false, "ERROR: Invalid number of arguments. Please supply the channel "
-				.. "name as a minimum."
+			return false, "ERROR: Invalid number of arguments. Please supply the channel name as a minimum."
 		end
 
 		local str = string.split(param:gsub("^#",""), ",")
@@ -39,14 +38,12 @@ local create_channel = {
 		end
 
 		if lchannel_name == beerchat.main_channel_name then
-			return false, "ERROR: You cannot use channel name \""
-				.. beerchat.main_channel_name .. "\""
+			return false, "ERROR: You cannot use channel name \"" .. beerchat.main_channel_name .. "\""
 		end
 
 		if beerchat.channels[lchannel_name] then
 			return false, "ERROR: Channel " .. lchannel_name
-				.. " already exists, owned by player "
-				.. beerchat.channels[lchannel_name].owner
+				.. " already exists, owned by player " .. beerchat.channels[lchannel_name].owner
 		end
 
 		local arg2 = str[2]
@@ -69,11 +66,7 @@ local create_channel = {
 			password = lpassword, color = lcolor }
 		beerchat.mod_storage:set_string("channels", minetest.write_json(beerchat.channels))
 
-		beerchat.playersChannels[lowner][lchannel_name] = "owner"
-		minetest.get_player_by_name(lowner):get_meta():set_string(
-			"beerchat:channels",
-			minetest.write_json(beerchat.playersChannels[lowner])
-		)
+		beerchat.add_player_channel(lowner, lchannel_name, "owner")
 		if beerchat.enable_sounds then
 			minetest.sound_play(beerchat.channel_management_sound,
 				{ to_player = lowner, gain = beerchat.sounds_default_gain })
@@ -110,11 +103,7 @@ local delete_channel = {
 		beerchat.channels[param] = nil
 		beerchat.mod_storage:set_string("channels", minetest.write_json(beerchat.channels))
 
-		beerchat.playersChannels[name][param] = nil
-		minetest.get_player_by_name(name):get_meta():set_string(
-			"beerchat:channels",
-			minetest.write_json(beerchat.playersChannels[name])
-		)
+		beerchat.remove_player_channel(name, param)
 
 		if beerchat.enable_sounds then
 			minetest.sound_play(beerchat.channel_management_sound,
@@ -180,8 +169,7 @@ local join_channel = {
 			return false, "ERROR: You already joined "..channel_name..", no need to rejoin"
 		end
 
-		if beerchat.channels[channel_name].password
-		and beerchat.channels[channel_name].password ~= "" then
+		if beerchat.channels[channel_name].password and beerchat.channels[channel_name].password ~= "" then
 			if #str == 1 then
 				return false, "ERROR: This channel requires that you supply a password. "
 					.. "Supply it in the following format: /jc my channel,password01"
@@ -195,12 +183,7 @@ local join_channel = {
 			return false
 		end
 
-		beerchat.playersChannels[name] = beerchat.playersChannels[name] or {}
-		beerchat.playersChannels[name][channel_name] = "joined"
-		minetest.get_player_by_name(name):get_meta():set_string(
-			"beerchat:channels",
-			minetest.write_json(beerchat.playersChannels[name])
-		)
+		beerchat.add_player_channel(name, channel_name)
 
 		if beerchat.enable_sounds then
 			minetest.sound_play(join_channel_sound,
@@ -217,44 +200,33 @@ local leave_channel = {
 	description = "Leave channel named <Channel Name>. When you leave the channel you "
 		.. "can no longer send / receive messages from that channel. "
 		.. "NOTE: You can also leave the main channel",
-	func = function(name, param)
-		if not param or param == "" then
-			return false, "ERROR: Invalid number of arguments. Please supply the "
-				.. "channel name."
+	func = function(name, channel)
+		if not channel or channel == "" then
+			return false, "ERROR: Invalid number of arguments. Please supply the channel name."
 		end
 
-		local channel_name = param
-
-		if not beerchat.playersChannels[name][channel_name] then
-			return false, "ERROR: You are not member of " .. channel_name
-				.. ", no need to leave."
+		if not beerchat.playersChannels[name][channel] then
+			return false, "ERROR: You are not member of " .. channel .. ", no need to leave."
 		end
 
-		if not beerchat.execute_callbacks('before_leave', name, channel_name) then
+		if not beerchat.execute_callbacks('before_leave', name, channel) then
 			return false
 		end
 
-		beerchat.playersChannels[name][channel_name] = nil
-		minetest.get_player_by_name(name):get_meta():set_string(
-			"beerchat:channels",
-			minetest.write_json(beerchat.playersChannels[name])
-		)
+		beerchat.remove_player_channel(name, channel)
 
 		if beerchat.enable_sounds then
-			minetest.sound_play(leave_channel_sound,
-				{ to_player = name, gain = beerchat.sounds_default_gain })
+			minetest.sound_play(leave_channel_sound, { to_player = name, gain = beerchat.sounds_default_gain })
 		end
-		if not beerchat.channels[channel_name] then
-			minetest.chat_send_player(
-				name,
+		if not beerchat.channels[channel] then
+			minetest.chat_send_player(name,
 				beerchat.format_message(channel_already_deleted_string,
-					{ channel_name = channel_name })
+					{ channel_name = channel })
 			)
 		else
-			minetest.chat_send_player(
-				name,
+			minetest.chat_send_player(name,
 				beerchat.format_message(channel_left_string,
-					{ channel_name = channel_name })
+					{ channel_name = channel })
 			)
 		end
 		return true
