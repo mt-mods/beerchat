@@ -44,8 +44,7 @@ beerchat.fix_player_channel = function(name, notify)
 				beerchat.main_channel_name..". Please resend your message"
 		)
 	end
-	beerchat.currentPlayerChannel[name] = beerchat.main_channel_name
-	minetest.get_player_by_name(name):get_meta():set_string("beerchat:current_channel", beerchat.main_channel_name)
+	beerchat.set_player_channel(name, beerchat.main_channel_name)
 end
 
 beerchat.has_player_muted_player = function(name, other_name)

@@ -359,7 +359,7 @@ local unmute_player = {
 
 		if beerchat.has_player_muted_player(name, param) then
 			minetest.get_player_by_name(name):get_meta():set_string(
-				"beerchat:muted:" .. param, nil)
+				"beerchat:muted:" .. param, "")
 			minetest.chat_send_player(name, "Unmuted player " .. param .. ".")
 		else
 			minetest.chat_send_player(name, "Player " .. param .. " was not muted.")
