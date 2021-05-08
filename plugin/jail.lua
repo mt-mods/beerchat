@@ -79,8 +79,8 @@ beerchat.jail.chat_unjail = function(name, param)
 				-- Release player from chat jail
 				local from_channel = beerchat.get_player_channel(player_name) or beerchat.main_channel_name
 				local to_channel = player:get_meta():get("beerchat:jailed") or beerchat.main_channel_name
-				if to_channel == beerchat.jail.channel_name then
-					-- Always remove player from jail channel when unjailing
+				if to_channel == beerchat.jail.channel_name or to_channel == "1" then
+					-- Always remove player from jail channel when unjailing, also do not use 1 as valid channel...
 					to_channel = beerchat.main_channel_name
 				end
 				beerchat.set_player_channel(player_name, to_channel)
