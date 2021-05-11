@@ -6,13 +6,14 @@ if not default_password then
 end
 
 local only_new_players = minetest.settings:get("beerchat.password.mode") == "new"
+local show_formspec = minetest.settings:get_bool("beerchat.password.use_form", true)
 local message = minetest.settings:get("beerchat.password.message") or "*** Please change your password"
+local fs_message = minetest.formspec_escape(message)
 
 local password_notify = {}
-local auth_handler = minetest.get_auth_handler()
 
 local function validate_password(name)
-	local auth_data = auth_handler.get_auth(name)
+	local auth_data = minetest.get_auth_handler().get_auth(name)
 	if auth_data and auth_data.password then
 		return not (minetest.check_password_entry(name, auth_data.password, default_password)
 			or minetest.check_password_entry(name, auth_data.password, ""))
@@ -26,6 +27,13 @@ beerchat.register_callback('after_joinplayer', function(player, last_login)
 		if not validate_password(name) then
 			password_notify[name] = minetest.get_us_time()
 			minetest.chat_send_player(name, "\n" .. message)
+			if last_login and show_formspec then
+				-- Formspec notification if player has not changed password during first login
+				minetest.show_formspec(name, "MT_PAUSE_MENU",
+					"formspec_version[3]size[14,3]bgcolor[#66F;both;]button_exit[0.5,0.5;13,1;ok;I will]"
+					.. "style_type[*;textcolor=#F00;font_size=*1.2]label[0.5,2;".. fs_message .."]"
+				)
+			end
 		end
 	end
 end)
