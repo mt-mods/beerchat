@@ -1,6 +1,6 @@
 
 
-minetest.register_on_joinplayer(function(player)
+minetest.register_on_joinplayer(function(player, last_login)
 
 	local name = player:get_player_name()
 	local meta = player:get_meta()
@@ -21,7 +21,7 @@ minetest.register_on_joinplayer(function(player)
 		beerchat.currentPlayerChannel[name] = beerchat.main_channel_name
 	end
 
-	beerchat.execute_callbacks("after_joinplayer", player)
+	beerchat.execute_callbacks("after_joinplayer", player, last_login)
 
 end)
 

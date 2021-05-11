@@ -41,5 +41,8 @@ load_plugin("announce", false)
 -- Adds command "/force2channel channel,player"
 load_plugin("force2channel", true)
 
+-- Adds complaints for bad password (default or empty)
+load_plugin("password", true)
+
 -- Adds logging and info messages for certain events
 load_plugin("event-logging", true)
