@@ -193,3 +193,5 @@ local msg_override = {
 }
 
 minetest.register_chatcommand("msg", msg_override)
+minetest.register_chatcommand("pm", msg_override)
+minetest.register_chatcommand("dm", msg_override)
