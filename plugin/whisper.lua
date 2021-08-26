@@ -61,9 +61,12 @@ beerchat.whisper = function(name, message)
 			minetest.chat_send_player(name, "Whisper mode canceled, messages will be sent to channel")
 			return true
 		end
-		local radius = whisperers[name]
-		if not whisper(player:get_pos(), radius, name, msg, whisper_channel, whisper_string, whisper_color) then
-			minetest.chat_send_player(name, "no one heard you whispering!")
+		local player = minetest.get_player_by_name(name)
+		if player then
+			local radius = whisperers[name]
+			if not whisper(player:get_pos(), radius, name, message, whisper_channel, whisper_string, whisper_color) then
+				minetest.chat_send_player(name, "no one heard you whispering!")
+			end
 		end
 		return true
 	elseif whisper_command then
