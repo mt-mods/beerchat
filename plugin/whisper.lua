@@ -1,5 +1,10 @@
 local whisperers = {}
 
+minetest.register_on_leaveplayer(function(player)
+	local name = player:get_player_name()
+	whisperers[name] = nil
+end)
+
 -- Returns true when someone heard whisper and false if nobody else can hear whisper (cancelled, too far, no position)
 local function whisper(pos, radius, name, msg, channel, fmtstr, color)
 	if not beerchat.execute_callbacks('before_whisper', name, msg, channel, radius, pos) then
