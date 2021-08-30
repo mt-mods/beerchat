@@ -80,7 +80,7 @@ beerchat.whisper = function(name, message)
 		local player = minetest.get_player_by_name(name)
 		if radius > whisper_max_range then
 			minetest.chat_send_player(name, "You cannot whisper outside of a radius of "..whisper_max_range.." nodes")
-		elseif msg == "" then
+		elseif not msg or msg == "" then
 			whisperers[name] = radius
 			minetest.chat_send_player(name, "Whisper mode activated, to cancel write $ again without message")
 		elseif player then
