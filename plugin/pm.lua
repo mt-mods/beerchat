@@ -17,13 +17,6 @@ end)
 beerchat.register_on_chat_message(function(name, message)
 	minetest.log("action", "CHAT " .. name .. ": " .. message)
 
-	local msg_data = {name=name,message=message}
-	if beerchat.execute_callbacks('on_receive', msg_data) then
-		message = msg_data.message
-	else
-		return false
-	end
-
 	local players, msg = string.match(message, "^@([^%s:]*)[%s:](.*)")
 	if players and msg then
 		if msg == "" then
@@ -170,6 +163,13 @@ local msg_override = {
 				"for compatibility with the old chat command but with new style chat muting support "..
 				  "(players will not receive your message if they muted you) and multiple (comma separated) player support",
 	func = function(name, param)
+		local msg_data = beerchat.default_on_receive(name, param)
+		if not msg_data then
+			return true
+		end
+		name = msg_data.name
+		param = msg_data.message
+
 		minetest.log("action", "PM " .. name .. ": " .. param)
 		local players, msg = string.match(param, "^(.-) (.*)")
 		if players and msg then

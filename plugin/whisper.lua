@@ -93,5 +93,11 @@ beerchat.register_on_chat_message(beerchat.whisper)
 minetest.register_chatcommand("whis", {
 	params = "<message>",
 	description = "Whisper command for those who can't use $",
-	func = function(name, param) beerchat.whisper(name, "$ " .. param) end
+	func = function(name, param)
+		local msg = beerchat.default_on_receive(name, param)
+		if msg then
+			beerchat.whisper(msg.name, "$ " .. msg.message)
+		end
+		return true
+	end
 })
