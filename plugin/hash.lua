@@ -45,8 +45,6 @@ beerchat.register_on_chat_message(function(name, message)
 		)
 	elseif msg == "" then
 		switch_channel(name, channel_name)
-	elseif not beerchat.execute_callbacks('before_send', name, msg, channel_name) then
-		return false
 	elseif not beerchat.is_player_subscribed_to_channel(name, channel_name) then
 		minetest.chat_send_player(name, "You need to join this channel in order to be able to send messages to it")
 	else

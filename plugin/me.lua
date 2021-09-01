@@ -1,12 +1,17 @@
 
 local me_message_string = "|#${channel_name}| * ${from_player} ${message}"
 
-local me_override = {
+minetest.register_chatcommand("me", {
 	params = "<Message>",
 	description = "Send message in the \"* player message\" format, e.g. /me eats pizza becomes |#"..
 		beerchat.main_channel_name.."| * Player01 eats pizza",
 	func = function(name, param)
-		local msg = param
+		local msg_data = beerchat.default_on_receive(name, param)
+		if not msg_data then
+			return true
+		end
+		local msg = msg_data.message
+		name = msg_data.name
 		local channel = beerchat.get_player_channel(name)
 		if not channel then
 			beerchat.fix_player_channel(name, true)
@@ -42,6 +47,4 @@ local me_override = {
 		end
 		return true
 	end
-}
-
-minetest.register_chatcommand("me", me_override)
+})

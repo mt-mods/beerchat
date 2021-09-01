@@ -28,26 +28,30 @@ local function default_message_handler(name, message)
 	return true
 end
 
+function beerchat.default_on_receive(name, message)
+	local msg_data = { name = name, message = message }
+	if beerchat.execute_callbacks('on_receive', msg_data) then
+		return msg_data
+	end
+	minetest.log("verbose", "Beerchat message discarded by on_receive hook, contents went to /dev/null")
+end
+
 -- All messages are handled either by sending to channel or through special plugin function.
 minetest.register_on_chat_message(function(name, message)
-
-	-- Execute or_receive callbacks allowing modifications to sender and message
-	local msg_data = {name=name,message=message}
-	if beerchat.execute_callbacks('on_receive', msg_data) then
-		message = msg_data.message
-		name = msg_data.name
-	else
-		minetest.log("verbose", "Beerchat message discarded by on_receive hook, contents went to /dev/null")
+	-- Execute on_receive callbacks allowing modifications to sender and message
+	local msg = beerchat.default_on_receive(name, message)
+	if not msg then
 		return true
 	end
 
 	-- Execute mesasge handlers
 	for _, handler in ipairs(on_chat_message_handlers) do
-		if handler(name, message) then
+		if handler(msg.name, msg.message) then
 			-- Last executed handler marked message as handled, return
 			return true
 		end
 	end
+
 	-- None of extensions handled current message, call through default message handler
-	return default_message_handler(name, message)
+	return default_message_handler(msg.name, msg.message)
 end)
