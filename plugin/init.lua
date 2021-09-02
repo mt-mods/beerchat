@@ -17,11 +17,11 @@ load_plugin("me", true)
 -- Allows switching channels with "#channelname" and sending to channel with "#channelname message here"
 load_plugin("hash", true)
 
--- Allows "$ message here" to send message to nearby players
-load_plugin("whisper", true)
-
 -- Allows "@player message here" to send private messages to players
 load_plugin("pm", true)
+
+-- Allows "$ message here" to send message to nearby players
+load_plugin("whisper", true)
 
 -- Adds "/chat_jail playername" and "/chat_unjail playername" commands
 load_plugin("jail", false)
