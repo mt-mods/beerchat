@@ -9,12 +9,15 @@ sourcefile("init")
 describe("Whisper", function()
 
 	local SX = Player("SX", { shout = 1 })
+	local Sam = Player("Sam", { shout = 1 })
 
 	setup(function()
 		mineunit:execute_on_joinplayer(SX)
+		mineunit:execute_on_joinplayer(Sam)
 	end)
 
 	teardown(function()
+		mineunit:execute_on_leaveplayer(Sam)
 		mineunit:execute_on_leaveplayer(SX)
 	end)
 
@@ -23,7 +26,7 @@ describe("Whisper", function()
 		spy.on(beerchat, "send_message")
 		SX:send_chat_message("$ Everyone ignore me, this is just a whisper test")
 		assert.spy(beerchat.send_on_channel).was_not.called()
-		assert.spy(beerchat.send_message).was.called()
+		assert.spy(beerchat.send_message).was.called(2)
 	end)
 
 	it("whispers with radius", function()
@@ -31,7 +34,7 @@ describe("Whisper", function()
 		spy.on(beerchat, "send_message")
 		SX:send_chat_message("$200 Everyone ignore me, this is just a whisper test with radius")
 		assert.spy(beerchat.send_on_channel).was_not.called()
-		assert.spy(beerchat.send_message).was.called()
+		assert.spy(beerchat.send_message).was.called(2)
 	end)
 
 	it("whisper mode toggle", function()
