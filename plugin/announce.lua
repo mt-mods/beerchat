@@ -144,7 +144,7 @@ minetest.register_chatcommand("server-announce", {
 	description = "List and manage server wide messages. Supports \\n, \\t and \\e escape sequences.",
 	func = function(name, param)
 		if param and param ~= "" then
-			if minetest.check_player_privs(minetest.get_player_by_name(name), { ban = 1 }) then
+			if minetest.check_player_privs(name, { ban = true }) then
 				manage_announcements(name, param)
 			else
 				minetest.chat_send_player(name, "Required privileges for arguments: ban")
