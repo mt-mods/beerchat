@@ -132,7 +132,7 @@ local my_channels = {
 			end
 			minetest.chat_send_player(name, dump2(beerchat.playersChannels[name])
 				.. '\nYour default channel is: '
-				.. beerchat.currentPlayerChannel[name] or '<none>')
+				.. (beerchat.currentPlayerChannel[name] or '<none>'))
 		else
 			if beerchat.playersChannels[name][param] then
 				if beerchat.enable_sounds then
