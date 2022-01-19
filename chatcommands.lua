@@ -131,8 +131,8 @@ local my_channels = {
 					{ to_player = name, gain = beerchat.sounds_default_gain })
 			end
 			minetest.chat_send_player(name, dump2(beerchat.playersChannels[name])
-				.. '\nYour current default channel is: '
-				.. beerchat.currentPlayerChannel[name])
+				.. '\nYour default channel is: '
+				.. beerchat.currentPlayerChannel[name] or '<none>')
 		else
 			if beerchat.playersChannels[name][param] then
 				if beerchat.enable_sounds then
