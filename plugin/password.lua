@@ -1,6 +1,6 @@
 
 local default_password = minetest.settings:get("default_password")
-if not default_password then
+if not default_password or '' == default_password then
 	-- Do not use if default password is not set
 	return
 end
