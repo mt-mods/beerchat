@@ -66,7 +66,6 @@ if beerchat.http then
 	dofile(MP.."/web/logout.lua")
 	dofile(MP.."/web/common.lua")
 	dofile(MP.."/web/tan.lua")
-	dofile(MP.."/web/chatcommands.lua")
 end
 
 -- remove http ref
