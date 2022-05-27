@@ -26,6 +26,9 @@ load_plugin("whisper", true)
 -- Adds "/chat_jail playername" and "/chat_unjail playername" commands
 load_plugin("jail", false)
 
+-- Allow muting remote users
+load_plugin("remote_mute", false)
+
 -- Removes control characters from incoming messages
 load_plugin("cleaner", false)
 
