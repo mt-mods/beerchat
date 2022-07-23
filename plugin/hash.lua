@@ -22,7 +22,7 @@ local function switch_channel(name, channel)
 			minetest.chat_send_player(
 				name,
 				"Switched to channel " .. channel .. ", messages will now be sent to this channel. "
-				"To switch back to the main channel, type #" .. beerchat.main_channel_name
+				.. "To switch back to the main channel, type #" .. beerchat.main_channel_name
 			)
 		end
 		if beerchat.enable_sounds then
