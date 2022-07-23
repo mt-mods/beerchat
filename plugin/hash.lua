@@ -1,17 +1,9 @@
 
 -- # chat a.k.a. hash chat/ channel chat code, to send messages in chat channels using #
 -- e.g. #my channel: hello everyone in my channel!
-local hashchat_lastrecv = {}
 
 beerchat.register_on_chat_message(function(name, message)
-
-	local channel_name, msg = string.match(message, "^#(.-): (.*)")
-	if not beerchat.channels[channel_name] then
-		channel_name, msg = string.match(message, "^#(.-) (.*)")
-	end
-	if channel_name == "" then
-		channel_name = hashchat_lastrecv[name]
-	end
+	local channel_name, msg = string.match(message, "^#(%S+) (.*)")
 
 	if channel_name and msg then
 		if not beerchat.execute_callbacks('before_send', name, msg, channel_name) then
@@ -29,10 +21,6 @@ beerchat.register_on_chat_message(function(name, message)
 			minetest.chat_send_player(name, "You need to join this channel in order to "
 				.. "be able to send messages to it")
 		else
-			if channel_name == "" then--use last used channel
-				-- We need to get the target
-				channel_name = hashchat_lastrecv[name]
-			end
 			if channel_name and channel_name ~= "" then
 				beerchat.on_channel_message(channel_name, name, msg)
 				beerchat.send_on_channel(name, channel_name, msg)
