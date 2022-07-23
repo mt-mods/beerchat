@@ -1,26 +1,22 @@
 
 -- # chat a.k.a. hash chat/ channel chat code, to send messages in chat channels using #
--- e.g. #my channel: hello everyone in my channel!
+-- e.g. #my-channel: hello everyone in my channel!
 
 local function switch_channel(name, channel)
-	if not beerchat.channels[channel] then
-		minetest.chat_send_player(name, "Channel " .. channel .. " does not exist")
-	elseif not beerchat.is_player_subscribed_to_channel(name, channel) then
+	if not beerchat.is_player_subscribed_to_channel(name, channel) then
 		minetest.chat_send_player(name, "You need to join this channel in order to be able to switch to it")
 	else
 		if not beerchat.execute_callbacks('before_switch_chan', name,
 			beerchat.currentPlayerChannel[name], channel) then
-			return false
+			return
 		end
 		beerchat.set_player_channel(name, channel)
 		if channel == beerchat.main_channel_name then
-			minetest.chat_send_player(
-				name,
+			minetest.chat_send_player(name,
 				"Switched to channel " .. channel .. ", messages will now be sent to this channel"
 			)
 		else
-			minetest.chat_send_player(
-				name,
+			minetest.chat_send_player(name,
 				"Switched to channel " .. channel .. ", messages will now be sent to this channel. "
 				.. "To switch back to the main channel, type #" .. beerchat.main_channel_name
 			)
@@ -42,26 +38,21 @@ beerchat.register_on_chat_message(function(name, message)
 
 	if not channel_name then
 		return false
-	elseif msg == "" then
-		switch_channel(name, channel_name)
-		return true
-	end
-
-	if not beerchat.execute_callbacks('before_send', name, msg, channel_name) then
-		return false
-	end
-
-	if not beerchat.channels[channel_name] then
+	elseif not beerchat.channels[channel_name] then
 		minetest.chat_send_player(name,
 			"Channel " .. channel_name .. " does not exist. Make sure the channel still exists "
-			.. "and you format its name properly, e.g. #channel message or #my channel: message"
+			.. "and you format its name properly, e.g. #channel message"
 		)
+	elseif msg == "" then
+		switch_channel(name, channel_name)
+	elseif not beerchat.execute_callbacks('before_send', name, msg, channel_name) then
+		return false
 	elseif not beerchat.is_player_subscribed_to_channel(name, channel_name) then
 		minetest.chat_send_player(name, "You need to join this channel in order to be able to send messages to it")
 	else
 		beerchat.on_channel_message(channel_name, name, msg)
 		beerchat.send_on_channel(name, channel_name, msg)
 	end
-	return true
 
+	return true
 end)
