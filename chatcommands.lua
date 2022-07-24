@@ -32,7 +32,7 @@ local create_channel = {
 				.. "maximum of 3 allowed: <Channel Name>,<Password>,<Color>"
 		end
 
-		local lchannel_name = string.trim(str[1] or "")
+		local lchannel_name = string.trim(str[1] or ""):gsub("%s", "-")
 		if lchannel_name == "" then
 			return false, "ERROR: You must supply a channel name"
 		end
