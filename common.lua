@@ -47,6 +47,19 @@ beerchat.fix_player_channel = function(name, notify)
 	beerchat.set_player_channel(name, beerchat.main_channel_name)
 end
 
+beerchat.join_channel = function(name, channel, set_default)
+	if not beerchat.execute_callbacks('before_join', name, channel) then
+		return false
+	end
+	(set_default and beerchat.set_player_channel or beerchat.add_player_channel)(name, channel)
+	if beerchat.enable_sounds then
+		minetest.sound_play("beerchat_chirp", { to_player = name, gain = beerchat.sounds_default_gain })
+	end
+	local msg = beerchat.format_message("|#${channel_name}| Joined channel", { channel_name = channel })
+	minetest.chat_send_player(name, msg)
+	return true
+end
+
 beerchat.has_player_muted_player = function(name, other_name)
 	local cb_result = beerchat.execute_callbacks('before_check_muted', name, other_name)
 	if cb_result ~= nil then
