@@ -4,12 +4,10 @@ local channel_invitation_string = "|#${channel_name}| Channel invite from (${fro
 	.. "which you can send messages to the channel via #${channel_name}: message"
 local channel_invited_string = "|#${channel_name}| Invite sent to ${to_player}"
 local channel_deleted_string = "|#${channel_name}| Channel deleted"
-local channel_joined_string = "|#${channel_name}| Joined channel"
 local channel_left_string = "|#${channel_name}| Left channel"
 local channel_already_deleted_string = "|#${channel_name}| Channel seems to have already "
 	.. "been deleted, will unregister channel from your list of channels"
 
-local join_channel_sound = "beerchat_chirp"			-- Sound when you join a channel
 local leave_channel_sound = "beerchat_chirp"			-- Sound when you leave a channel
 local channel_invite_sound = "beerchat_chirp"			-- Sound when sending/ receiving an invite to a channel
 
@@ -181,19 +179,7 @@ local join_channel = {
 			end
 		end
 
-		if not beerchat.execute_callbacks('before_join', name, channel_name) then
-			return false
-		end
-
-		beerchat.add_player_channel(name, channel_name)
-
-		if beerchat.enable_sounds then
-			minetest.sound_play(join_channel_sound,
-				{ to_player = name, gain = beerchat.sounds_default_gain })
-		end
-		minetest.chat_send_player(name, beerchat.format_message(channel_joined_string,
-			{ channel_name = channel_name }))
-		return true
+		return beerchat.join_channel(name, channel_name)
 	end
 }
 
