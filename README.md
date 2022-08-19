@@ -5,7 +5,7 @@ Chat mod for minetest
 (heavily modified version of the "original" beerchat mod: https://github.com/evrooije/beerchat.git)
 
 ![](https://github.com/minetest-beerchat/beerchat/workflows/luacheck/badge.svg)
-![](https://github.com/minetest-beerchat/beerchat/workflows/integration-test/badge.svg)
+![](https://github.com/minetest-beerchat/beerchat/workflows/mineunit/badge.svg)
 
 # Overview
 

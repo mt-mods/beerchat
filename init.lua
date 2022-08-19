@@ -75,8 +75,4 @@ beerchat.http = nil
 -- Load beerchat extensions
 dofile(MP.."/plugin/init.lua")
 
-if minetest.settings:get_bool("enable_beerchat_integration_test") then
-  dofile(MP.."/integration_test.lua")
-end
-
 print("[OK] beerchat")
