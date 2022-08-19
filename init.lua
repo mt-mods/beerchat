@@ -35,8 +35,7 @@ beerchat = {
 	currentPlayerChannel = {},
 
 	-- web settings
-	url = minetest.settings:get("beerchat.url") or "http://127.0.0.1:8080",
-	http = http, -- will be removed after init
+	url = minetest.settings:get("beerchat.matterbridge_url") or "http://127.0.0.1:4242",
 
 	-- mapped remote users (irc, discord)
 	-- data: local user => remote user
@@ -54,25 +53,18 @@ dofile(MP.."/session.lua")
 dofile(MP.."/message.lua")
 dofile(MP.."/chatcommands.lua")
 
-if beerchat.http then
+if http then
 	-- load web stuff
-	print("beerchat connects to proxy-endpoint at: " .. beerchat.url)
+	print("[beerchat] connecting to proxy-endpoint at: " .. beerchat.url)
 
 	dofile(MP.."/web/executor.lua")
-	dofile(MP.."/web/tx.lua")
 	dofile(MP.."/web/audit.lua")
-	dofile(MP.."/web/rx.lua")
 	dofile(MP.."/web/login.lua")
 	dofile(MP.."/web/logout.lua")
 	dofile(MP.."/web/common.lua")
-	dofile(MP.."/web/tan.lua")
-	dofile(MP.."/web/chatcommands.lua")
+	loadfile(MP.."/web/tx.lua")(http)
+	loadfile(MP.."/web/rx.lua")(http)
 end
-
--- remove http ref
-beerchat.http = nil
 
 -- Load beerchat extensions
 dofile(MP.."/plugin/init.lua")
-
-print("[OK] beerchat")

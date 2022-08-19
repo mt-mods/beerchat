@@ -1,9 +1,8 @@
-
-local http = beerchat.http
+local http = ...
 local recv_loop
 
 local function handle_data(data)
-	if not data or not data.username or not data.message or not data.name then
+	if not data or not data.username or not data.text or not data.gateway or not data.protocol then
 		return
 	end
 
@@ -11,49 +10,23 @@ local function handle_data(data)
 		return
 	end
 
-	local name = data.username .. "@" .. data.name
-
-	if data.channel and data.channel ~= "" then
-		-- channel message
-		beerchat.send_on_channel(name, data.channel, data.message)
-
-	elseif data.target_name == "minetest" then
-			-- direct message
-			local success, msg = beerchat.executor(data.message, name)
-
-			if not success and not msg then
-				-- failed without command
-				msg = "Command failed!"
-			end
-
-			if not msg then
-				-- no result, ignore
-				return
-			end
-
-			local tx_data = {
-				target_name = data.name,
-				target_username = data.username,
-				message = msg
-			}
-
-			local json = minetest.write_json(tx_data)
-
-			http.fetch({
-				url = beerchat.url,
-				extra_headers = { "Content-Type: application/json" },
-				timeout = 5,
-				post_data = json
-			}, function()
-				-- ignore errors
-			end)
+	local name = data.username .. "@" .. data.protocol
+	if data.event == "user_action" then
+		-- "/me" message, TODO: use format and helper in "plugin/me.lua"
+		beerchat.send_on_channel(name, data.gateway, data.text)
+	elseif data.event == "join_leave" then
+		-- join/leave message, from irc for example
+		beerchat.send_on_channel(name, data.gateway, data.text)
+	else
+		-- regular message
+		beerchat.send_on_channel(name, data.gateway, data.text)
 	end
 end
 
 
 recv_loop = function()
 	http.fetch({
-		url = beerchat.url,
+		url = beerchat.url .. "/api/messages",
 		timeout = 30,
 	}, function(res)
 		if res.succeeded and res.code == 200 and res.data then
@@ -69,9 +42,6 @@ recv_loop = function()
 				for _, item in ipairs(data) do
 					handle_data(item)
 				end
-			else
-				-- single item received
-				handle_data(data)
 			end
 
 			minetest.after(0.5, recv_loop)

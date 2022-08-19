@@ -1,23 +1,21 @@
 
-local http = beerchat.http
+local http = ...
 
 -- normal message in chat channel
-beerchat.on_channel_message = function(channel, playername, message)
-
-	local data = {
-		channel = channel,
-		username = playername,
-		message = message,
-		type = "message"
-	}
-
-	local json = minetest.write_json(data)
-
+beerchat.on_channel_message = function(channel, playername, message, event)
 	http.fetch({
-		url = beerchat.url,
-		extra_headers = { "Content-Type: application/json" },
+		url = beerchat.url .. "/api/message",
+		method = "POST",
+		extra_headers = {
+			"content-type: application/json"
+		},
 		timeout = 5,
-		post_data = json
+		data = minetest.write_json({
+			gateway = channel,
+			username = playername,
+			text = message,
+			event = event
+		})
 	}, function()
 		-- ignore errors
 	end)
@@ -26,23 +24,7 @@ end
 
 -- /me message in chat channel
 beerchat.on_me_message = function(channel, playername, message)
-	local data = {
-		channel = channel,
-		username = playername,
-		message = message,
-		type = "me"
-	}
-
-	local json = minetest.write_json(data)
-
-	http.fetch({
-		url = beerchat.url,
-		extra_headers = { "Content-Type: application/json" },
-		timeout = 5,
-		post_data = json
-	}, function()
-		-- ignore errors
-	end)
+	beerchat.on_channel_message(channel, playername, message, "user_action")
 end
 
 -- map to players -> new == true
@@ -66,7 +48,7 @@ minetest.register_on_joinplayer(function(player)
 		new_player_map[playername] = nil
 	end
 
-	beerchat.on_channel_message(nil, nil, msg)
+	beerchat.on_channel_message("main", "", msg, "notice_irc")
 end)
 
 -- leave player message
@@ -76,12 +58,12 @@ minetest.register_on_leaveplayer(function(player, timed_out)
 		msg = msg .. " (timed out)"
 	end
 
-	beerchat.on_channel_message(nil, nil, msg)
+	beerchat.on_channel_message("main", "", msg, "notice_irc")
 end)
 
 -- initial message on start
-beerchat.on_channel_message(nil, nil, "Minetest started!")
+beerchat.on_channel_message("main", "", "Minetest started!", "notice_irc")
 
 minetest.register_on_shutdown(function()
-	beerchat.on_channel_message(nil, nil, "Minetest shutting down!")
+	beerchat.on_channel_message("main", "", "Minetest shutting down!", "notice_irc")
 end)
