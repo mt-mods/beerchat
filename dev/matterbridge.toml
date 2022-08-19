@@ -5,6 +5,13 @@ Nick="BeerchatTestBot"
 RemoteNickFormat="<{NICK}> "
 ShowJoinPart=true
 
+[discord]
+[discord.testserver]
+Token="<omitted>"
+Server="839951944515715084"
+RemoteNickFormat="<{NICK}> "
+ShowJoinPart=true
+
 [api.myapi]
 BindAddress="0.0.0.0:4242"
 Token="mytoken"
@@ -18,6 +25,9 @@ enable=true
 [[gateway.inout]]
 account="irc.libera"
 channel="#beerchat"
+[[gateway.inout]]
+account = "discord.testserver"
+channel="matterbridge"
 [[gateway.inout]]
 account="api.myapi"
 channel="api"
