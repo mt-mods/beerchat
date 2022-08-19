@@ -7,7 +7,8 @@ beerchat.on_channel_message = function(channel, playername, message, event)
 		url = beerchat.url .. "/api/message",
 		method = "POST",
 		extra_headers = {
-			"content-type: application/json"
+			"Content-Type: application/json",
+			"Authorization: Bearer " .. beerchat.token
 		},
 		timeout = 5,
 		data = minetest.write_json({

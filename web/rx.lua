@@ -27,6 +27,9 @@ end
 recv_loop = function()
 	http.fetch({
 		url = beerchat.url .. "/api/messages",
+		extra_headers = {
+			"Authorization: Bearer " .. beerchat.token
+		},
 		timeout = 30,
 	}, function(res)
 		if res.succeeded and res.code == 200 and res.data then

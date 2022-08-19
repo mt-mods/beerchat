@@ -36,6 +36,7 @@ beerchat = {
 
 	-- web settings
 	url = minetest.settings:get("beerchat.matterbridge_url") or "http://127.0.0.1:4242",
+	token = minetest.settings:get("beerchat.matterbridge_token"),
 
 	-- mapped remote users (irc, discord)
 	-- data: local user => remote user
@@ -53,7 +54,7 @@ dofile(MP.."/session.lua")
 dofile(MP.."/message.lua")
 dofile(MP.."/chatcommands.lua")
 
-if http then
+if http and beerchat.token then
 	-- load web stuff
 	print("[beerchat] connecting to proxy-endpoint at: " .. beerchat.url)
 
