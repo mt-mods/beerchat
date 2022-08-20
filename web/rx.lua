@@ -23,9 +23,9 @@ local function handle_data(data)
 			local cmd_name = string.sub(data.text, 2)
 			local fn = beerchat.get_relaycommand(cmd_name)
 			if not fn then
-				beerchat.on_channel_message("main", "SYSTEM", "command not found: '" .. cmd_name .. "'")
+				beerchat.on_channel_message(data.gateway, "SYSTEM", "command not found: '" .. cmd_name .. "'")
 			else
-				beerchat.on_channel_message("main", "SYSTEM", fn(data.username, data.text, data.protocol))
+				beerchat.on_channel_message(data.gateway, "SYSTEM", fn(data.username, data.text, data.protocol))
 			end
 		else
 			-- regular user message
