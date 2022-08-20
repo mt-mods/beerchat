@@ -15,7 +15,7 @@ Features
 * Chat channels
 * Whispering (`$ hello there`)
 * Shortcommands (`#channel hello` `@player hello`)
-* Web-integration (IRC/Discord) via the `beerchat_proxy`
+* Matterbridge-integration (IRC/Discord/matrix/etc)
 
 # Compatibility
 
@@ -24,6 +24,7 @@ Features
 # Documentation
 
 * [Manual](./doc/manual.md)
+* [Matterbridge](./doc/matterbridge.md)
 
 # License
 
