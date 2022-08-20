@@ -12,7 +12,7 @@ if beerchat.mod_storage:get_string("channels") == "" then
 	beerchat.mod_storage:set_string("channels", minetest.write_json(beerchat.channels))
 end
 
-beerchat.channels = minetest.parse_json(beerchat.mod_storage:get_string("channels"))
+beerchat.channels = minetest.parse_json(beerchat.mod_storage:get_string("channels")) or {}
 beerchat.channels[beerchat.main_channel_name] = {
 	owner = main_channel_owner,
 	color = main_channel_color

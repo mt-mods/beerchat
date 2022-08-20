@@ -18,8 +18,20 @@ local function handle_data(data)
 		-- join/leave message, from irc for example
 		beerchat.send_on_channel(name, data.gateway, data.text)
 	else
-		-- regular message
-		beerchat.send_on_channel(name, data.gateway, data.text)
+		-- regular text
+		if string.sub(data.text, 1, 1) == "!" then
+			-- user command
+			local cmd_name = string.sub(data.text, 2)
+			local fn = beerchat.get_relaycommand(cmd_name)
+			if not fn then
+				beerchat.on_channel_message("main", "SYSTEM", "command not found: '" .. cmd_name .. "'")
+			else
+				beerchat.on_channel_message("main", "SYSTEM", fn(data.username, data.text, data.protocol))
+			end
+		else
+			-- regular user message
+			beerchat.send_on_channel(name, data.gateway, data.text)
+		end
 	end
 end
 
@@ -32,7 +44,7 @@ recv_loop = function()
 		},
 		timeout = 30,
 	}, function(res)
-		if res.succeeded and res.code == 200 and res.data then
+		if res.succeeded and res.code == 200 and res.data and res.data ~= "" then
 			local data = minetest.parse_json(res.data)
 			if not data then
 				minetest.log("error", "[beerchat] content parsing error: " .. dump(res.data))
