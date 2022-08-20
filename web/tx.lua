@@ -42,7 +42,7 @@ end)
 minetest.register_on_joinplayer(function(player)
 	local playername = player:get_player_name()
 
-	local msg = "Player " .. playername .. " joined the game"
+	local msg = "❱ Player " .. playername .. " joined the game"
 	if new_player_map[playername] then
 		msg = msg .. " (new player)"
 		-- clear new-player flag
@@ -54,7 +54,7 @@ end)
 
 -- leave player message
 minetest.register_on_leaveplayer(function(player, timed_out)
-	local msg = player:get_player_name() .. " left the game"
+	local msg = "❰ Player " .. player:get_player_name() .. " left the game"
 	if timed_out then
 		msg = msg .. " (timed out)"
 	end
@@ -63,8 +63,8 @@ minetest.register_on_leaveplayer(function(player, timed_out)
 end)
 
 -- initial message on start
-beerchat.on_channel_message("main", "SYSTEM", "Minetest started!")
+beerchat.on_channel_message("main", "SYSTEM", "✔ Minetest started!")
 
 minetest.register_on_shutdown(function()
-	beerchat.on_channel_message("main", "SYSTEM", "Minetest shutting down!")
+	beerchat.on_channel_message("main", "SYSTEM", "✖ Minetest shutting down!")
 end)

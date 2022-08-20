@@ -3,6 +3,7 @@
 Server="irc.libera.chat:6667"
 Nick="BeerchatTestBot"
 RemoteNickFormat="<{NICK}> "
+ColorNicks=true
 ShowJoinPart=true
 
 [discord]
