@@ -10,13 +10,12 @@ local function handle_data(data)
 		return
 	end
 
-	local name = data.username .. "@" .. data.protocol
 	if data.event == "user_action" then
 		-- "/me" message, TODO: use format and helper in "plugin/me.lua"
-		beerchat.send_on_channel(name, data.gateway, data.text)
+		beerchat.send_on_channel(data.username, data.gateway, data.text)
 	elseif data.event == "join_leave" then
 		-- join/leave message, from irc for example
-		beerchat.send_on_channel(name, data.gateway, data.text)
+		beerchat.send_on_channel(data.username, data.gateway, data.text)
 	else
 		-- regular text
 		if string.sub(data.text, 1, 1) == "!" then
@@ -30,7 +29,7 @@ local function handle_data(data)
 			end
 		else
 			-- regular user message
-			beerchat.send_on_channel(name, data.gateway, data.text)
+			beerchat.send_on_channel(data.username, data.gateway, data.text)
 		end
 	end
 end

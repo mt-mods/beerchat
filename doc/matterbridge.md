@@ -17,7 +17,7 @@ This `matterbridge.toml` example connects the ingame `main` channel to libera `#
 
 ```toml
 [irc]
-[irc.libera]
+[irc.Libera]
 Server="irc.libera.chat:6667"
 Nick="BeerchatTestBot"
 RemoteNickFormat="<{NICK}> "
@@ -25,14 +25,14 @@ ColorNicks=true
 ShowJoinPart=true
 
 [discord]
-[discord.testserver]
+[discord.Discord]
 Token="<omitted>"
 Server="839951944515715084"
 RemoteNickFormat="<{NICK}> "
 ShowJoinPart=true
 UseUserName=true
 
-[api.myapi]
+[api.minetest]
 BindAddress="0.0.0.0:4242"
 Token="mytoken"
 Buffer=1000
@@ -43,13 +43,13 @@ ShowJoinPart=true
 name="main"
 enable=true
 [[gateway.inout]]
-account="irc.libera"
+account="irc.Libera"
 channel="#beerchat"
 [[gateway.inout]]
-account = "discord.testserver"
+account = "discord.Discord"
 channel="matterbridge"
 [[gateway.inout]]
-account="api.myapi"
+account="api.minetest"
 channel="api"
 ```
 (tokens and passwords are omitted in this example)
