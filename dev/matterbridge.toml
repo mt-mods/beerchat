@@ -12,6 +12,7 @@ Token="<omitted>"
 Server="839951944515715084"
 RemoteNickFormat="<{NICK}> "
 ShowJoinPart=true
+UseUserName=true
 
 [api.myapi]
 BindAddress="0.0.0.0:4242"
