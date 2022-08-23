@@ -1,9 +1,8 @@
-
-local http = beerchat.http
+local http = ...
 local recv_loop
 
 local function handle_data(data)
-	if not data or not data.username or not data.message or not data.name then
+	if not data or not data.username or not data.text or not data.gateway or not data.protocol then
 		return
 	end
 
@@ -11,52 +10,40 @@ local function handle_data(data)
 		return
 	end
 
-	local name = data.username .. "@" .. data.name
-
-	if data.channel and data.channel ~= "" then
-		-- channel message
-		beerchat.send_on_channel(name, data.channel, data.message)
-
-	elseif data.target_name == "minetest" then
-			-- direct message
-			local success, msg = beerchat.executor(data.message, name)
-
-			if not success and not msg then
-				-- failed without command
-				msg = "Command failed!"
+	if data.event == "user_action" then
+		-- "/me" message, TODO: use format and helper in "plugin/me.lua"
+		beerchat.send_on_channel(data.username, data.gateway, data.text)
+	elseif data.event == "join_leave" then
+		-- join/leave message, from irc for example
+		beerchat.send_on_channel(data.username, data.gateway, data.text)
+	else
+		-- regular text
+		if string.sub(data.text, 1, 1) == "!" then
+			-- user command
+			local cmd_name = string.sub(data.text, 2)
+			local fn = beerchat.get_relaycommand(cmd_name)
+			if not fn then
+				beerchat.on_channel_message(data.gateway, "SYSTEM", "command not found: '" .. cmd_name .. "'")
+			else
+				beerchat.on_channel_message(data.gateway, "SYSTEM", fn(data.username, data.text, data.protocol))
 			end
-
-			if not msg then
-				-- no result, ignore
-				return
-			end
-
-			local tx_data = {
-				target_name = data.name,
-				target_username = data.username,
-				message = msg
-			}
-
-			local json = minetest.write_json(tx_data)
-
-			http.fetch({
-				url = beerchat.url,
-				extra_headers = { "Content-Type: application/json" },
-				timeout = 5,
-				post_data = json
-			}, function()
-				-- ignore errors
-			end)
+		else
+			-- regular user message
+			beerchat.send_on_channel(data.username, data.gateway, data.text)
+		end
 	end
 end
 
 
 recv_loop = function()
 	http.fetch({
-		url = beerchat.url,
+		url = beerchat.url .. "/api/messages",
+		extra_headers = {
+			"Authorization: Bearer " .. beerchat.token
+		},
 		timeout = 30,
 	}, function(res)
-		if res.succeeded and res.code == 200 and res.data then
+		if res.succeeded and res.code == 200 and res.data and res.data ~= "" then
 			local data = minetest.parse_json(res.data)
 			if not data then
 				minetest.log("error", "[beerchat] content parsing error: " .. dump(res.data))
@@ -69,9 +56,6 @@ recv_loop = function()
 				for _, item in ipairs(data) do
 					handle_data(item)
 				end
-			else
-				-- single item received
-				handle_data(data)
 			end
 
 			minetest.after(0.5, recv_loop)

@@ -1,23 +1,22 @@
 
-local http = beerchat.http
+local http = ...
 
 -- normal message in chat channel
-beerchat.on_channel_message = function(channel, playername, message)
-
-	local data = {
-		channel = channel,
-		username = playername,
-		message = message,
-		type = "message"
-	}
-
-	local json = minetest.write_json(data)
-
+beerchat.on_channel_message = function(channel, playername, message, event)
 	http.fetch({
-		url = beerchat.url,
-		extra_headers = { "Content-Type: application/json" },
+		url = beerchat.url .. "/api/message",
+		method = "POST",
+		extra_headers = {
+			"Content-Type: application/json",
+			"Authorization: Bearer " .. beerchat.token
+		},
 		timeout = 5,
-		post_data = json
+		data = minetest.write_json({
+			gateway = channel,
+			username = playername,
+			text = message,
+			event = event
+		})
 	}, function()
 		-- ignore errors
 	end)
@@ -26,23 +25,7 @@ end
 
 -- /me message in chat channel
 beerchat.on_me_message = function(channel, playername, message)
-	local data = {
-		channel = channel,
-		username = playername,
-		message = message,
-		type = "me"
-	}
-
-	local json = minetest.write_json(data)
-
-	http.fetch({
-		url = beerchat.url,
-		extra_headers = { "Content-Type: application/json" },
-		timeout = 5,
-		post_data = json
-	}, function()
-		-- ignore errors
-	end)
+	beerchat.on_channel_message(channel, playername, message, "user_action")
 end
 
 -- map to players -> new == true
@@ -59,29 +42,29 @@ end)
 minetest.register_on_joinplayer(function(player)
 	local playername = player:get_player_name()
 
-	local msg = "Player " .. playername .. " joined the game"
+	local msg = "❱ Player " .. playername .. " joined the game"
 	if new_player_map[playername] then
 		msg = msg .. " (new player)"
 		-- clear new-player flag
 		new_player_map[playername] = nil
 	end
 
-	beerchat.on_channel_message(nil, nil, msg)
+	beerchat.on_channel_message("main", "SYSTEM", msg)
 end)
 
 -- leave player message
 minetest.register_on_leaveplayer(function(player, timed_out)
-	local msg = player:get_player_name() .. " left the game"
+	local msg = "❰ Player " .. player:get_player_name() .. " left the game"
 	if timed_out then
 		msg = msg .. " (timed out)"
 	end
 
-	beerchat.on_channel_message(nil, nil, msg)
+	beerchat.on_channel_message("main", "SYSTEM", msg)
 end)
 
 -- initial message on start
-beerchat.on_channel_message(nil, nil, "Minetest started!")
+beerchat.on_channel_message("main", "SYSTEM", "✔ Minetest started!")
 
 minetest.register_on_shutdown(function()
-	beerchat.on_channel_message(nil, nil, "Minetest shutting down!")
+	beerchat.on_channel_message("main", "SYSTEM", "✖ Minetest shutting down!")
 end)
