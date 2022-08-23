@@ -13,6 +13,7 @@ Server="839951944515715084"
 RemoteNickFormat="[{BRIDGE}] <{NICK}> "
 ShowJoinPart=true
 UseUserName=true
+AllowMention=["users"]
 
 [api.minetest]
 BindAddress="0.0.0.0:4242"
