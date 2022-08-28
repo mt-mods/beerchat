@@ -93,7 +93,7 @@ local delete_channel = {
 			return false, "ERROR: Channel " .. param .. " does not exist"
 		end
 
-		if name ~= beerchat.channels[param].owner then
+		if name ~= beerchat.channels[param].owner and not minetest.check_player_privs(name, beerchat.admin_priv) then
 			return false, "ERROR: You are not the owner of channel " .. param
 		end
 

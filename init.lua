@@ -9,6 +9,9 @@ beerchat = {
 	-- The main channel is the one you send messages to when no channel is specified
 	main_channel_name = minetest.settings:get("beerchat.main_channel_name") or "main",
 
+	-- Chat administrator privilege allows bypassing owner checks
+	admin_priv = minetest.settings:get("beerchat.admin_priv") or "server",
+
 	-- The default color of channels when no color is specified
 	default_channel_color = "#ffffff",
 
