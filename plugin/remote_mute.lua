@@ -42,7 +42,7 @@ minetest.register_chatcommand("remote_unmute", {
 })
 
 beerchat.register_callback('on_http_receive', function(msg_data)
-	if remote_muted[msg_data.username .. "@" .. msg_data.name] then
+	if remote_muted[msg_data.username] then
 		return false
 	end
 end)
