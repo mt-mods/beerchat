@@ -5,7 +5,7 @@ end)
 
 beerchat.register_callback('on_http_receive', function(msg_data)
 	-- Trim spaces and newlines, add ">" to mark newlines in incoming message
-	local msg = msg_data.message
+	local msg = msg_data.text
 		:gsub('%s+$','') -- Remove trailing space
 		:gsub('<:[%w_]+:%d+>','') -- Remove long emoji codes
 		:gsub('(%s)%s+','%1') -- Trim all whitespace
@@ -14,5 +14,5 @@ beerchat.register_callback('on_http_receive', function(msg_data)
 		-- Throw away messages that do not contain any words after cleanup
 		return false
 	end
-	msg_data.message = msg
+	msg_data.text = msg
 end)
