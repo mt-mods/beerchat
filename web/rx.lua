@@ -1,5 +1,4 @@
 local http = ...
-local recv_loop
 
 local function handle_data(data)
 	if not data or not data.username or not data.text or not data.gateway or not data.protocol then
@@ -35,19 +34,18 @@ local function handle_data(data)
 end
 
 
-recv_loop = function()
+local function recv_loop()
 	http.fetch({
 		url = beerchat.url .. "/api/messages",
 		extra_headers = {
 			"Authorization: Bearer " .. beerchat.token
 		},
-		timeout = 30,
+		timeout = 10,
 	}, function(res)
 		if res.succeeded and res.code == 200 and res.data and res.data ~= "" then
 			local data = minetest.parse_json(res.data)
 			if not data then
 				minetest.log("error", "[beerchat] content parsing error: " .. dump(res.data))
-				minetest.after(5, recv_loop)
 				return
 			end
 
@@ -57,18 +55,15 @@ recv_loop = function()
 					handle_data(item)
 				end
 			end
-
-			minetest.after(0.5, recv_loop)
 		else
 			-- ignore errors
-			minetest.log("error", "[beerchat] http request to " ..
-				beerchat.url .. " failed with code " .. res.code)
-
-			minetest.after(5, recv_loop)
+			minetest.log("error", "[beerchat] http request to " .. beerchat.url .. " failed with code " .. res.code)
 		end
 
 	end)
+	-- re-schedule receive function in any case
+	minetest.after(1, recv_loop)
 end
 
 -- start loop
-recv_loop()
+minetest.after(1, recv_loop)
