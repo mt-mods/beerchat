@@ -1,18 +1,20 @@
 -- default relay commands
 
 ------------------
--- TODO: cleanup
+-- TODO: cleanup, test
 ------------------
 
+-- helper function for !status command
 local DAY = 24 * 3600
 local HOUR = 3600
-
 local function human_readable_seconds(n)
 	-- sanitize (not needed in this usgage case
 	--if not is_number(n) then return "n/a" end
 
 	local s = ""
+	-- drop fractions of seconds
 	n = math.floor(n)
+	-- extract days, hours and minutes
 	local days = math.floor(n / DAY)
 	n = n - days * DAY
 	local hours = math.floor(n / HOUR)
@@ -20,6 +22,7 @@ local function human_readable_seconds(n)
 	local minutes = math.floor(n / 60)
 	n = n - minutes * 60
 
+	-- add non-zero elements to output string s
 	if days > 0 then
 		s = s .. ' ' .. tostring(days) .. ' day'
 		if days ~= 1 then s = s .. 's' end
@@ -40,30 +43,44 @@ local function human_readable_seconds(n)
 	return s
 end
 
+-- helper function for !players and !status commands
 local function players_list()
-	local players = {}
+	-- loop all online names into a list
+	local player_names = {}
 	for _, player in ipairs(minetest.get_connected_players()) do
-		table.insert(players, player:get_player_name())
+		table.insert(player_names, player:get_player_name())
 	end
-	if 0 == #players then
+
+	-- abort if there are no players connected
+	if 0 == #player_names then
 		return 'No players connected.'
 	end
 
-	return 'Players: ' .. table.concat(players, ', ')
+	-- collapse list into coma separated string
+	return 'Players: ' .. table.concat(player_names, ', ')
 end
 
+-- function for !status command
 local function command_status()
-	local aOut = {}
-	table.insert(aOut, 'Uptime:')
-	table.insert(aOut, human_readable_seconds(minetest.get_server_uptime()))
-    -- TODO:
-	--* `minetest.get_server_max_lag()`: returns the current maximum lag
-	-- of the server in seconds or nil if server is not fully loaded yet
-	table.insert(aOut, 'max lag:')
-	table.insert(aOut, math.floor(1000 * minetest.get_server_max_lag()) * .001)
-	table.insert(aOut, 's')
-	table.insert(aOut, players_list())
-	return table.concat(aOut, ' ')
+	local out = {}
+
+	-- uptime in human readable format
+	table.insert(out, 'Uptime:')
+	table.insert(out, human_readable_seconds(minetest.get_server_uptime()))
+
+	-- max lag seconds
+	local lag_max = minetest.get_server_max_lag()
+	if lag_max then
+		table.insert(out, 'max lag:')
+		table.insert(out, math.floor(100 * lag_max) * .01)
+		table.insert(out, 's')
+	end
+
+	-- list of player names
+	table.insert(out, players_list())
+
+	-- collapse list into a string and return
+	return table.concat(out, ' ')
 end
 
 -- !status
