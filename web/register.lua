@@ -1,17 +1,23 @@
 -- default relay commands
 
+-- !status
+beerchat.register_relaycommand("status", function()
+	return minetest.get_server_status(nil, false)
+end)
+
 -- !players
 beerchat.register_relaycommand("players", function()
-    if #minetest.get_connected_players() == 0 then
-        return "No players online"
-    end
+	-- loop all online names into a list
+	local player_names = {}
+	for _, player in ipairs(minetest.get_connected_players()) do
+		table.insert(player_names, player:get_player_name())
+	end
 
-    local msg = "List of players: "
-    for _, player in ipairs(minetest.get_connected_players()) do
-        msg = msg .. player:get_player_name() .. ","
-    end
-    -- strip trailing comma
-    msg = string.sub(msg, 1, #msg-1)
+	-- abort if there are no players connected
+	if 0 == #player_names then
+		return 'No players connected.'
+	end
 
-    return msg
+	-- collapse list into coma separated string
+	return 'Players: ' .. table.concat(player_names, ', ')
 end)
