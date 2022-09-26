@@ -2,6 +2,9 @@ Beerchat
 -----------------
 
 Chat mod for minetest
+
+![](logo.png)
+
 (heavily modified version of the "original" beerchat mod: https://github.com/evrooije/beerchat.git)
 
 ![](https://github.com/minetest-beerchat/beerchat/workflows/luacheck/badge.svg)
@@ -31,3 +34,9 @@ Features
 ## Code
 
 * GPLv3
+
+## logo.svg / logo.png
+
+* Created with icons from:
+  * https://commons.wikimedia.org/wiki/File:Emoji_u1f4ac.svg `Apache License 2.0`
+  * https://commons.wikimedia.org/wiki/File:Emoji_u1f37a.svg `Apache License 2.0`
