@@ -40,3 +40,9 @@ Features
 * Created with icons from:
   * https://commons.wikimedia.org/wiki/File:Emoji_u1f4ac.svg `Apache License 2.0`
   * https://commons.wikimedia.org/wiki/File:Emoji_u1f37a.svg `Apache License 2.0`
+
+## Sounds
+
+* `beerchat_chime.ogg` `CC-BY-SA 4.0` https://freesound.org/people/InspectorJ/sounds/411089/
+* `beerchat_chirp.ogg` `CC-BY 3.0` https://freesound.org/people/ConBlast/sounds/557923/
+* `beerchat_utter.ogg` `CC-BY-SA 4.0` https://freesound.org/people/suzenako/sounds/320905/
