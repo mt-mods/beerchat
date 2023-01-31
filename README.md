@@ -43,6 +43,6 @@ Features
 
 ## Sounds
 
-* `beerchat_chime.ogg` `CC-BY-SA 4.0` https://freesound.org/people/InspectorJ/sounds/411089/
-* `beerchat_chirp.ogg` `CC-BY 3.0` https://freesound.org/people/ConBlast/sounds/557923/
-* `beerchat_utter.ogg` `CC-BY-SA 4.0` https://freesound.org/people/suzenako/sounds/320905/
+* `beerchat_chime.ogg` `CC0 1.0` https://freesound.org/people/jgreer/sounds/333629/
+* `beerchat_chirp.ogg` `CC-BY 4.0` https://freesound.org/people/zimbot/sounds/178027/
+* `beerchat_utter.ogg` `CC0 1.0` https://freesound.org/people/plasterbrain/sounds/243022/
