@@ -11,3 +11,12 @@ end
 function beerchat.get_relaycommand(name)
     return commands[name]
 end
+
+function beerchat.get_available_relaycommands()
+    local names = {}
+    for name, _ in pairs(commands) do
+        table.insert(names, name)
+    end
+
+    return names
+end

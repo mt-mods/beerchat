@@ -21,3 +21,9 @@ beerchat.register_relaycommand("players", function()
 	-- collapse list into coma separated string
 	return 'Players: ' .. table.concat(player_names, ', ')
 end)
+
+-- !help
+beerchat.register_relaycommand("help", function()
+	local available = beerchat.get_available_relaycommands()
+	return 'Available commands: ' .. table.concat(available, ', ')
+end)
