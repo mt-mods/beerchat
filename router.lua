@@ -44,7 +44,7 @@ minetest.register_on_chat_message(function(name, message)
 		return true
 	end
 
-	-- Execute mesasge handlers
+	-- Execute message handlers
 	for _, handler in ipairs(on_chat_message_handlers) do
 		if handler(msg.name, msg.message) then
 			-- Last executed handler marked message as handled, return
