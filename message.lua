@@ -16,6 +16,7 @@
 --
 
 beerchat.send_on_channel = function(name, channel_name, message)
+	minetest.log("action", "[beerchat] CHAT #" .. channel_name .. " <" .. name .. "> " .. message)
 	local msg = {name=name, channel=channel_name,message=message}
 	for _,player in ipairs(minetest.get_connected_players()) do
 		local target = player:get_player_name()
