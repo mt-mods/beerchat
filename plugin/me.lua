@@ -1,5 +1,5 @@
 
-local me_message_string = "|#${channel_name}| * ${from_player} ${message}"
+local me_message_string = "|#${channel}| * ${from_player} ${message}"
 
 minetest.register_chatcommand("me", {
 	params = "<Message>",
@@ -32,7 +32,7 @@ minetest.register_chatcommand("me", {
 						name = name,
 						message = beerchat.format_message(me_message_string, {
 							to_player = target,
-							channel_name = channel,
+							channel = channel,
 							from_player = name,
 							message = msg.message
 						})
