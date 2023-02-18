@@ -71,7 +71,7 @@ local function send_global_announcement(data)
 	end
 end
 
-local function manage_announcements(name, param)
+local function manage_announcements(param)
 	local escape_pattern = "\\([nte])"
 	local escape_sequences = {
 		n = "\n",
@@ -93,8 +93,7 @@ local function manage_announcements(name, param)
 			break
 		else
 			if arg:sub(1,1) == "-" then
-				minetest.chat_send_player(name, "Invalid argument: " .. arg)
-				return
+				return false, "Invalid argument: " .. arg
 			end
 			break
 		end
@@ -106,9 +105,10 @@ local function manage_announcements(name, param)
 		table.insert(text, value)
 		arg = args()
 	end
+	local msgs = {}
 	-- Warning about not so fine behavior
 	if opts.e then
-		minetest.chat_send_player(name, "Warning: expiry is not fully automatic yet. Feel free to fix and submit PR.")
+		table.insert(msgs, "Warning: expiry is not fully automatic yet. Feel free to fix and submit PR.")
 	end
 	-- Add, delete, enable, disable or whatever was requested
 	opts.D = tonumber(opts.D)
@@ -116,7 +116,7 @@ local function manage_announcements(name, param)
 		if opts.D and announcements[opts.D] then
 			-- Mark deleted announcement
 			announcements[opts.D].expire = 0
-			minetest.chat_send_player(name, "Removed announcement " .. opts.D .. ".")
+			table.insert(msgs, "Removed announcement " .. opts.D .. ".")
 		end
 		if #text > 0 then
 			-- Add new announcement
@@ -127,16 +127,20 @@ local function manage_announcements(name, param)
 				message = table.concat(text, " "),
 			}
 			table.insert(announcements, data)
-			minetest.chat_send_player(name, "Added announcement.")
-			if not opts.q then
+			if opts.q then
+				table.insert(msgs, "Added announcement '" .. data.message .. "'")
+			else
+				table.insert(msgs, "Added announcement.")
 				send_global_announcement(data)
 			end
 		end
 		-- Cleanup, save data and combine active announcements
 		cleanup_announcements()
 	else
-		minetest.chat_send_player(name, "Arguments are not valid for anything.")
+		table.insert(msgs, "Arguments are not valid for anything.")
+		return false, table.concat(msgs, "\n")
 	end
+	return true, table.concat(msgs, "\n")
 end
 
 minetest.register_chatcommand("server-announce", {
@@ -145,26 +149,23 @@ minetest.register_chatcommand("server-announce", {
 	func = function(name, param)
 		if param and param ~= "" then
 			if minetest.check_player_privs(name, { ban = true }) then
-				manage_announcements(name, param)
-			else
-				minetest.chat_send_player(name, "Required privileges for arguments: ban")
+				return manage_announcements(param)
 			end
+			return false, "Required privileges for arguments: ban. You can run this command without arguments."
 		elseif announce_message then
-			beerchat.send_message(name, announce_message, "server")
-		else
-			minetest.chat_send_player(name, "No active announcements.")
+			return true, announce_message
 		end
+		return true, "No active announcements."
 	end
 })
 
 minetest.register_on_joinplayer(function(player)
 	if announce_message then
-		beerchat.send_message(player:get_player_name(), announce_message, "server")
+		minetest.chat_send_player(player:get_player_name(), announce_message)
 	end
 end)
 
 -- Read announcement data from mod data storage
-minetest.deserialize(nil)
 do
 	local data = minetest.deserialize(beerchat.mod_storage:get("announce.data"))
 	if data then
