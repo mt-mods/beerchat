@@ -73,6 +73,21 @@ describe("Whisper", function()
 		assert.spy(beerchat.send_on_channel).was.called()
 	end)
 
+	it("whisper mode not disabled by whisper messages", function()
+		spy.on(beerchat, "send_on_channel")
+		spy.on(beerchat, "send_message")
+
+		-- Enter whisper mode, send 3 whisper messages
+		SX:send_chat_message("$")
+		SX:send_chat_message("$ Whisper after activating whisper mode")
+		SX:send_chat_message("$200 Whisper with radius after activating whisper mode")
+		SX:send_chat_message("Message in whisper mode after using whisper commands")
+
+		-- Verify that messages were sent but not as channel message
+		assert.spy(beerchat.send_on_channel).was_not.called()
+		assert.spy(beerchat.send_message).was.called()
+	end)
+
 	it("hash whisper mode", function()
 		local m = require("luassert.match")
 		-- Setup for tests, enter whisper mode and join #jailchannel
@@ -87,7 +102,6 @@ describe("Whisper", function()
 		-- Verify that message was handled correctly
 		assert.spy(beerchat.send_on_channel).was_not.called()
 		assert.spy(beerchat.execute_callbacks).was.called_with("before_switch_chan", "SX", m._, m._)
-		SX:send_chat_message("$")
 	end)
 
 	it("pm in whisper mode", function()
@@ -104,7 +118,6 @@ describe("Whisper", function()
 		-- Verify that message was handled correctly
 		assert.spy(beerchat.send_on_channel).was_not.called()
 		assert.spy(beerchat.execute_callbacks).was.called_with("before_send_pm", "SX", m._, m._)
-		SX:send_chat_message("$")
 	end)
 
 end)
