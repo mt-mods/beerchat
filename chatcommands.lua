@@ -1,4 +1,5 @@
 local channel_created_string = "|#${channel_name}| Channel created"
+local channel_updated_string = "|#${channel_name}| Channel updated"
 local channel_invitation_string = "|#${channel_name}| Channel invite from (${from_player}), "
 	.. "to join the channel, do /jc ${channel_name},${channel_password} after "
 	.. "which you can send messages to the channel via #${channel_name}: message"
@@ -13,7 +14,7 @@ local channel_invite_sound = "beerchat_chirp"			-- Sound when sending/ receiving
 
 local create_channel = {
 	params = "<Channel Name>,<Password (optional)>,<Color (optional, default is #ffffff)>",
-	description = "Create a channel named <Channel Name> with optional <Password> and "
+	description = "Create or edit a channel named <Channel Name> with optional <Password> and "
 		.. "hexadecimal <Color> starting with # (e.g. #00ff00 for green). Use comma's "
 		.. "to separate the arguments, e.g. "
 		.. "/cc my secret channel,#0000ff for a blue colored my secret channel without password",
@@ -39,9 +40,14 @@ local create_channel = {
 			return false, "ERROR: You cannot use channel name \"" .. beerchat.main_channel_name .. "\""
 		end
 
+		local msg = channel_created_string
 		if beerchat.channels[lchannel_name] then
-			return false, "ERROR: Channel " .. lchannel_name
-				.. " already exists, owned by player " .. beerchat.channels[lchannel_name].owner
+			local cowner = beerchat.channels[lchannel_name].owner
+			if not cowner or cowner == "" or cowner ~= lowner then
+				return false, "ERROR: Channel " .. lchannel_name
+					.. " already exists, owned by player " .. beerchat.channels[lchannel_name].owner
+			end
+			msg = channel_updated_string
 		end
 
 		local arg2 = str[2]
@@ -69,8 +75,7 @@ local create_channel = {
 			minetest.sound_play(beerchat.channel_management_sound,
 				{ to_player = lowner, gain = beerchat.sounds_default_gain })
 		end
-		minetest.chat_send_player(lowner, beerchat.format_message(channel_created_string,
-			{ channel_name = lchannel_name }))
+		minetest.chat_send_player(lowner, beerchat.format_message(msg, { channel_name = lchannel_name }))
 		return true
 	end
 }
