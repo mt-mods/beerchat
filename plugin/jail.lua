@@ -152,6 +152,9 @@ beerchat.register_callback("on_send_on_channel", function(msg, target)
 		-- redirect #channel messages sent by jailed players toward jail channel and reconstruct full command.
 		msg.channel = beerchat.jail.channel_name
 		msg.message = "#" .. msg.channel .. " " .. msg.message
+		if not beerchat.is_player_subscribed_to_channel(target, msg.channel) then
+			return false
+		end
 	end
 end)
 
