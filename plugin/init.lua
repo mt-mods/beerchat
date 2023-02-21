@@ -26,6 +26,9 @@ load_plugin("whisper", true)
 -- Adds "/chat_jail playername" and "/chat_unjail playername" commands
 load_plugin("jail", false)
 
+-- Adds "/channel_ban [#channel] playername" and "/channel_unban [#channel] playername" commands
+load_plugin("ban", false)
+
 -- Allow muting remote users
 load_plugin("remote_mute", false)
 
