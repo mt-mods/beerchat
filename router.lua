@@ -14,7 +14,7 @@ local function default_message_handler(msg)
 		return true
 	end
 
-	msg.channel = beerchat.get_player_channel(name)
+	msg.channel = beerchat.get_player_channel(msg.name)
 	if not msg.channel then
 		beerchat.fix_player_channel(msg.name, true)
 	elseif msg.message == "" then

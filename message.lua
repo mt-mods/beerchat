@@ -45,6 +45,7 @@ end
 beerchat.send_on_channel = function(msg, ...)
 	-- FIXME: Backwards compatibility hack, args deliberately made hard to read.
 	-- Remove this once everything uses table all the way through message handling.
+	local arg = {...}
 	msg = type(msg) == "table" and msg or {name=msg, channel=arg[1], message=arg[2]}
 	-- Execute registered event handlers, abort if told to do so
 	if beerchat.execute_callbacks('before_send_on_channel', msg) then
