@@ -1,44 +1,39 @@
 
 beerchat.cb = {} -- all custom callbacks
 
-beerchat.cb.before_send 		= {} -- executed before sending message
-beerchat.cb.before_send_pm 		= {} -- executed before sending private message
-beerchat.cb.before_send_me		= {} -- executed before /me message is sent
-beerchat.cb.before_whisper		= {} -- executed before whisper message is sent
-beerchat.cb.before_join 		= {} -- executed before channel is joined
-beerchat.cb.before_leave 		= {} -- executed before channel is leaved
-beerchat.cb.before_switch_chan 	= {} -- executed before channel is changed
-beerchat.cb.before_invite 		= {} -- excuted before channel invitation takes place
-beerchat.cb.before_mute 		= {} -- executed before player is muted
-beerchat.cb.before_check_muted 	= {} -- executed before has_player_muted_player checks
-beerchat.cb.on_forced_join 		= {} -- executed right after player is forced to channel
+beerchat.cb.before_send        = {} -- executed before sending message
+beerchat.cb.before_send_pm     = {} -- executed before sending private message
+beerchat.cb.before_send_me     = {} -- executed before /me message is sent
+beerchat.cb.before_whisper     = {} -- executed before whisper message is sent
+beerchat.cb.before_join        = {} -- executed before channel is joined
+beerchat.cb.before_leave       = {} -- executed before channel is leaved
+beerchat.cb.before_switch_chan = {} -- executed before channel is changed
+beerchat.cb.before_invite      = {} -- excuted before channel invitation takes place
+beerchat.cb.before_mute        = {} -- executed before player is muted
+beerchat.cb.before_check_muted = {} -- executed before has_player_muted_player checks
+beerchat.cb.on_forced_join     = {} -- executed right after player is forced to channel
 
 -- Special events
-beerchat.cb.after_joinplayer	= {} -- executed after player has joined and configurations loaded
+beerchat.cb.after_joinplayer   = {} -- executed after player has joined and configurations loaded
 
 -- Callbacks that can edit message contents
-beerchat.cb.on_receive 			= {} -- executed when new message is received
-beerchat.cb.on_http_receive 		= {} -- executed when new message is received through http polling
-beerchat.cb.on_send_on_channel		= {} -- executed before sending message to channel
+beerchat.cb.on_receive             = {} -- executed when new message is received
+beerchat.cb.on_http_receive        = {} -- executed when new message is received through http polling
+beerchat.cb.on_send_on_channel     = {} -- executed before delivering message to individual channel subscriber
+beerchat.cb.before_send_on_channel = {} -- executed before sending message to channel
 
 beerchat.register_callback = function(trigger, fn)
-	if type(fn) ~= 'function' then
-		print('Error: Invalid fn argument for beerchat.register_callback, must be function. Got ' .. type(fn))
-		return
-	end
-	if type(trigger) ~= 'string' then
-		print('Error: Invalid trigger argument for beerchat.register_callback, must be string. Got ' .. type(trigger))
-		return
-	end
-
+	assert(type(trigger) == 'string',
+		'Error: Invalid trigger argument for beerchat.register_callback, must be string. Got ' .. type(trigger))
+	assert(type(fn) == 'function',
+		'Error: Invalid fn argument for beerchat.register_callback, must be function. Got ' .. type(fn))
 	if not beerchat.cb[trigger] then
-		print(string.format('Error: Invalid callback trigger event %s, possible triggers:', trigger))
+		local err = {('Error: Invalid callback trigger event %s, possible triggers:'):format(trigger)}
 		for k,_ in pairs(beerchat.cb) do
-			print(' ->   ' .. k)
+			table.insert(err, ' ->   ' .. k)
 		end
-		return
+		error(table.concat(err, "\n"))
 	end
-
 	table.insert(beerchat.cb[trigger], fn)
 end
 

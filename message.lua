@@ -15,9 +15,7 @@
 -- ${time} the current time in 24 hour format, as returned from os.date("%X")
 --
 
-beerchat.send_on_channel = function(name, channel_name, message)
-	minetest.log("action", "[beerchat] CHAT #" .. channel_name .. " <" .. name .. "> " .. message)
-	local msg = {name=name, channel=channel_name,message=message}
+local send_on_local_channel = function(msg)
 	for _,player in ipairs(minetest.get_connected_players()) do
 		local target = player:get_player_name()
 		-- Checking if the target is in this channel
@@ -35,6 +33,25 @@ beerchat.send_on_channel = function(name, channel_name, message)
 				msg.channel
 			)
 		end
+	end
+end
+
+beerchat.send_on_local_channel = function(msg)
+	if beerchat.execute_callbacks('before_send_on_channel', msg) then
+		send_on_local_channel(msg)
+	end
+end
+
+beerchat.send_on_channel = function(msg, ...)
+	-- FIXME: Backwards compatibility hack, args deliberately made hard to read.
+	-- Remove this once everything uses table all the way through message handling.
+	msg = type(msg) == "table" and msg or {name=msg, channel=arg[1], message=arg[2]}
+	-- Execute registered event handlers, abort if told to do so
+	if beerchat.execute_callbacks('before_send_on_channel', msg) then
+		-- Log and deliver message to both local and remote platforms
+		minetest.log("action", "[beerchat] CHAT #" .. msg.channel .. " <" .. msg.name .. "> " .. msg.message)
+		beerchat.on_channel_message(msg.channel, msg.name, msg.message)
+		send_on_local_channel(msg)
 	end
 end
 

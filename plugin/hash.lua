@@ -55,8 +55,7 @@ beerchat.register_on_chat_message(function(name, message)
 	elseif not beerchat.is_player_subscribed_to_channel(name, channel_name) then
 		minetest.chat_send_player(name, "You need to join this channel in order to be able to send messages to it")
 	else
-		beerchat.on_channel_message(channel_name, name, msg)
-		beerchat.send_on_channel(name, channel_name, msg)
+		beerchat.send_on_channel({name=name, channel=channel_name, message=msg})
 	end
 
 	return true
