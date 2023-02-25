@@ -46,15 +46,20 @@ beerchat.register_callback("on_send_on_channel", function(name, msg, target)
 		or beerchat.has_player_muted_player(target, name) then
 		return false
 	end
-	-- Apply formatting for channel messages.
-	msg.message = beerchat.format_message(
-		beerchat.main_channel_message_string, {
-			channel_name = msg.channel,
-			to_player = target,
-			from_player = name,
-			message = msg.message
-		}
-	)
+end)
+
+beerchat.register_callback("before_send", function(target, message, data)
+	if data and data.channel then
+		-- Apply formatting for channel messages.
+		data.message = beerchat.format_message(
+			beerchat.main_channel_message_string, {
+				channel_name = msg.channel,
+				to_player = target,
+				from_player = data.name,
+				message = message
+			}
+		)
+	end
 end)
 
 beerchat.register_on_chat_message(function(name, message)
