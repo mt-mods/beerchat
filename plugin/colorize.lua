@@ -1,4 +1,4 @@
-
+--luacheck: no_unused_args
 --
 -- Allow using colors on chat messages by sending "(#f00)Red (#0f0)Green (#00f)Blue"
 --
