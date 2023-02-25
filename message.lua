@@ -19,7 +19,7 @@ local send_on_local_channel = function(msg)
 	for _,player in ipairs(minetest.get_connected_players()) do
 		local target = player:get_player_name()
 		if beerchat.execute_callbacks('on_send_on_channel', msg.name, msg, target) then
-			beerchat.send_message(target, msg.message)
+			beerchat.send_message(target, msg.message, msg)
 		end
 	end
 end
