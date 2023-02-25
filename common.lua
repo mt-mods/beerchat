@@ -82,20 +82,18 @@ beerchat.is_player_subscribed_to_channel = function(name, channel)
 		and (nil ~= beerchat.playersChannels[name][channel])
 end
 
-beerchat.send_message = function(name, message, channel)
-	if not beerchat.execute_callbacks('before_send', name, message, channel) then
-		return
+beerchat.send_message = function(name, message, data)
+	if beerchat.execute_callbacks('before_send', name, message, type(data) == "table" and data) then
+		minetest.chat_send_player(name, message)
+		--[[ TODO: read player settings for channel sounds
+		if beerchat.enable_sounds and channel ~= beerchat.main_channel_name then
+			minetest.sound_play(
+				beerchat.channel_message_sound, {
+					to_player = name,
+					gain = beerchat.sounds_default_gain
+				},
+				true
+			)
+		end --]]
 	end
-
-	minetest.chat_send_player(name, message)
-	--[[ TODO: read player settings for channel sounds
-	if beerchat.enable_sounds and channel ~= beerchat.main_channel_name then
-		minetest.sound_play(
-			beerchat.channel_message_sound, {
-				to_player = name,
-				gain = beerchat.sounds_default_gain
-			},
-			true
-		)
-	end --]]
 end

@@ -18,47 +18,29 @@
 local send_on_local_channel = function(msg)
 	for _,player in ipairs(minetest.get_connected_players()) do
 		local target = player:get_player_name()
-		-- Checking if the target is in this channel
-		if beerchat.execute_callbacks('on_send_on_channel', msg, target) then
-			beerchat.send_message(
-				target,
-				beerchat.format_message(
-					beerchat.main_channel_message_string, {
-						channel_name = msg.channel,
-						to_player = target,
-						from_player = msg.name,
-						message = msg.message
-					}
-				),
-				msg.channel
-			)
+		if beerchat.execute_callbacks('on_send_on_channel', msg.name, msg, target) then
+			beerchat.send_message(target, msg.message)
 		end
 	end
 end
 
 beerchat.send_on_local_channel = function(msg)
-	if beerchat.execute_callbacks('before_send_on_channel', msg) then
+	if beerchat.execute_callbacks('before_send_on_channel', msg.name, msg) then
 		send_on_local_channel(msg)
 	end
 end
 
 beerchat.send_on_channel = function(msg, ...)
-	-- FIXME: Backwards compatibility hack, args deliberately made hard to read.
-	-- Remove this once everything uses table all the way through message handling.
-	local arg = {...}
-	msg = type(msg) == "table" and msg or {name=msg, channel=arg[1], message=arg[2]}
+	-- FIXME: Backwards compatibility hack. Remove once everything uses table for message handling.
+	if type(msg) ~= "table" then
+		local arg = {...}
+		msg = {name=msg, channel=arg[1], message=arg[2]}
+	end
 	-- Execute registered event handlers, abort if told to do so
-	if beerchat.execute_callbacks('before_send_on_channel', msg) then
+	if beerchat.execute_callbacks('before_send_on_channel', msg.name, msg) then
 		-- Log and deliver message to both local and remote platforms
 		minetest.log("action", "[beerchat] CHAT #" .. msg.channel .. " <" .. msg.name .. "> " .. msg.message)
 		beerchat.on_channel_message(msg.channel, msg.name, msg.message)
 		send_on_local_channel(msg)
 	end
 end
-
-beerchat.register_callback("on_send_on_channel", function(msg, target)
-	if not beerchat.is_player_subscribed_to_channel(target, msg.channel)
-		or beerchat.has_player_muted_player(target, msg.name) then
-		return false
-	end
-end)

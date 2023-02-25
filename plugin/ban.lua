@@ -45,9 +45,9 @@ end
 -- Register beerchat event handlers for channel bans
 --
 
-beerchat.register_callback('before_send', function(name, message, channel)
-	if beerchat.ban.is_player_banned(channel, name) then
-		return false, "Sorry but you are banned on #"..channel..", you are not allowed to send messages there."
+beerchat.register_callback('before_send_on_channel', function(name, msg)
+	if beerchat.ban.is_player_banned(msg.channel, name) then
+		return false, "Sorry but you are banned on #"..msg.channel..", you are not allowed to send messages there."
 	end
 end)
 

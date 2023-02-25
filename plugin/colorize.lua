@@ -16,8 +16,8 @@ if colorize_channels == "*" then
 
 	-- Colorize all chat channels
 
-	beerchat.register_callback('before_send_on_channel', function(msg_data)
-		msg_data.message = msg_data.message:gsub('%((%#%x%x%x)%)', string.char(0x1B) .. '(c@%1)')
+	beerchat.register_callback('before_send_on_channel', function(name, msg)
+		msg.message = msg.message:gsub('%((%#%x%x%x)%)', string.char(0x1B) .. '(c@%1)')
 	end)
 
 elseif colorize_channels then
@@ -31,9 +31,9 @@ elseif colorize_channels then
 	end
 
 	if next(allowed_channels) then
-		beerchat.register_callback('before_send_on_channel', function(msg_data)
-			if msg_data.channel and allowed_channels[msg_data.channel] then
-				msg_data.message = msg_data.message:gsub('%((%#%x%x%x)%)', string.char(0x1B) .. '(c@%1)')
+		beerchat.register_callback('before_send_on_channel', function(name, msg)
+			if msg.channel and allowed_channels[msg.channel] then
+				msg.message = msg.message:gsub('%((%#%x%x%x)%)', string.char(0x1B) .. '(c@%1)')
 			end
 		end)
 	end

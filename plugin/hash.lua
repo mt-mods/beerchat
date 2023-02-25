@@ -40,6 +40,23 @@ local function switch_channel(name, channel)
 	end
 end
 
+beerchat.register_callback("on_send_on_channel", function(name, msg, target)
+	-- Check subscriptions and muting, abort if not subscribed or target has muted sender.
+	if not beerchat.is_player_subscribed_to_channel(target, msg.channel)
+		or beerchat.has_player_muted_player(target, name) then
+		return false
+	end
+	-- Apply formatting for channel messages.
+	msg.message = beerchat.format_message(
+		beerchat.main_channel_message_string, {
+			channel_name = msg.channel,
+			to_player = target,
+			from_player = name,
+			message = msg.message
+		}
+	)
+end)
+
 beerchat.register_on_chat_message(function(name, message)
 	local channel_name, msg = string.match(message, "^#(%S+) ?(.*)")
 

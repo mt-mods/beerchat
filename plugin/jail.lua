@@ -147,20 +147,20 @@ beerchat.register_callback('before_leave', function(name, channel)
 	end
 end)
 
-beerchat.register_callback("before_send_on_channel", function(msg, target)
-	if msg.channel ~= beerchat.jail.channel_name and beerchat.is_player_jailed(msg.name) then
+beerchat.register_callback("before_send_on_channel", function(name, msg)
+	if msg.channel ~= beerchat.jail.channel_name and beerchat.is_player_jailed(name) then
 		-- redirect #channel messages sent by jailed players toward jail channel and reconstruct full command.
 		msg.channel = beerchat.jail.channel_name
 		msg.message = "#" .. msg.channel .. " " .. msg.message
 	end
 end)
 
-beerchat.register_callback('before_send', function(name, message, channel)
-	if beerchat.is_player_jailed(name) then
-		if channel == beerchat.jail.channel_name then
+beerchat.register_callback('before_send', function(target, message, data)
+	if data and beerchat.is_player_jailed(data.name) then
+		if data.channel == beerchat.jail.channel_name then
 			-- override default send method to mute pings for jailed users
 			-- but allow chatting without pings on jail channel
-			minetest.chat_send_player(name, message)
+			minetest.chat_send_player(target, message)
 		end
 		return false
 	end
