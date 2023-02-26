@@ -14,18 +14,18 @@ local function switch_channel(name, channel)
 		-- Skip channel switch sound because beerchat.join_channel will also play sound
 		skip_sound = true
 	end
-	if not beerchat.execute_callbacks('before_switch_chan', name,
-		beerchat.currentPlayerChannel[name], channel) then
+	local switch = { from = beerchat.get_player_channel(name), to = channel }
+	if not beerchat.execute_callbacks('before_switch_chan', name, switch) then
 		return
 	end
-	beerchat.set_player_channel(name, channel)
-	if channel == beerchat.main_channel_name then
+	beerchat.set_player_channel(name, switch.to)
+	if switch.to == beerchat.main_channel_name then
 		minetest.chat_send_player(name,
-			"Switched to channel " .. channel .. ", messages will now be sent to this channel"
+			"Switched to channel #" .. switch.to .. ", messages will now be sent to this channel"
 		)
 	else
 		minetest.chat_send_player(name,
-			"Switched to channel " .. channel .. ", messages will now be sent to this channel. "
+			"Switched to channel #" .. switch.to .. ", messages will now be sent to this channel. "
 			.. "To switch back to the main channel, type #" .. beerchat.main_channel_name
 		)
 	end
