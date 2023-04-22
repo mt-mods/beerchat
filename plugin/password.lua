@@ -36,7 +36,7 @@ local function handle_player(name, last_login)
 	end
 end
 
-beerchat.register_callback('before_send', function(name)
+beerchat.register_callback('before_send_on_channel', function(name)
 	-- Only run checks if account is marked for notifications
 	if password_notify[name] then
 		if minetest.get_us_time() - password_notify[name] > 4000000 then

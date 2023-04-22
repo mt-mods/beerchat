@@ -14,7 +14,7 @@ beerchat.register_callback('on_forced_join', function(name, target, channel, fro
 		.. " from #" .. from_channel .. " to #" .. channel .. "."
 	if beerchat.moderator_channel_name then
 		local sender = beerchat.channels[beerchat.main_channel_name].owner
-		beerchat.send_on_channel(sender, beerchat.moderator_channel_name, move_msg)
+		beerchat.send_on_channel({name=sender, channel=beerchat.moderator_channel_name, message=move_msg})
 	end
 	-- inform admin
 	minetest.log("action", "CHAT " .. move_msg)
