@@ -33,17 +33,16 @@ local function whisper(pos, radius, name, msg)
 					successful = true
 				end
 				-- deliver message
-				beerchat.send_message(
-					target,
-					beerchat.format_message(whisper_string, {
+				beerchat.send_message(target, nil, {
+					name = name,
+					message = beerchat.format_message(whisper_string, {
 						from_player = name,
 						to_player = target,
 						message = msg,
 						color = whisper_color,
 						colorize_all = true
-					}),
-					""
-				)
+					})
+				})
 			end
 		end
 	end

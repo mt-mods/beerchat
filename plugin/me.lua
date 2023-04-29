@@ -31,16 +31,15 @@ minetest.register_chatcommand("me", {
 				-- Checking if the target is in this channel
 				if beerchat.is_player_subscribed_to_channel(target, channel) then
 					if not beerchat.has_player_muted_player(target, name) then
-						beerchat.send_message(
-							target,
-							beerchat.format_message(me_message_string, {
+						beerchat.send_message(target, nil, {
+							name = name,
+							message = beerchat.format_message(me_message_string, {
 								to_player = target,
 								channel_name = channel,
 								from_player = name,
 								message = msg
-							}),
-							channel
-						)
+							})
+						})
 					end
 				end
 			end

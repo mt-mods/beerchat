@@ -19,3 +19,7 @@ beerchat.register_callback('on_forced_join', function(name, target, channel, fro
 	-- inform admin
 	minetest.log("action", "CHAT " .. move_msg)
 end)
+
+beerchat.register_callback('before_send_on_channel', function(_, msg)
+	minetest.log("action", "[beerchat] CHAT #" .. msg.channel .. " <" .. msg.name .. "> " .. msg.message)
+end)

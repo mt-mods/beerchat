@@ -83,10 +83,12 @@ beerchat.is_player_subscribed_to_channel = function(name, channel)
 end
 
 beerchat.send_message = function(name, message, data)
-	if type(data) == "table" and beerchat.execute_callbacks('before_send', name, message, data) then
-		minetest.chat_send_player(name, data.message)
-	elseif beerchat.execute_callbacks('before_send', name, message) then
-		minetest.chat_send_player(name, message)
+	if beerchat.execute_callbacks('before_send', name, message or data.message, data) then
+		if type(data) == "table" then
+			minetest.chat_send_player(name, data.message or message)
+		else
+			minetest.chat_send_player(name, message)
+		end
 	end
 	--[[ TODO: read player settings for channel sounds, also move this from core to some sound effect extension.
 	if beerchat.enable_sounds and channel ~= beerchat.main_channel_name then

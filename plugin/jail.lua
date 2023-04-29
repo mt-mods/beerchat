@@ -1,18 +1,15 @@
 --luacheck: no_unused_args
 
 -- Jail channel is where you put annoying missbehaving users with /force2channel
-beerchat.jail = {}
-
--- you deserve it if you know how to install mod and deliberately misconfigure it
-beerchat.jail.channel_name = minetest.settings:get("beerchat.jail.channel_name") or "grounded"
-beerchat.jail.priv = minetest.settings:get("beerchat.jail.priv") or "ban"
-local owner = minetest.settings:get("beerchat.jail.owner")
-local color = minetest.settings:get("beerchat.jail.color")
-
-beerchat.channels[beerchat.jail.channel_name] = {
-	owner = owner or beerchat.channels[beerchat.main_channel_name].owner,
-	color = color or beerchat.channels[beerchat.main_channel_name].color
+beerchat.jail = {
+	channel_name = minetest.settings:get("beerchat.jail.channel_name") or "grounded",
+	format_string = minetest.settings:get("beerchat.jail.format_string") or beerchat.main_channel_message_string,
+	priv = minetest.settings:get("beerchat.jail.priv") or "ban",
 }
+local owner = minetest.settings:get("beerchat.jail.owner") or beerchat.channels[beerchat.main_channel_name].owner
+local color = minetest.settings:get("beerchat.jail.color") or beerchat.channels[beerchat.main_channel_name].color
+
+beerchat.channels[beerchat.jail.channel_name] = { owner = owner, color = color }
 
 beerchat.jail.list = {}
 
@@ -148,9 +145,16 @@ beerchat.register_callback('before_leave', function(name, channel)
 end)
 
 beerchat.register_callback("before_send_on_channel", function(name, msg)
-	if msg.channel ~= beerchat.jail.channel_name and beerchat.is_player_jailed(name) then
+	if beerchat.is_player_jailed(name) then
 		-- redirect #channel messages sent by jailed players toward jail channel and reconstruct full command.
-		msg.message = "#" .. msg.channel .. " " .. msg.message
+		-- preformat message, no fancy stuff like nick colors in jail, generic formatting should be skipped.
+		msg.message = beerchat.format_string(beerchat.jail.format_string, {
+			channel_name = minetest.colorize(color, beerchat.jail.channel_name),
+			channel_owner = owner,
+			from_player = name,
+			message = msg.channel ~= beerchat.jail.channel_name and "#"..msg.channel.." "..msg.message or msg.message,
+			time = os.date("%X")
+		})
 		msg.channel = beerchat.jail.channel_name
 	end
 end)
