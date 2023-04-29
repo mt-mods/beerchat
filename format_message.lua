@@ -1,14 +1,16 @@
 
 local function format_string(s, tab)
-  return (s:gsub('($%b{})', function(w) return tab[w:sub(3, -2)] or w end))
+	return (s:gsub('($%b{})', function(w) return tab[w:sub(3, -2)] or w end))
 end
 
-local function colorize_target_name(s, target)
-  if not target or not s then
-    return s
-  end
+-- Expose format_string to public
+beerchat.format_string = format_string
 
-  return s:gsub(target, minetest.colorize("#ff0000", target))
+local function colorize_target_name(s, target)
+	if not target or not s then
+		return s
+	end
+	return s:gsub(target, minetest.colorize("#ff0000", target))
 end
 
 beerchat.format_message = function(s, tab)

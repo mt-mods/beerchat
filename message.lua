@@ -40,7 +40,6 @@ beerchat.send_on_channel = function(msg, ...)
 	-- Execute registered event handlers, abort if told to do so
 	if beerchat.execute_callbacks('before_send_on_channel', msg.name, msg) then
 		-- Log and deliver message to both local and remote platforms
-		minetest.log("action", "[beerchat] CHAT #" .. msg.channel .. " <" .. msg.name .. "> " .. msg.message)
 		beerchat.on_channel_message(msg.channel, msg.name, msg.message)
 		send_on_local_channel(msg)
 	end
