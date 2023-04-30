@@ -104,3 +104,32 @@ describe("chat_unjail command", function()
 	end)
 
 end)
+
+describe("jail behavior", function()
+
+	setup(do_setup)
+	teardown(do_teardown)
+	before_each(do_before_each)
+	after_each(do_after_each)
+
+	it("allows non jailed chatting", function()
+		SX:send_chat_message("#jailchannel")
+		XX:send_chat_message("#jailchannel")
+		spy.on(minetest, "chat_send_player")
+		SX:send_chat_message("Not jailed, jail channel test message 1")
+		SX:send_chat_message("#jailchannel Not jailed, jail channel test message 2")
+		-- check that 4 message were delivered, 2 for each player
+		assert.spy(minetest.chat_send_player).was.called(4)
+	end)
+
+	it("allows jailed chatting", function()
+		SX:send_chat_message("/chat_jail XX")
+		SX:send_chat_message("#jailchannel")
+		spy.on(minetest, "chat_send_player")
+		XX:send_chat_message("Jailed, jail channel test message 1")
+		XX:send_chat_message("#jailchannel Jailed, jail channel test message 2")
+		-- check that 4 message were delivered, 2 for each player
+		assert.spy(minetest.chat_send_player).was.called(4)
+	end)
+
+end)
