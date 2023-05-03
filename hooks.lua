@@ -22,11 +22,23 @@ beerchat.cb.on_http_receive        = {} -- executed when new message is received
 beerchat.cb.on_send_on_channel     = {} -- executed before delivering message to individual channel subscriber
 beerchat.cb.before_send_on_channel = {} -- executed before sending message to channel
 
-beerchat.register_callback = function(trigger, fn)
+local priorities = {
+	high = 0,
+	medium = 250,
+	default = 500,
+	low = 750,
+	lowest = 1000
+}
+local cb_priority = {}
+
+beerchat.register_callback = function(trigger, fn, priority)
 	assert(type(trigger) == 'string',
 		'Error: Invalid trigger argument for beerchat.register_callback, must be string. Got ' .. type(trigger))
 	assert(type(fn) == 'function',
 		'Error: Invalid fn argument for beerchat.register_callback, must be function. Got ' .. type(fn))
+	priority = priority or priorities.default
+	priority = type(priority) == 'number' and priority or priorities[priority]
+	assert(type(priority) == 'number', 'Error: Invalid priority argument for beerchat.register_callback.')
 	if not beerchat.cb[trigger] then
 		local err = {('Error: Invalid callback trigger event %s, possible triggers:'):format(trigger)}
 		for k,_ in pairs(beerchat.cb) do
@@ -34,6 +46,15 @@ beerchat.register_callback = function(trigger, fn)
 		end
 		error(table.concat(err, "\n"))
 	end
+	cb_priority[trigger] = cb_priority[trigger] or {}
+	for i, v in ipairs(cb_priority[trigger]) do
+		if priority < v then
+			table.insert(cb_priority[trigger], i, priority)
+			table.insert(beerchat.cb[trigger], i, fn)
+			return
+		end
+	end
+	table.insert(cb_priority[trigger], priority)
 	table.insert(beerchat.cb[trigger], fn)
 end
 
