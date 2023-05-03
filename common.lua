@@ -60,21 +60,12 @@ beerchat.join_channel = function(name, channel, set_default)
 	return true
 end
 
+beerchat.allow_private_message = function(name, target)
+	return beerchat.execute_callbacks("before_send_pm", name, "", target)
+end
+
 beerchat.has_player_muted_player = function(name, other_name)
-	local cb_result = beerchat.execute_callbacks('before_check_muted', name, other_name)
-	if cb_result ~= nil then
-		return cb_result
-	end
-
-	local player = minetest.get_player_by_name(name)
-	-- check jic method is used incorrectly
-	if not player then
-		return true
-	end
-
-	local key = "beerchat:muted:" .. other_name
-	local meta = player:get_meta()
-	return "true" == meta:get_string(key)
+	return not beerchat.execute_callbacks("before_check_muted", name, other_name)
 end
 
 beerchat.is_player_subscribed_to_channel = function(name, channel)

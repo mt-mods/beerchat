@@ -70,10 +70,6 @@ beerchat.execute_callbacks = function(trigger, ...)
 			return result
 		end
 	end
-	if trigger == 'before_check_muted' then
-		-- requires special handling, might need to create another callback registration for special methods
-		return nil
-	end
 	return true
 end
 

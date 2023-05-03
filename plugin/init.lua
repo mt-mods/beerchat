@@ -11,6 +11,9 @@ local function load_plugin(name, enable_default)
 	end
 end
 
+-- Allows players to mute other players
+load_plugin("mute", true)
+
 -- Allows sending special formatted "/me message here" messages to channel
 load_plugin("me", true)
 
