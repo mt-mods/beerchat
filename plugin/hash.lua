@@ -40,10 +40,9 @@ local function switch_channel(name, channel)
 	end
 end
 
-beerchat.register_callback("on_send_on_channel", function(name, msg, target)
-	-- Check subscriptions and muting, abort if not subscribed or target has muted sender.
-	if not beerchat.is_player_subscribed_to_channel(target, msg.channel)
-		or beerchat.has_player_muted_player(target, name) then
+beerchat.register_callback("on_send_on_channel", function(_, msg, target)
+	-- Check subscriptions, cancel if target has not subscribed to channel.
+	if not beerchat.is_player_subscribed_to_channel(target, msg.channel) then
 		return false
 	end
 end)
