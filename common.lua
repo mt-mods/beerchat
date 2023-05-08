@@ -52,9 +52,7 @@ beerchat.join_channel = function(name, channel, set_default)
 		return false
 	end
 	(set_default and beerchat.set_player_channel or beerchat.add_player_channel)(name, channel)
-	if beerchat.enable_sounds then
-		minetest.sound_play("beerchat_chirp", { to_player = name, gain = beerchat.sounds_default_gain })
-	end
+	beerchat.sound_play(name, "beerchat_chirp")
 	local msg = beerchat.format_message("|#${channel_name}| Joined channel", { channel_name = channel })
 	minetest.chat_send_player(name, msg)
 	return true
@@ -73,6 +71,10 @@ beerchat.is_player_subscribed_to_channel = function(name, channel)
 		and (nil ~= beerchat.playersChannels[name][channel])
 end
 
+beerchat.sound_play = beerchat.enable_sounds and function (target, sound)
+	minetest.sound_play(sound, { to_player = target, gain = beerchat.sounds_default_gain }, true)
+end or function() end
+
 beerchat.send_message = function(name, message, data)
 	if beerchat.execute_callbacks('before_send', name, message or data.message, data) then
 		if type(data) == "table" then
@@ -82,13 +84,8 @@ beerchat.send_message = function(name, message, data)
 		end
 	end
 	--[[ TODO: read player settings for channel sounds, also move this from core to some sound effect extension.
-	if beerchat.enable_sounds and channel ~= beerchat.main_channel_name then
-		minetest.sound_play(
-			beerchat.channel_message_sound, {
-				to_player = name,
-				gain = beerchat.sounds_default_gain
-			},
-			true
-		)
+		ALSO: this does not belong here but in low priority `on_send_on_channel` event handler.
+	if channel ~= beerchat.main_channel_name then
+		beerchat.sound_play(name, beerchat.channel_message_sound)
 	end --]]
 end

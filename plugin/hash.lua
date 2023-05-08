@@ -29,14 +29,8 @@ local function switch_channel(name, channel)
 			.. "To switch back to the main channel, type #" .. beerchat.main_channel_name
 		)
 	end
-	if not skip_sound and beerchat.enable_sounds then
-		minetest.sound_play(
-			beerchat.channel_management_sound,
-			{
-				to_player = name,
-				gain = beerchat.sounds_default_gain
-			}
-		)
+	if not skip_sound then
+		beerchat.sound_play(name, beerchat.channel_management_sound)
 	end
 end
 

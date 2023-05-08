@@ -71,10 +71,7 @@ local create_channel = {
 		beerchat.mod_storage:set_string("channels", minetest.write_json(beerchat.channels))
 
 		beerchat.add_player_channel(lowner, lchannel_name, "owner")
-		if beerchat.enable_sounds then
-			minetest.sound_play(beerchat.channel_management_sound,
-				{ to_player = lowner, gain = beerchat.sounds_default_gain })
-		end
+		beerchat.sound_play(lowner, beerchat.channel_management_sound)
 		minetest.chat_send_player(lowner, beerchat.format_message(msg, { channel_name = lchannel_name }))
 		return true
 	end
@@ -108,18 +105,11 @@ local delete_channel = {
 
 		beerchat.remove_player_channel(name, param)
 
-		if beerchat.enable_sounds then
-			minetest.sound_play(beerchat.channel_management_sound,
-				{ to_player = name, gain = beerchat.sounds_default_gain })
-		end
-
-		minetest.chat_send_player(
-			name,
-			beerchat.format_message(channel_deleted_string,
-				{ channel_name = param, color = color })
-		)
+		beerchat.sound_play(name, beerchat.channel_management_sound)
+		minetest.chat_send_player(name, beerchat.format_message(
+			channel_deleted_string, { channel_name = param, color = color }
+		))
 		return true
-
 	end
 }
 
@@ -129,19 +119,13 @@ local my_channels = {
 		.. "or show channel information when passing channel name as argument",
 	func = function(name, param)
 		if not param or param == "" then
-			if beerchat.enable_sounds then
-				minetest.sound_play(beerchat.channel_management_sound,
-					{ to_player = name, gain = beerchat.sounds_default_gain })
-			end
+			beerchat.sound_play(name, beerchat.channel_management_sound)
 			minetest.chat_send_player(name, dump2(beerchat.playersChannels[name])
 				.. '\nYour default channel is: '
 				.. (beerchat.currentPlayerChannel[name] or '<none>'))
 		else
 			if beerchat.playersChannels[name][param] then
-				if beerchat.enable_sounds then
-					minetest.sound_play(beerchat.channel_management_sound,
-						{ to_player = name, gain = beerchat.sounds_default_gain })
-				end
+				beerchat.sound_play(name, beerchat.channel_management_sound)
 				minetest.chat_send_player(name, dump2(beerchat.channels[param]))
 			else
 				minetest.chat_send_player(name, "ERROR: Channel not in your channel list")
@@ -208,9 +192,7 @@ local leave_channel = {
 
 		beerchat.remove_player_channel(name, channel)
 
-		if beerchat.enable_sounds then
-			minetest.sound_play(leave_channel_sound, { to_player = name, gain = beerchat.sounds_default_gain })
-		end
+		beerchat.sound_play(name, leave_channel_sound)
 		if not beerchat.channels[channel] then
 			minetest.chat_send_player(name,
 				beerchat.format_message(channel_already_deleted_string,
@@ -261,10 +243,7 @@ local invite_channel = {
 				return false
 			end
 			if not beerchat.has_player_muted_player(player_name, name) then
-				if beerchat.enable_sounds then
-					minetest.sound_play(channel_invite_sound,
-						{ to_player = player_name, gain = beerchat.sounds_default_gain })
-				end
+				beerchat.sound_play(player_name, channel_invite_sound)
 				-- Sending the message
 				minetest.chat_send_player(
 					player_name,
@@ -272,10 +251,7 @@ local invite_channel = {
 						{ channel_name = channel_name, from_player = name })
 				)
 			end
-			if beerchat.enable_sounds then
-				minetest.sound_play(channel_invite_sound,
-					{ to_player = name, gain = beerchat.sounds_default_gain })
-			end
+			beerchat.sound_play(name, channel_invite_sound)
 			minetest.chat_send_player(
 				name,
 				beerchat.format_message(channel_invited_string,

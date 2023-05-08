@@ -31,8 +31,8 @@ local send_pm = function(name, msg, target, ping)
 					}
 				)
 			)
-			if ping and beerchat.enable_sounds then
-				minetest.sound_play(private_message_sound, { to_player = target, gain = beerchat.sounds_default_gain } )
+			if ping then
+				beerchat.sound_play(target, private_message_sound)
 			end
 			return true
 		end
@@ -47,9 +47,7 @@ local send_pm = function(name, msg, target, ping)
 				}
 			)
 		)
-		if beerchat.enable_sounds then
-			minetest.sound_play(self_message_sound, { to_player = target, gain = beerchat.sounds_default_gain } )
-		end
+		beerchat.sound_play(target, self_message_sound)
 		return true
 	end
 	return false
