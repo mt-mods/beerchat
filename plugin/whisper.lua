@@ -85,11 +85,13 @@ beerchat.whisper = function(name, message)
 			if not whisperers[name] then
 				-- Enter whisper mode
 				whisperers[name] = radius or whisper_default_range
-				minetest.chat_send_player(name, "Whisper mode activated, to cancel write $ again without message")
-			elseif radius and radius ~= whisperers[name] then
+				minetest.chat_send_player(name, "Whisper mode activated with radius "..whisperers[name]
+					..", to cancel write $ again without message")
+			elseif radius then
 				-- Update radius while in whisper mode
 				whisperers[name] = radius
-				minetest.chat_send_player(name, "Whisper mode is active and radius , to cancel write $ again without message")
+				minetest.chat_send_player(name, "Whisper mode is active and radius updated to "..radius
+					..", to cancel write $ again without message")
 			else
 				-- Disable whisper mode
 				whisperers[name] = nil
