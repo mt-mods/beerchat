@@ -112,12 +112,12 @@ describe("Whisper", function()
 		-- Send private message and record callbacks to find out execution path
 		spy.on(beerchat, "send_on_channel")
 		spy.on(beerchat, "execute_callbacks")
-		SX:send_chat_message("@SX Private message in whisper mode")
+		SX:send_chat_message("@Sam Private message in whisper mode")
 		SX:send_chat_message("SX message in whisper mode")
 
 		-- Verify that message was handled correctly
 		assert.spy(beerchat.send_on_channel).was_not.called()
-		assert.spy(beerchat.execute_callbacks).was.called_with("before_send_pm", "SX", m._, m._)
+		assert.spy(beerchat.execute_callbacks).was.called_with("before_send_pm", "SX", m._, "Sam")
 	end)
 
 end)

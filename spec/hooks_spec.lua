@@ -9,97 +9,81 @@ sourcefile("init")
 describe("Hooks", function()
 
 	local SX = Player("SX", { shout = 1 })
+	local Sam = Player("Sam", { shout = 1 })
+	local Doe = Player("Doe", { shout = 1 })
 
 	-- Use custom event handler to count on_receive calls
-	local assert_msg = '%s called %d times, expected %d times. Message: "%s"'
 	local call_count = {}
-	local function test(event, message, count)
+	local function test(desc, msg, event, expected_count)
+		local assert_msg = '%s called %d times, expected %d times. Message: "%s"'
 		if not call_count[event] then
 			call_count[event] = 0
 			beerchat.register_callback(event, function()
 				call_count[event] = call_count[event] + 1
 			end)
-        end
-		SX:send_chat_message(message)
-		local temp_count = call_count[event]
-		call_count[event] = 0
-		assert(temp_count == count, assert_msg:format(event, temp_count, count, message))
+		end
+		it(desc.." "..msg, function()
+			SX:send_chat_message(msg)
+			local temp_count = call_count[event]
+			call_count[event] = 0
+			assert(temp_count == expected_count, assert_msg:format(event, temp_count, expected_count, msg))
+		end)
+	end
+
+	local function describemethod(event, fn)
+		describe(event, fn(event))
 	end
 
 	setup(function()
 		mineunit:execute_on_joinplayer(SX)
+		mineunit:execute_on_joinplayer(Sam)
+		mineunit:execute_on_joinplayer(Doe)
 	end)
 
 	teardown(function()
+		mineunit:execute_on_leaveplayer(Doe)
+		mineunit:execute_on_leaveplayer(Sam)
 		mineunit:execute_on_leaveplayer(SX)
 	end)
 
-	describe("on_receive", function()
+	describemethod("on_receive", function(evt) return function()
+		test("executed once for", "default message", evt, 1)
+		test("executed once for", "#main test message", evt, 1)
+		test("executed once for", "$ test message", evt, 1)
+		test("executed once for", "/me test message", evt, 1)
+		test("executed once for", "/whis test message", evt, 1)
+		test("executed once for", "@Sam test message", evt, 1)
+		test("executed once for", "/msg Sam test message", evt, 1)
+	end end)
 
-		local method = "on_receive"
+	describemethod("before_send", function(evt) return function()
+		test("executed once/player for", "default message", evt, 3)
+		test("executed once/player for", "#main test message", evt, 3)
+		test("executed once/player for", "$ test message", evt, 3)
+		test("executed once/player for", "/me test message", evt, 3)
+		test("executed once/player for", "/whis test message", evt, 3)
+		test("not executed for", "@Sam test message", evt, 0)
+		test("not executed for", "/msg Sam test message", evt, 0)
+	end end)
 
-		it("executed once for default message", function()
-			test(method, "always executed once test", 1)
-		end)
+	describemethod("before_send_on_channel", function(evt) return function()
+		test("executed once for", "default message", evt, 1)
+		test("executed once for", "#main test message", evt, 1)
+		test("not executed for", "$ test message", evt, 0)
+		test("not executed once for", "/me test message", evt, 0)
+		test("not executed for", "/whis test message", evt, 0)
+		test("not executed for", "@Sam test message", evt, 0)
+		test("not executed for", "/msg Sam test message", evt, 0)
+	end end)
 
-		it("executed once for # message", function()
-			test(method, "#main always executed once test", 1)
-		end)
-
-		it("executed once for $ message", function()
-			test(method, "$ always executed once test", 1)
-		end)
-
-		it("executed once for @ message", function()
-			test(method, "@SX always executed once test", 1)
-		end)
-
-		it("executed once for /msg message", function()
-			test(method, "/msg SX always executed once test", 1)
-		end)
-
-		it("executed once for /me message", function()
-			test(method, "/me always executed once test", 1)
-		end)
-
-		it("executed once for /whis message", function()
-			test(method, "/whis always executed once test", 1)
-		end)
-
-	end)
-
-	describe("before_send", function()
-
-		local method = "before_send"
-
-		it("executed once for default message", function()
-			test(method, "always executed once test", 1)
-		end)
-
-		it("executed once for # message", function()
-			test(method, "#main always executed once test", 1)
-		end)
-
-		it("executed once for $ message", function()
-			test(method, "$ always executed once test", 1)
-		end)
-
-		it("executed once for /me message", function()
-			test(method, "/me always executed once test", 1)
-		end)
-
-		it("executed once for /whis message", function()
-			test(method, "/whis always executed once test", 1)
-		end)
-
-		it("never executed for @ messages", function()
-			test(method, "@SX never executed test", 0)
-		end)
-
-		it("never executed for /msg messages", function()
-			test(method, "/msg SX never executed test", 0)
-		end)
-
-	end)
+	describemethod("on_send_on_channel", function(evt) return function()
+		test("executed once/player for", "default message", evt, 3)
+		test("executed once/player for", "#main test message", evt, 3)
+		test("not executed for", "$ test message", evt, 0)
+		test("not executed once for", "/me test message", evt, 0)
+		test("not executed for", "/whis test message", evt, 0)
+		test("not executed for", "@Sam test message", evt, 0)
+		test("not executed for", "/msg Sam test message", evt, 0)
+	end end)
 
 end)
