@@ -170,7 +170,7 @@ beerchat.register_callback('before_send', function(target, message, data)
 	end
 end)
 
-beerchat.register_callback('before_switch_chan', function(name, oldchannel, newchannel)
+beerchat.register_callback('before_switch_chan', function(name)
 	if beerchat.is_player_jailed(name) then
 		return false, "You are in chat-jail, no changing channels for you."
 	end

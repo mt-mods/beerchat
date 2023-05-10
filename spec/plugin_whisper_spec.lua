@@ -101,7 +101,7 @@ describe("Whisper", function()
 
 		-- Verify that message was handled correctly
 		assert.spy(beerchat.send_on_channel).was_not.called()
-		assert.spy(beerchat.execute_callbacks).was.called_with("before_switch_chan", "SX", m._, m._)
+		assert.spy(beerchat.execute_callbacks).was.called_with("before_switch_chan", "SX", m._)
 	end)
 
 	it("pm in whisper mode", function()
