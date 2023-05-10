@@ -55,3 +55,6 @@ load_plugin("password", true)
 
 -- Adds logging and info messages for certain events
 load_plugin("event-logging", true)
+
+-- Allows linking channels through channel aliases
+load_plugin("alias", false)
