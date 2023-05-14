@@ -3,7 +3,6 @@ beerchat.cb = {} -- all custom callbacks
 
 beerchat.cb.before_send        = {} -- executed before sending message
 beerchat.cb.before_send_pm     = {} -- executed before sending private message
-beerchat.cb.before_send_me     = {} -- executed before /me message is sent
 beerchat.cb.before_whisper     = {} -- executed before whisper message is sent
 beerchat.cb.before_join        = {} -- executed before channel is joined
 beerchat.cb.before_leave       = {} -- executed before channel is leaved
@@ -21,6 +20,7 @@ beerchat.cb.on_receive             = {} -- executed when new message is received
 beerchat.cb.on_http_receive        = {} -- executed when new message is received through http polling
 beerchat.cb.on_send_on_channel     = {} -- executed before delivering message to individual channel subscriber
 beerchat.cb.before_send_on_channel = {} -- executed before sending message to channel
+beerchat.cb.before_delete_channel  = {} -- executed before channel is deleted
 
 local priorities = {
 	high = 0,

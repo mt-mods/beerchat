@@ -182,12 +182,6 @@ beerchat.register_callback('before_send_pm', function(name, message, target)
 	end
 end)
 
-beerchat.register_callback('before_send_me', function(name, message, channel)
-	if beerchat.is_player_jailed(name) then
-		return false, "You are in chat-jail, you may not use /me command."
-	end
-end)
-
 beerchat.register_callback('before_whisper', function(name, message, channel, range)
 	if beerchat.is_player_jailed(name) then
 		return false, "You are in chat-jail, you may not whisper."
