@@ -85,29 +85,28 @@ local delete_channel = {
 		if not param or param == "" then
 			return false, "ERROR: Invalid number of arguments. Please supply the "
 				.. "channel name"
-		end
-
-		if param == beerchat.main_channel_name then
+		elseif param == beerchat.main_channel_name then
 			return false, "ERROR: Cannot delete the main channel!"
-		end
-
-		if not beerchat.channels[param] then
+		elseif not beerchat.channels[param] then
 			return false, "ERROR: Channel " .. param .. " does not exist"
-		end
-
-		if name ~= beerchat.channels[param].owner and not minetest.check_player_privs(name, beerchat.admin_priv) then
+		elseif name ~= beerchat.channels[param].owner and not minetest.check_player_privs(name, beerchat.admin_priv) then
 			return false, "ERROR: You are not the owner of channel " .. param
 		end
 
-		local color = beerchat.channels[param].color
-		beerchat.channels[param] = nil
+		local delete = { channel = param }
+		if not beerchat.execute_callbacks('before_delete_channel', name, delete) then
+			return true
+		end
+
+		local color = beerchat.channels[delete.channel].color
+		beerchat.channels[delete.channel] = nil
 		beerchat.mod_storage:set_string("channels", minetest.write_json(beerchat.channels))
 
-		beerchat.remove_player_channel(name, param)
+		beerchat.remove_player_channel(name, delete.channel)
 
 		beerchat.sound_play(name, beerchat.channel_management_sound)
 		minetest.chat_send_player(name, beerchat.format_message(
-			channel_deleted_string, { channel_name = param, color = color }
+			channel_deleted_string, { channel_name = delete.channel, color = color }
 		))
 		return true
 	end
