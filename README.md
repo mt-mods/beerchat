@@ -1,15 +1,16 @@
 Beerchat
 -----------------
 
+[![ContentDB](https://content.minetest.net/packages/mt-mods/beerchat/shields/downloads/)](https://content.minetest.net/packages/mt-mods/beerchat/)
+![](https://github.com/mt-mods/beerchat/workflows/luacheck/badge.svg)
+![](https://github.com/mt-mods/beerchat/workflows/mineunit/badge.svg)
+![](https://byob.yarr.is/mt-mods/beerchat/coverage)
+
 Chat mod for minetest
 
 ![](logo.png)
 
 (heavily modified version of the "original" beerchat mod: https://github.com/evrooije/beerchat.git)
-
-![](https://github.com/mt-mods/beerchat/workflows/luacheck/badge.svg)
-![](https://github.com/mt-mods/beerchat/workflows/mineunit/badge.svg)
-![](https://byob.yarr.is/mt-mods/beerchat/coverage)
 
 # Overview
 

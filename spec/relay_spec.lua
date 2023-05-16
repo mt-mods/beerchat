@@ -14,6 +14,9 @@ sourcefile("init")
 
 describe("Relay", function()
 
+	local M = function(s) return require("luassert.match").matches(s) end
+	mineunit:mods_loaded()
+
 	-- At least one player must be in game or some message delivery loops will be skipped
 	local SX = Player("SX", { shout = 1 })
 	setup(function() mineunit:execute_on_joinplayer(SX) end)
@@ -30,14 +33,16 @@ describe("Relay", function()
 		mineunit.http_server:set_response({
 			code = 200,
 			data = [[ [{
-				"username": "REMOTE-USER",
+				"username": "REMOTEUSER",
 				"text": "REMOTE MESSAGE FROM BRIDGE",
 				"gateway": "main",
 				"protocol": ""
 			}] ]]
 		})
+		spy.on(minetest, "chat_send_player")
 		mineunit:execute_globalstep(60)
 		mineunit:execute_globalstep()
+		assert.spy(minetest.chat_send_player).called_with("SX", M("main.+REMOTEUSER.+REMOTE MESSAGE FROM BRIDGE"))
 	end)
 
 end)

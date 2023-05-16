@@ -8,6 +8,7 @@ sourcefile("init")
 
 describe("Whisper", function()
 
+	local M = function(s) return require("luassert.match").matches(s) end
 	local SX = Player("SX", { shout = 1 })
 	local Sam = Player("Sam", { shout = 1 })
 
@@ -24,17 +25,21 @@ describe("Whisper", function()
 	it("whispers", function()
 		spy.on(beerchat, "send_on_channel")
 		spy.on(beerchat, "send_message")
-		SX:send_chat_message("$ Everyone ignore me, this is just a whisper test")
+		spy.on(minetest, "chat_send_player")
+		SX:send_chat_message("$ This is a whisper test")
 		assert.spy(beerchat.send_on_channel).was_not.called()
 		assert.spy(beerchat.send_message).was.called(2)
+		assert.spy(minetest.chat_send_player).called_with("Sam", M("This is a whisper test"))
 	end)
 
 	it("whispers with radius", function()
 		spy.on(beerchat, "send_on_channel")
 		spy.on(beerchat, "send_message")
-		SX:send_chat_message("$200 Everyone ignore me, this is just a whisper test with radius")
+		spy.on(minetest, "chat_send_player")
+		SX:send_chat_message("$200 This is a whisper test with radius")
 		assert.spy(beerchat.send_on_channel).was_not.called()
 		assert.spy(beerchat.send_message).was.called(2)
+		assert.spy(minetest.chat_send_player).called_with("Sam", M("This is a whisper test with radius"))
 	end)
 
 	it("whisper mode toggle", function()
@@ -43,7 +48,10 @@ describe("Whisper", function()
 
 		-- Enter whisper mode, send message, cancel whisper mode
 		SX:send_chat_message("$")
+		spy.on(minetest, "chat_send_player")
 		SX:send_chat_message("Message after activating whisper mode")
+		assert.spy(minetest.chat_send_player).not_called_with("Sam", M("main.+Message after activating whisper mode"))
+		assert.spy(minetest.chat_send_player).called_with("Sam", M("Message after activating whisper mode"))
 		SX:send_chat_message("$")
 
 		-- Verify that message was sent but not as channel message
@@ -51,8 +59,10 @@ describe("Whisper", function()
 		assert.spy(beerchat.send_message).was.called()
 
 		-- Verify that message will be sent as channel message after canceling whisper mode
+		spy.on(minetest, "chat_send_player")
 		SX:send_chat_message("Message after canceling whisper mode")
 		assert.spy(beerchat.send_on_channel).was.called()
+		assert.spy(minetest.chat_send_player).called_with("Sam", M("main.+Message after canceling whisper mode"))
 	end)
 
 	it("whisper mode toggle with radius", function()
@@ -61,7 +71,9 @@ describe("Whisper", function()
 
 		-- Enter whisper mode, send message, cancel whisper mode
 		SX:send_chat_message("$200")
+		spy.on(minetest, "chat_send_player")
 		SX:send_chat_message("Message after activating whisper mode with radius")
+		assert.spy(minetest.chat_send_player).called_with("Sam", M("Message after activating whisper mode with radius"))
 		SX:send_chat_message("$")
 
 		-- Verify that message was sent but not as channel message
