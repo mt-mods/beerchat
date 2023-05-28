@@ -147,14 +147,9 @@ end)
 beerchat.register_callback("before_send_on_channel", function(name, msg)
 	if beerchat.is_player_jailed(name) then
 		-- redirect #channel messages sent by jailed players toward jail channel and reconstruct full command.
-		-- preformat message, no fancy stuff like nick colors in jail, generic formatting should be skipped.
-		msg.message = beerchat.format_string(beerchat.jail.format_string, {
-			channel_name = minetest.colorize(color, beerchat.jail.channel_name),
-			channel_owner = owner,
-			from_player = name,
-			message = msg.channel ~= beerchat.jail.channel_name and "#"..msg.channel.." "..msg.message or msg.message,
-			time = os.date("%X")
-		})
+		if msg.channel ~= beerchat.jail.channel_name then
+			msg.message = "#"..msg.channel.." "..msg.message
+		end
 		msg.channel = beerchat.jail.channel_name
 	end
 end)
@@ -162,9 +157,14 @@ end)
 beerchat.register_callback('before_send', function(target, message, data)
 	if data and beerchat.is_player_jailed(data.name) then
 		if data.channel == beerchat.jail.channel_name then
-			-- override default send method to mute pings for jailed users
-			-- but allow chatting without pings on jail channel
-			minetest.chat_send_player(target, message)
+			-- mute pings but allow chatting on jail channel, format without colored plaeyr names
+			minetest.chat_send_player(target, beerchat.format_string(beerchat.jail.format_string, {
+				channel_name = minetest.colorize(color, beerchat.jail.channel_name),
+				channel_owner = owner,
+				from_player = data.name,
+				message = message,
+				time = os.date("%X")
+			}))
 		end
 		return false
 	end
