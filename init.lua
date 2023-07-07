@@ -39,11 +39,7 @@ beerchat = {
 
 	-- web settings
 	url = minetest.settings:get("beerchat.matterbridge_url") or "http://127.0.0.1:4242",
-	token = minetest.settings:get("beerchat.matterbridge_token"),
-
-	-- mapped remote users (irc, discord)
-	-- data: local user => remote user
-	remote_username_map = {}
+	token = minetest.settings:get("beerchat.matterbridge_token")
 }
 
 local MP = minetest.get_modpath("beerchat")
@@ -64,9 +60,6 @@ if http and beerchat.token then
 	dofile(MP.."/web/command.lua")
 	dofile(MP.."/web/register.lua")
 	dofile(MP.."/web/audit.lua")
-	dofile(MP.."/web/login.lua")
-	dofile(MP.."/web/logout.lua")
-	dofile(MP.."/web/common.lua")
 	loadfile(MP.."/web/tx.lua")(http)
 	loadfile(MP.."/web/rx.lua")(http)
 end
