@@ -8,8 +8,10 @@ minetest.register_on_mods_loaded(function()
 	if minetest.registered_chatcommands.tell then
 		local tell = minetest.registered_chatcommands.tell.func
 		minetest.registered_chatcommands.tell.func = function(name, param)
-			local target, message = param:match("^([^%s]+)%s+(.*)$")
-			if target and beerchat.execute_callbacks('before_send_pm', name, message, target) then
+			local target, message = param:match("^([^%s]+)%s*(.*)$")
+			if target == nil then
+				return tell(name, param)
+			elseif beerchat.execute_callbacks('before_send_pm', name, message, target) then
 				return tell(name, param)
 			end
 		end

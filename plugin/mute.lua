@@ -1,14 +1,12 @@
 
 local is_muted = function(name, target)
-	if target then
-		local player = minetest.get_player_by_name(target)
-		if player then
-			local meta = player:get_meta()
-			return meta:get("beerchat:muted:" .. name) == "true"
-		end
-		return true
+	assert(type(target) == "string", "is_muted(name, target): target should be a string, got "..type(target)..".")
+	local player = minetest.get_player_by_name(target)
+	if player then
+		local meta = player:get_meta()
+		return meta:get("beerchat:muted:" .. name) == "true"
 	end
-	return false
+	return true
 end
 
 -- Events
