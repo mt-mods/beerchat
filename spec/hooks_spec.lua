@@ -95,4 +95,22 @@ describe("Hooks", function()
 		test("not executed for", "/msg Sam test message", evt, 0)
 	end end)
 
+	describe("invalid input", function()
+
+		it("throws before_send_pm nil target", function()
+			assert.has_error(function()
+				beerchat.execute_callbacks('before_send_pm', "Sam", "test message", nil)
+			end)
+		end)
+
+		it("handles before_send_pm empty message and recipient", function()
+			beerchat.execute_callbacks('before_send_pm', "Sam", "", "")
+		end)
+
+		it("handles before_send_pm self recipient", function()
+			beerchat.execute_callbacks('before_send_pm', "Sam", "test message", "Sam")
+		end)
+
+	end)
+
 end)
