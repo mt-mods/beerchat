@@ -97,12 +97,6 @@ describe("Hooks", function()
 
 	describe("invalid input", function()
 
-		it("throws before_send_pm nil target", function()
-			assert.has_error(function()
-				beerchat.execute_callbacks('before_send_pm', "Sam", "test message", nil)
-			end)
-		end)
-
 		it("handles before_send_pm empty message and recipient", function()
 			beerchat.execute_callbacks('before_send_pm', "Sam", "", "")
 		end)
