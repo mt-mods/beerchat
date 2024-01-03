@@ -63,7 +63,7 @@ beerchat.allow_private_message = function(name, target)
 end
 
 beerchat.has_player_muted_player = function(name, other_name)
-	return not beerchat.execute_callbacks("before_check_muted", name, other_name)
+	return not beerchat.allow_private_message(other_name, name)
 end
 
 beerchat.is_player_subscribed_to_channel = function(name, channel)

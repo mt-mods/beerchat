@@ -73,6 +73,13 @@ beerchat.execute_callbacks = function(trigger, ...)
 	return true
 end
 
+-- Log notification for bad event definition, use before_send_pm if possible
+
+beerchat.register_callback("before_check_muted", function()
+	minetest.log("warning", "Beerchat 'before_check_muted' event fired: this event has issues and should probably be "
+		.. "either deprecated or updated. Use 'before_send_pm' or beerchat.has_player_muted_player(a,b) if possible.")
+end, -1)
+
 -- TODO: harmonize callbacks
 
 -- called on every channel message
