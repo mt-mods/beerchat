@@ -1,4 +1,5 @@
 -- Channel password handler
+--
 
 local function protected_join(name, password, data)
 	if type(data) ~= "table" or type(data.channel) ~= "string" or data.channel == "" then
