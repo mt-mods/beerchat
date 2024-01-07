@@ -4,7 +4,7 @@ local acls = {
 	rolenum = { deny = 0, owner = 1, manager = 2, write = 3, read = 4 },
 	dirty = false,
 	data = {},
-	privilege_cache = {}
+	roletype = {}, -- Definitions and data for special role types, privilege roles for example
 }
 
 acls.maxrolenum = (function()
@@ -12,6 +12,11 @@ acls.maxrolenum = (function()
 	for _ in pairs(acls.rolenum) do count = count + 1 end
 	return count
 end)()
+
+function acls:register_provider(roletype, def)
+	self.roletype[roletype] = table.copy(def)
+	self.roletype[roletype].cache = {}
+end
 
 function acls:check_access(channel, name, minimum, ...)
 	local role = self:get_role(channel, name, ...)
@@ -25,26 +30,29 @@ function acls:check_access(channel, name, minimum, ...)
 	-- No role and no minimum will fall through intentionally.
 end
 
-function acls:get_privilege_role(channel, name)
-	if self.privilege_cache[channel] and self.privilege_cache[channel][name] ~= nil then
-		return self.privilege_cache[channel][name]
+function acls:get_special_role(channel, name, roletype)
+	local def = assert(self.roletype[roletype], "Invalid special ACL role type `"..roletype.."`.")
+
+	local rolecache = def.cache[channel]
+	if rolecache and rolecache[name] ~= nil then
+		return rolecache[name]
 	elseif not self.data[channel] then
 		return
 	end
-	local privs = minetest.get_player_privs(name)
+
 	local num = self.maxrolenum + 1
-	self.privilege_cache[channel] = { [name] = false }
-	for priv in pairs(privs) do
-		local current = self.data[channel]["$"..priv]
+	def.cache[channel] = { [name] = false }
+	for identity in def.identities(name) do
+		local current = self.data[channel][roletype..identity]
 		if current and self.rolenum[current] < num then
-			self.privilege_cache[channel][name] = current
+			def.cache[channel][name] = current
 			num = self.rolenum[current]
 			if num <= 0 then
 				break
 			end
 		end
 	end
-	return self.privilege_cache[channel][name]
+	return def.cache[channel][name]
 end
 
 function acls:get_role(channel, name, ...)
@@ -58,7 +66,7 @@ function acls:get_role(channel, name, ...)
 			return acl[name]
 		end
 		-- Second check for privilege roles
-		local role = self:get_privilege_role(channel, name)
+		local role = self:get_special_role(channel, name, '$')
 		if role then
 			return role
 		elseif acl["*"] then
@@ -72,25 +80,33 @@ end
 function acls:set_role(channel, name, role)
 	self.data[channel] = self.data[channel] or {}
 	if self.data[channel][name] ~= role then
-		if name:sub(1,1) == "$" then
-			self.privilege_cache[channel] = nil
+		local prefix = name:sub(1,1)
+		if self.roletype[prefix] then
+			self.roletype[prefix].cache[channel] = nil
 		end
 		self.data[channel][name] = role
 		self.dirty = true
 	end
 end
 
-local write_storage
-
-function acls:write_storage()
-	if self.dirty then
-		write_storage(self.data)
-		self.dirty = false
+-- Compatibility for privilege roles
+-- TODO / PoC: Move this privilege stuff to separate file.
+acls:register_provider("$", {
+	identities = function(name)
+		return pairs(minetest.get_player_privs(name))
 	end
+})
+function acls:get_privilege_role(channel, name)
+	return self:get_special_role(channel, name, "$")
 end
 
 return function(data, write_fn)
 	acls.data = data or acls.data
-	write_storage = write_fn
+	acls.write_storage = function(self)
+		if self.dirty then
+			write_fn(self.data)
+			self.dirty = false
+		end
+	end
 	return acls
 end
