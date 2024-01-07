@@ -4,53 +4,24 @@
 -- ACL core functionality / access level checks
 --
 
-local acls = dofile(minetest.get_modpath("beerchat").."/plugin/acl/acls.lua")(
+local srcdir = minetest.get_modpath("beerchat").."/plugin/acl"
+
+local acls = dofile(srcdir .. "/acls.lua")(
 	minetest.deserialize(beerchat.mod_storage:get("acl.acls")),
 	function (data) beerchat.mod_storage:set_string("acl.acls", minetest.serialize(data)) end
 )
+
+local password_protected_join = dofile(srcdir .. "/password.lua")
 
 --
 -- Access level / authorization checks for player actions
 --
 
-local password_requests = {}
+beerchat.register_callback('before_join', function(name, _, data)
+	return password_protected_join(name, data)
+end)
 
-local function handle_password_protected_join(name, password)
-	local data = password_requests[name]
-	if type(data) ~= "table" or type(data.channel) ~= "string" or data.channel == "" then
-		minetest.log("warning", "Invalid password_requests data for player '" .. name .. "'")
-		minetest.chat_send_player(name, "ERROR: Something went wrong with authorization, please try joining again.")
-		return
-	end
-	local channel = beerchat.channels[data.channel]
-	if type(channel) ~= "table" then
-		minetest.chat_send_player(name, "ERROR: Channel #"..data.channel.." disappeared while joining.")
-		return
-	end
-	if password == channel.password then
-		minetest.chat_send_player(name, "OK: Channel #"..data.channel.." password accepted.")
-		;(data.set_default and beerchat.set_player_channel or beerchat.add_player_channel)(name, data.channel)
-	else
-		minetest.chat_send_player(name, "ERROR: Invalid password, please verify password and try joining again.")
-	end
-end
-
-beerchat.register_callback('before_join', function(name, channel_name, data)
-	local channel = beerchat.channels[channel_name]
-	if channel.password and channel.password ~= "" then
-		if not data or not data.password or data.password == "" then
-			-- Channel has password but nothing has provided any password so far, ask player to provide password
-			password_requests[name] = { channel = channel_name, set_default = data.set_default }
-			beerchat.capture_message(name, handle_password_protected_join)
-			return false, minetest.colorize("#f00d00", "ATTENTION:") .. "This channel requires that you supply"
-				.. " a password. Your next message will be used as a password and hidden from other players.\n"
-				.. minetest.colorize("#f00d00", "Please enter your password:")
-		end
-		-- External password handling mechanism has already provided password for this channel, verify it
-		if data.password ~= channel.password then
-			return false, "ERROR: Invalid password."
-		end
-	end
+beerchat.register_callback('before_join', function(name, _, data)
 	return acls:check_access(data.channel, name)
 end)
 
