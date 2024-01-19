@@ -35,7 +35,7 @@ Features
 
 ## Code
 
-* GPLv3
+* LGPLv3
 
 ## logo.svg / logo.png
 
