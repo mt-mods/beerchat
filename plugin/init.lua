@@ -20,6 +20,8 @@ load_plugin("me", true)
 -- Allows switching channels with "#channelname" and sending to channel with "#channelname message here"
 load_plugin("hash", true)
 
+load_plugin("acl", true)
+
 -- Allows "@player message here" to send private messages to players
 load_plugin("pm", true)
 

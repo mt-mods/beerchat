@@ -3,9 +3,18 @@
 -- message before allowing any plugin or default handler to actually handle message.
 
 local on_chat_message_handlers = {}
+local capture_message = {}
 
 function beerchat.register_on_chat_message(func)
 	table.insert(on_chat_message_handlers, func)
+end
+
+minetest.register_on_leaveplayer(function(player)
+	capture_message[player:get_player_name() or ""] = nil
+end)
+
+function beerchat.capture_message(name, callback)
+	capture_message[name] = callback
 end
 
 local function default_message_handler(msg)
@@ -37,6 +46,14 @@ end
 
 -- All messages are handled either by sending to channel or through special plugin function.
 minetest.register_on_chat_message(function(name, message)
+	-- Execute one shot overrides
+	local capture_fn = capture_message[name]
+	if capture_fn then
+		capture_message[name] = nil
+		capture_fn(name, message)
+		return true
+	end
+
 	-- Execute on_receive callbacks allowing modifications to sender and message
 	local msg = beerchat.default_on_receive(name, message)
 	if not msg then

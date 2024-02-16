@@ -17,7 +17,7 @@ beerchat.format_message = function(s, tab)
 	local owner
 	local password
 	local color = beerchat.default_channel_color
-	local channel_name = tab.channel_name or ""
+	local channel_name = tab.channel or ""
 
 	if beerchat.channels[channel_name] then
 		owner = beerchat.channels[channel_name].owner
@@ -36,9 +36,9 @@ beerchat.format_message = function(s, tab)
 	end
 
 	local params = {
-		channel_name = channel_name,
+		channel = channel_name,
 		channel_owner = owner,
-		channel_password = password,
+		password = password,
 		from_player = tab.from_player,
 		to_player = tab.to_player,
 		message = colorize_target_name(tab.message, tab.to_player),
