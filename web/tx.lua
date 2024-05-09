@@ -49,7 +49,7 @@ minetest.register_on_joinplayer(function(player)
 		new_player_map[playername] = nil
 	end
 
-	beerchat.on_channel_message("main", playername, msg)
+	beerchat.on_channel_message(beerchat.main_channel_name, playername, msg)
 end)
 
 -- leave player message
@@ -59,12 +59,12 @@ minetest.register_on_leaveplayer(function(player, timed_out)
 		msg = msg .. " (timed out)"
 	end
 
-	beerchat.on_channel_message("main", player:get_player_name(), msg)
+	beerchat.on_channel_message(beerchat.main_channel_name, player:get_player_name(), msg)
 end)
 
 -- initial message on start
-beerchat.on_channel_message("main", "SYSTEM", "✔ Minetest started!")
+beerchat.on_channel_message(beerchat.main_channel_name, "SYSTEM", "✔ Minetest started!")
 
 minetest.register_on_shutdown(function()
-	beerchat.on_channel_message("main", "SYSTEM", "✖ Minetest shutting down!")
+	beerchat.on_channel_message(beerchat.main_channel_name, "SYSTEM", "✖ Minetest shutting down!")
 end)
