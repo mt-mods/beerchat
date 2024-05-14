@@ -5,9 +5,9 @@
 -- player names at the end of the chat message, etc.
 --
 -- The following parameters are available and can be specified :
--- ${channel_name} name of the channel
+-- ${channel} name of the channel
 -- ${channel_owner} owner of the channel
--- ${channel_password} password to use when joining the channel, used e.g. for invites
+-- ${password} password to use when joining the channel, used e.g. for invites
 -- ${from_player} the player that is sending the message
 -- ${to_player} player to which the message is sent, will contain multiple player names
 -- e.g. when sending a PM to multiple players

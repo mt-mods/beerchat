@@ -47,14 +47,15 @@ beerchat.fix_player_channel = function(name, notify)
 	beerchat.set_player_channel(name, beerchat.main_channel_name)
 end
 
-beerchat.join_channel = function(name, channel, set_default)
-	if not beerchat.execute_callbacks('before_join', name, channel) then
+beerchat.join_channel = function(name, channel, data)
+	data = type(data) == "table" and data or { set_default = data }
+	data.channel = channel
+	if not beerchat.execute_callbacks('before_join', name, channel, data) then
 		return false
 	end
-	(set_default and beerchat.set_player_channel or beerchat.add_player_channel)(name, channel)
+	;(data.set_default and beerchat.set_player_channel or beerchat.add_player_channel)(name, data.channel)
 	beerchat.sound_play(name, "beerchat_chirp")
-	local msg = beerchat.format_message("|#${channel_name}| Joined channel", { channel_name = channel })
-	minetest.chat_send_player(name, msg)
+	minetest.chat_send_player(name, beerchat.format_message("|#${channel}| Joined channel", { channel = data.channel }))
 	return true
 end
 
