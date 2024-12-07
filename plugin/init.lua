@@ -58,3 +58,6 @@ load_plugin("event-logging", true)
 
 -- Allows linking channels through channel aliases
 load_plugin("alias", false)
+
+-- Add special priv to use create_channel command
+load_plugin("priv_cc", false)
