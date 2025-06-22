@@ -27,7 +27,7 @@ beerchat = {
 	-- Sound when a message is sent to a channel
 	channel_message_sound = "beerchat_chime",
 
-	main_channel_message_string = "|#${channel_name}| <${from_player}> ${message}",
+	main_channel_message_string = "|#${channel}| <${from_player}> ${message}",
 
 	moderator_channel_name = minetest.settings:get("beerchat.moderator_channel_name"),
 

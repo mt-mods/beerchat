@@ -46,7 +46,7 @@ beerchat.register_callback("before_send", function(target, message, data)
 		-- Apply formatting for channel messages.
 		data.message = beerchat.format_message(
 			beerchat.main_channel_message_string, {
-				channel_name = data.channel,
+				channel = data.channel,
 				to_player = target,
 				from_player = data.name,
 				message = message
