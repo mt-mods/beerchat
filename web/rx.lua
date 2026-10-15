@@ -1,10 +1,25 @@
 local http = ...
 
+local trigger = core.settings:get("beerchat.trigger")
+
 local function handle_data(data)
 	if not data or not data.username or not data.text or not data.gateway or not data.protocol then
 		return
 	end
 
+        if data.text:sub(0,1) == "!" then -- It's a command string
+            --  Now check if it's two words or just one
+            local id, cmd = unpack(string.split(data.text, " ", false, 1))
+            if cmd then -- two word command, read the trigger
+                id = id:sub(2) -- remove the ! first
+                if id ~= trigger then
+                    return -- Addressing some other server, disregard this
+                end
+                -- Okay, we have two words, a trigger and command, and the
+                -- trigger is ours, so remove it and pass the command through
+                data.text = data.text:gsub(id.." ","")
+            end
+        end
 	if not beerchat.execute_callbacks('on_http_receive', data) then
 		return
 	end

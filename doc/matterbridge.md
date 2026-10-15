@@ -68,6 +68,16 @@ beerchat.matterbridge_url = http://127.0.0.1:4242
 beerchat.matterbridge_token = mytoken
 ```
 
+Optionally, you may add a trigger to address this server specifically, in the event that you have more than one server connected:
+```
+beerchat.trigger = BeerchatTestBot
+```
+The trigger can be anything, but must not contain spaces, and you will probably want it to match the server's Nick. You can then send it commands like so:
+```
+!BeerchatTestBot players
+```
+The above will run the !players command, but only on BeerchatTestBot.
+
 ## Start the matterbridge and minetest server
 
 Start the matterbridge server and minetest, there might be some errors in the minetest console if the matterbridge isn't available
