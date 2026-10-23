@@ -1,4 +1,4 @@
-# Beer Chat Manual
+# Beerchat Manual
 
 ## Channel Management
 
