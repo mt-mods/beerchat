@@ -61,8 +61,8 @@ core.register_on_leaveplayer(function(player, timed_out)
 end)
 
 -- initial message on start
-beerchat.on_channel_message(beerchat.main_channel_name, "SYSTEM", "✔ Minetest started!")
+beerchat.on_channel_message(beerchat.main_channel_name, "SYSTEM", "✔ Luanti started!")
 
 core.register_on_shutdown(function()
-	beerchat.on_channel_message(beerchat.main_channel_name, "SYSTEM", "✖ Minetest shutting down!")
+	beerchat.on_channel_message(beerchat.main_channel_name, "SYSTEM", "✖ Luanti shutting down!")
 end)

@@ -15,8 +15,8 @@ ShowJoinPart=true
 UseUserName=true
 AllowMention=["users"]
 
-[api.minetest]
-BindAddress="0.0.0.0:4242"
+[api.luanti]
+BindAddress="127.0.0.1:4242"
 Token="mytoken"
 Buffer=1000
 RemoteNickFormat="[{BRIDGE}] {NICK}"
@@ -25,22 +25,27 @@ ShowJoinPart=true
 [[gateway]]
 name="main"
 enable=true
+
 [[gateway.inout]]
 account="irc.Libera"
 channel="#beerchat"
+
 [[gateway.inout]]
 account = "discord.Discord"
 channel="matterbridge"
+
 [[gateway.inout]]
-account="api.minetest"
+account="api.luanti"
 channel="api"
 
 [[gateway]]
 name="main2"
 enable=true
+
 [[gateway.inout]]
 account="irc.Libera"
 channel="#beerchat2"
+
 [[gateway.inout]]
-account="api.minetest"
+account="api.luanti"
 channel="api"

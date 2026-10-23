@@ -1,6 +1,6 @@
 # Beerchat
 
-[![ContentDB](https://content.minetest.net/packages/mt-mods/beerchat/shields/downloads/)](https://content.minetest.net/packages/mt-mods/beerchat/)
+[![ContentDB](https://content.luanti.org/packages/mt-mods/beerchat/shields/downloads/)](https://content.luanti.org/packages/mt-mods/beerchat/)
 ![Luacheck](https://github.com/mt-mods/beerchat/workflows/luacheck/badge.svg)
 ![Mineunit](https://github.com/mt-mods/beerchat/workflows/mineunit/badge.svg)
 ![Test Coverage](https://byob.yarr.is/mt-mods/beerchat/coverage)
@@ -10,7 +10,7 @@ Chat mod for Luanti
 
 ![Logo](logo.png)
 
-(heavily modified version of the "original" beerchat mod: <https://github.com/evrooije/beerchat.git>)
+(Heavily modified version of the ["original" beerchat mod](https://github.com/evrooije/beerchat.git))
 
 ## Overview
 

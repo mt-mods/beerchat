@@ -1,13 +1,12 @@
-
 # Matterbridge relay
 
 This manual describes how to set up a local matterbridge chat relay.
 
-The `beerchat` mod communicates via http to the matterbridge api, for details see: https://github.com/42wim/matterbridge/wiki/Api
+The `beerchat` mod communicates via http to the matterbridge api, for details see [matterbridge api reference](https://github.com/matterbridge-org/matterbridge/blob/master/docs/api/README.md)
 
 ## Install matterbridge
 
-Get the `matterbridge` binary from https://github.com/42wim/matterbridge or set it up with `docker`
+Get matterbridge from [matterbridge-org/matterbridge](https://github.com/matterbridge-org/matterbridge/blob/master/doc/compiling.md)
 
 A working example with `docker-compose` is located in the `/dev` folder of this repository
 
@@ -32,8 +31,8 @@ RemoteNickFormat="<{NICK}> "
 ShowJoinPart=true
 UseUserName=true
 
-[api.minetest]
-BindAddress="0.0.0.0:4242"
+[api.luanti]
+BindAddress="127.0.0.1:4242"
 Token="mytoken"
 Buffer=1000
 RemoteNickFormat="{NICK}"
@@ -49,18 +48,19 @@ channel="#beerchat"
 account = "discord.Discord"
 channel="matterbridge"
 [[gateway.inout]]
-account="api.minetest"
+account="api.luanti"
 channel="api"
 ```
+
 (tokens and passwords are omitted in this example)
 
-For all settings see: https://github.com/42wim/matterbridge/wiki/Setting
+For all settings see [matterbridge settings docs](https://github.com/matterbridge-org/matterbridge/blob/master/docs/settings.md).
 
-## Configure the minetest server
+## Configure Luanti
 
 Add the `beerchat` mod to the http-settings and configure the url and token:
 
-```
+```text
 secure.http_mods = beerchat
 # your local matterbridge setup
 beerchat.matterbridge_url = http://127.0.0.1:4242
@@ -68,6 +68,6 @@ beerchat.matterbridge_url = http://127.0.0.1:4242
 beerchat.matterbridge_token = mytoken
 ```
 
-## Start the matterbridge and minetest server
+## Start the matterbridge and Luanti
 
-Start the matterbridge server and minetest, there might be some errors in the minetest console if the matterbridge isn't available
+Start the matterbridge server and Luanti, there might be some errors in the Luanti console if the matterbridge isn't available
