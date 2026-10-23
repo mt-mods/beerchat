@@ -4,19 +4,21 @@
 -- Data storage and helpers to persist channel bans through server restarts
 --
 
-local channels = setmetatable(minetest.deserialize(beerchat.mod_storage:get("ban.channels")) or {}, {
-	__index = function(p,k)
+local channels = setmetatable(core.deserialize(beerchat.mod_storage:get("ban.channels")) or {}, {
+	__index = function(p, k)
 		return setmetatable({}, {
 			__newindex = function(t, n, v)
-				if not rawget(p,k) then rawset(p,k,{}) end
+				if not rawget(p, k) then
+					rawset(p, k, {})
+				end
 				p[k][n] = v
-			end
+			end,
 		})
-	end
+	end,
 })
 
 local function write_storage()
-	local data = minetest.serialize(channels)
+	local data = core.serialize(channels)
 	beerchat.mod_storage:set_string("ban.channels", data)
 end
 
@@ -25,7 +27,7 @@ end
 --
 
 beerchat.ban = {
-	priv = minetest.settings:get("beerchat.ban.priv") or "ban"
+	priv = core.settings:get("beerchat.ban.priv") or "ban",
 }
 
 beerchat.ban.is_player_banned = function(channel, player_name)
@@ -45,9 +47,9 @@ end
 -- Register beerchat event handlers for channel bans
 --
 
-beerchat.register_callback('before_send_on_channel', function(name, msg)
+beerchat.register_callback("before_send_on_channel", function(name, msg)
 	if beerchat.ban.is_player_banned(msg.channel, name) then
-		return false, "Sorry but you are banned on #"..msg.channel..", you are not allowed to send messages there."
+		return false, "Sorry but you are banned on #" .. msg.channel .. ", you are not allowed to send messages there."
 	end
 end)
 
@@ -69,24 +71,24 @@ local function channel_ban(name, param)
 	local player_names = string.gmatch(param, "[^%s,]+")
 	for player_name in player_names do
 		if not beerchat.ban.is_player_banned(channel, player_name) then
-			if not minetest.player_exists(player_name) then
+			if not core.player_exists(player_name) then
 				-- Inform that player does not exist in database but add record anyway to allow banning external users
-				minetest.chat_send_player(name, "WARNING: " .. player_name .. " is external user or does not exist.")
+				core.chat_send_player(name, "WARNING: " .. player_name .. " is external user or does not exist.")
 			end
 			beerchat.ban.ban_player(channel, player_name)
 		else
-			minetest.chat_send_player(name, "Channel ban: " .. player_name .. " is already banned on #"..channel)
+			core.chat_send_player(name, "Channel ban: " .. player_name .. " is already banned on #" .. channel)
 		end
 	end
 	write_storage()
 	return true
 end
 
-minetest.register_chatcommand("channel_ban", {
+core.register_chatcommand("channel_ban", {
 	params = "<Player Name> [<Player Name> ...]",
 	description = ("Ban players <Player Name> on current channel. Requires %s privilege."):format(beerchat.ban.priv),
 	privs = { [beerchat.ban.priv] = true },
-	func = channel_ban
+	func = channel_ban,
 })
 
 local function channel_unban(name, param)
@@ -99,13 +101,13 @@ local function channel_unban(name, param)
 	if not param or param == "" then
 		-- List banned names
 		local names = {}
-		for player_name,_ in pairs(channels[channel]) do
+		for player_name, _ in pairs(channels[channel]) do
 			table.insert(names, player_name)
 		end
 		if #names > 0 then
-			minetest.chat_send_player(name, "Players banned on #"..channel..": " .. table.concat(names, ", "))
+			core.chat_send_player(name, "Players banned on #" .. channel .. ": " .. table.concat(names, ", "))
 		else
-			minetest.chat_send_player(name, "Nobody is banned on #"..channel)
+			core.chat_send_player(name, "Nobody is banned on #" .. channel)
 		end
 	else
 		-- Unban players
@@ -114,7 +116,7 @@ local function channel_unban(name, param)
 			if beerchat.ban.is_player_banned(channel, player_name) then
 				beerchat.ban.unban_player(channel, player_name)
 			else
-				minetest.chat_send_player(name, "WARNING: " .. player_name .. " is not banned on #"..channel)
+				core.chat_send_player(name, "WARNING: " .. player_name .. " is not banned on #" .. channel)
 			end
 		end
 	end
@@ -122,9 +124,9 @@ local function channel_unban(name, param)
 	return true
 end
 
-minetest.register_chatcommand("channel_unban", {
+core.register_chatcommand("channel_unban", {
 	params = "[<Player Name> [<Player Name> ...]]",
 	description = ("Unban players <Player Name> on current channel. Requires %s privilege."):format(beerchat.ban.priv),
 	privs = { [beerchat.ban.priv] = true },
-	func = channel_unban
+	func = channel_unban,
 })

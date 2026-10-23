@@ -5,16 +5,14 @@ local function handle_data(data)
 		return
 	end
 
-	if not beerchat.execute_callbacks('on_http_receive', data) then
+	if not beerchat.execute_callbacks("on_http_receive", data) then
 		return
 	end
 
-	if data.event == "user_action" then
+	if data.event == "user_action" or data.event == "join_leave" then
 		-- "/me" message, TODO: use format and helper in "plugin/me.lua"
-		beerchat.send_on_local_channel({name=data.username, channel=data.gateway, message=data.text})
-	elseif data.event == "join_leave" then
 		-- join/leave message, from irc for example
-		beerchat.send_on_local_channel({name=data.username, channel=data.gateway, message=data.text})
+		beerchat.send_on_local_channel({ name = data.username, channel = data.gateway, message = data.text })
 	else
 		-- regular text
 		if string.sub(data.text, 1, 1) == "!" then
@@ -28,7 +26,7 @@ local function handle_data(data)
 			end
 		else
 			-- regular user message
-			beerchat.send_on_local_channel({name=data.username, channel=data.gateway, message=data.text})
+			beerchat.send_on_local_channel({ name = data.username, channel = data.gateway, message = data.text })
 		end
 	end
 end
@@ -37,14 +35,14 @@ local function recv_loop()
 	http.fetch({
 		url = beerchat.url .. "/api/messages",
 		extra_headers = {
-			"Authorization: Bearer " .. beerchat.token
+			"Authorization: Bearer " .. beerchat.token,
 		},
 		timeout = 10,
 	}, function(res)
 		if res.succeeded and res.code == 200 and res.data and res.data ~= "" then
-			local data = minetest.parse_json(res.data)
+			local data = core.parse_json(res.data)
 			if not data then
-				minetest.log("error", "[beerchat] content parsing error: " .. dump(res.data))
+				core.log("error", "[beerchat] content parsing error: " .. dump(res.data))
 				return
 			end
 
@@ -56,13 +54,12 @@ local function recv_loop()
 			end
 		else
 			-- ignore errors
-			minetest.log("error", "[beerchat] http request to " .. beerchat.url .. " failed with code " .. res.code)
+			core.log("error", "[beerchat] http request to " .. beerchat.url .. " failed with code " .. res.code)
 		end
-
 	end)
 	-- re-schedule receive function in any case
-	minetest.after(1, recv_loop)
+	core.after(1, recv_loop)
 end
 
 -- start loop
-minetest.after(1, recv_loop)
+core.after(1, recv_loop)

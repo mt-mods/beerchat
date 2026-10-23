@@ -1,0 +1,7 @@
+[linter]
+globals = ["mineunit"]
+
+lints.unused_variable = "allow"
+
+[files]
+includes = ["**", "!spec/**"]

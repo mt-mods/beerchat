@@ -1,4 +1,3 @@
-
 -- Main in memory storage for all announcements
 local announcements = {}
 
@@ -6,28 +5,28 @@ local announcements = {}
 local active_announcements = {}
 
 -- Announcement chat message formatting
-local format_string = minetest.colorize("#f00", "Server") .. ": %s"
+local format_string = core.colorize("#f00", "Server") .. ": %s"
 
 -- All current announcements formatted and combined
 local announce_message
 
 -- Write announcement data to mod data storage
 local function write_announcements()
-	local data = minetest.serialize(announcements)
+	local data = core.serialize(announcements)
 	beerchat.mod_storage:set_string("announce.data", data)
 end
 
 local function format_message(message, color)
 	if color then
-		message = minetest.colorize(color, message)
+		message = core.colorize(color, message)
 	end
 	return format_string:format(message)
 end
 
 local function combine_announcements()
 	if #active_announcements > 0 then
-		local messages = {"== Server has following public announcements =="}
-		for _,announcement in ipairs(active_announcements) do
+		local messages = { "== Server has following public announcements ==" }
+		for _, announcement in ipairs(active_announcements) do
 			table.insert(messages, format_message(announcement.message, announcement.color))
 		end
 		announce_message = table.concat(messages, "\n")
@@ -42,7 +41,7 @@ local function cleanup_announcements()
 	local removed = false
 	local tmp = {}
 	local tmp_active = {}
-	for _,announcement in ipairs(announcements) do
+	for _, announcement in ipairs(announcements) do
 		if not announcement.expire or announcement.expire > now then
 			table.insert(tmp, announcement)
 			if announcement.active then
@@ -63,11 +62,11 @@ end
 
 local function send_global_announcement(data)
 	if data then
-		minetest.sound_play(beerchat.channel_message_sound, { gain = beerchat.sounds_default_gain }, true)
-		minetest.chat_send_all(format_message(data.message, data.color))
+		core.sound_play(beerchat.channel_message_sound, { gain = beerchat.sounds_default_gain }, true)
+		core.chat_send_all(format_message(data.message, data.color))
 	elseif announce_message then
-		minetest.sound_play(beerchat.channel_message_sound, { gain = beerchat.sounds_default_gain }, true)
-		minetest.chat_send_all(announce_message)
+		core.sound_play(beerchat.channel_message_sound, { gain = beerchat.sounds_default_gain }, true)
+		core.chat_send_all(announce_message)
 	end
 end
 
@@ -85,14 +84,14 @@ local function manage_announcements(param)
 	-- Parse arguments
 	while arg do
 		if arg == "-c" or arg == "-e" or arg == "-D" then
-			opts[arg:sub(2,2)] = args()
+			opts[arg:sub(2, 2)] = args()
 		elseif arg == "-q" then
-			opts[arg:sub(2,2)] = true
+			opts[arg:sub(2, 2)] = true
 		elseif arg == "--" then
 			arg = args()
 			break
 		else
-			if arg:sub(1,1) == "-" then
+			if arg:sub(1, 1) == "-" then
 				return false, "Invalid argument: " .. arg
 			end
 			break
@@ -143,12 +142,12 @@ local function manage_announcements(param)
 	return true, table.concat(msgs, "\n")
 end
 
-minetest.register_chatcommand("server-announce", {
+core.register_chatcommand("server-announce", {
 	params = "[-c <color>] [-e <expire>] [-D <delete id>] [-q] <message>",
 	description = "List and manage server wide messages. Supports \\n, \\t and \\e escape sequences.",
 	func = function(name, param)
 		if param and param ~= "" then
-			if minetest.check_player_privs(name, { ban = true }) then
+			if core.check_player_privs(name, { ban = true }) then
 				return manage_announcements(param)
 			end
 			return false, "Required privileges for arguments: ban. You can run this command without arguments."
@@ -156,18 +155,18 @@ minetest.register_chatcommand("server-announce", {
 			return true, announce_message
 		end
 		return true, "No active announcements."
-	end
+	end,
 })
 
-minetest.register_on_joinplayer(function(player)
+core.register_on_joinplayer(function(player)
 	if announce_message then
-		minetest.chat_send_player(player:get_player_name(), announce_message)
+		core.chat_send_player(player:get_player_name(), announce_message)
 	end
 end)
 
 -- Read announcement data from mod data storage
 do
-	local data = minetest.deserialize(beerchat.mod_storage:get("announce.data"))
+	local data = core.deserialize(beerchat.mod_storage:get("announce.data"))
 	if data then
 		announcements = data
 		cleanup_announcements()

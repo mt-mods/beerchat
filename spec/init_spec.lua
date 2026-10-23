@@ -5,16 +5,15 @@ mineunit("player")
 mineunit("server")
 
 describe("Mod initialization", function()
-
 	it("Wont crash", function()
 		sourcefile("init")
 	end)
-
 end)
 
 describe("Chatting", function()
-
-	local M = function(s) return require("luassert.match").matches(s) end
+	local M = function(s)
+		return require("luassert.match").matches(s)
+	end
 	local SX = Player("SX", { shout = 1 })
 
 	setup(function()
@@ -28,7 +27,7 @@ describe("Chatting", function()
 	it("sends messages", function()
 		spy.on(minetest, "chat_send_player")
 		SX:send_chat_message("Everyone ignore me, this is just a test")
-		assert.spy(minetest.chat_send_player).called_with("SX", M("Everyone ignore me, this is just a test"))
+		assert.spy(core.chat_send_player).called_with("SX", M("Everyone ignore me, this is just a test"))
 	end)
 
 	it("creates channel", function()
@@ -46,5 +45,4 @@ describe("Chatting", function()
 		SX:send_chat_message("/dc foo")
 		assert.is_nil(beerchat.channels["foo"])
 	end)
-
 end)

@@ -7,7 +7,6 @@ mineunit("server")
 sourcefile("init")
 
 describe("force2channel command", function()
-
 	local SX = Player("SX", { shout = 1, ban = 1 })
 	local XX = Player("XX", { shout = 1 })
 
@@ -53,5 +52,4 @@ describe("force2channel command", function()
 		assert.equals("jailchannel", XX:get_meta():get_string("beerchat:current_channel"))
 		assert.equals(oldchannel, XX:get_meta():get_string("beerchat:jailed"))
 	end)
-
 end)

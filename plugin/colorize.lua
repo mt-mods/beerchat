@@ -10,18 +10,15 @@
 --   beerchat.colorize_channels = *,
 --
 
-local colorize_channels = minetest.settings:get("beerchat.colorize_channels")
+local colorize_channels = core.settings:get("beerchat.colorize_channels")
 
 if colorize_channels == "*" then
-
 	-- Colorize all chat channels
 
-	beerchat.register_callback('before_send_on_channel', function(name, msg)
-		msg.message = msg.message:gsub('%((%#%x%x%x)%)', string.char(0x1B) .. '(c@%1)')
+	beerchat.register_callback("before_send_on_channel", function(name, msg)
+		msg.message = msg.message:gsub("%((%#%x%x%x)%)", string.char(0x1B) .. "(c@%1)")
 	end)
-
 elseif colorize_channels then
-
 	-- Colorize only specific selected chat channels
 
 	local channels = string.gmatch(colorize_channels, "[^%s,]+")
@@ -31,11 +28,10 @@ elseif colorize_channels then
 	end
 
 	if next(allowed_channels) then
-		beerchat.register_callback('before_send_on_channel', function(name, msg)
+		beerchat.register_callback("before_send_on_channel", function(name, msg)
 			if msg.channel and allowed_channels[msg.channel] then
-				msg.message = msg.message:gsub('%((%#%x%x%x)%)', string.char(0x1B) .. '(c@%1)')
+				msg.message = msg.message:gsub("%((%#%x%x%x)%)", string.char(0x1B) .. "(c@%1)")
 			end
 		end)
 	end
-
 end
