@@ -1,11 +1,8 @@
 -- auth fail
-core.register_on_authplayer(function(name, ip, is_success)
+core.register_on_authplayer(function(name, _, is_success) -- middle var is ip
 	if not is_success then
-		beerchat.on_channel_message(
-			"audit",
-			"SYSTEM",
-			"Player '" .. name .. "' from ip " .. ip .. " tried to connect with wrong password"
-		)
+		-- DO NOT print ip to chat
+		beerchat.on_channel_message("audit", "SYSTEM", "Player '" .. name .. "' tried to connect with wrong password")
 	end
 end)
 
