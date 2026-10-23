@@ -12,11 +12,11 @@ read_globals = {
 	string = {fields = {"split", "trim"}},
 	table = {fields = {"copy", "getn"}},
 
-	-- Minetest
-	"minetest",
+	-- luanti
+	"minetest", "core",
 	"vector", "ItemStack",
 	"dump", "dump2",
 
 	-- Deps
-	"xban", "QoS"
+	"xban"
 }
