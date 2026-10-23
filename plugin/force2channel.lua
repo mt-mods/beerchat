@@ -43,7 +43,7 @@ end
 local ban_priv = beerchat.jail and beerchat.jail.priv or "ban"
 core.register_chatcommand("force2channel", {
 	params = "<Channel Name>,<Player Name>[,<Player2 Name>,...]",
-	description = ("Force player named <Player Name> to channel named <Channel Name>. " .. "Requires %s privilege."):format(
+	description = ("Force player named <Player Name> to channel named <Channel Name>. " .. "Requires %s privilege."):format( -- luacheck: ignore 631
 		ban_priv
 	),
 	privs = { [ban_priv] = true },
