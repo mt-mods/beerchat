@@ -1,0 +1,43 @@
+version = 1
+
+# Source Code
+[[annotations]]
+path = [
+	"**.lua",
+	"dev/**",
+	"doc/**",
+	"spec/**",
+	"*.md"
+]
+SPDX-FileCopyrightText = [
+    "2024 SX"
+]
+SPDX-License-Identifier = "LGPL-3.0-only"
+
+# logo files
+[[annotations]]
+path = [
+    "logo.png",
+		"logo.svg"
+]
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "Apache-2.0"
+
+# beerchat_chirp.ogg
+[[annotations]]
+path = ["sounds/beerchat_chirp.ogg"]
+SPDX-FileCopyrightText = "CommunicatorChirp_STTOS_recreated.wav by zimbot -- https://freesound.org/s/178027/ -- License: Attribution 4.0"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+# CC0 files
+[[annotations]]
+path = [
+    ".**",
+		"flint.toml",
+    "mod.conf",
+		"settingtypes.txt",
+		"sounds/beerchat_chime.ogg",
+		"sounds/beerchat_utter.ogg"
+]
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "CC0-1.0"
