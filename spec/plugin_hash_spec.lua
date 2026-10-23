@@ -7,8 +7,9 @@ mineunit("server")
 sourcefile("init")
 
 describe("Hash", function()
-
-	local M = function(s) return require("luassert.match").matches(s) end
+	local M = function(s)
+		return require("luassert.match").matches(s)
+	end
 	local ANY = require("luassert.match")._
 	assert:register("matcher", "has_channel", function(_, args)
 		return function(msg)
@@ -64,7 +65,7 @@ describe("Hash", function()
 		assert.spy(beerchat.execute_callbacks).not_called_with("before_switch_chan", ANY, ANY)
 		assert.spy(beerchat.execute_callbacks).called_with("on_send_on_channel", "SX", CHANNEL("hash-test1"), "SX")
 		assert.equal(beerchat.get_player_channel("SX"), "main")
-		assert.spy(minetest.chat_send_player).called_with("SX", M("hash%-test1.+Test message"))
+		assert.spy(core.chat_send_player).called_with("SX", M("hash%-test1.+Test message"))
 	end)
 
 	it("requires joining before sending messages", function()
@@ -77,5 +78,4 @@ describe("Hash", function()
 		assert.spy(beerchat.execute_callbacks).not_called_with("on_send_on_channel", ANY, ANY, ANY)
 		assert.equal(beerchat.get_player_channel("SX"), "main")
 	end)
-
 end)

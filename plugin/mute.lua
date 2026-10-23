@@ -1,8 +1,7 @@
-
 -- Test if message from one player to another would get muted based on recipient ignore list
 local is_muted = function(from, to)
-	assert(type(to) == "string", "is_muted(from, to): 'to' should be a string, got "..type(to)..".")
-	local player = minetest.get_player_by_name(to)
+	assert(type(to) == "string", "is_muted(from, to): 'to' should be a string, got " .. type(to) .. ".")
+	local player = core.get_player_by_name(to)
 	if player then
 		local meta = player:get_meta()
 		return meta:get("beerchat:muted:" .. (from or "")) == "true"
@@ -46,13 +45,13 @@ local mute_player = {
 		end
 
 		if beerchat.has_player_muted_player(name, param) then
-			minetest.chat_send_player(name, "Player " .. param .. " is already muted.")
+			core.chat_send_player(name, "Player " .. param .. " is already muted.")
 		else
-			minetest.get_player_by_name(name):get_meta():set_string("beerchat:muted:" .. param, "true")
-			minetest.chat_send_player(name, "Muted player " .. param .. ".")
+			core.get_player_by_name(name):get_meta():set_string("beerchat:muted:" .. param, "true")
+			core.chat_send_player(name, "Muted player " .. param .. ".")
 		end
 		return true
-	end
+	end,
 }
 
 local unmute_player = {
@@ -64,20 +63,20 @@ local unmute_player = {
 		end
 
 		if beerchat.has_player_muted_player(name, param) then
-			minetest.get_player_by_name(name):get_meta():set_string("beerchat:muted:" .. param, "")
-			minetest.chat_send_player(name, "Unmuted player " .. param .. ".")
+			core.get_player_by_name(name):get_meta():set_string("beerchat:muted:" .. param, "")
+			core.chat_send_player(name, "Unmuted player " .. param .. ".")
 		else
-			minetest.chat_send_player(name, "Player " .. param .. " was not muted.")
+			core.chat_send_player(name, "Player " .. param .. " was not muted.")
 		end
 		return true
-	end
+	end,
 }
 
 local list_muted = {
 	params = "",
 	description = "Show list of muted players.",
 	func = function(name)
-		local player = minetest.get_player_by_name(name)
+		local player = core.get_player_by_name(name)
 		local meta = player and player:get_meta():to_table()
 
 		if meta and meta.fields then
@@ -89,19 +88,19 @@ local list_muted = {
 			end
 
 			if #muted > 0 then
-				minetest.chat_send_player(name, table.concat(muted, ", "))
+				core.chat_send_player(name, table.concat(muted, ", "))
 			else
-				minetest.chat_send_player(name, "You have not muted any players.")
+				core.chat_send_player(name, "You have not muted any players.")
 			end
 
 			return true
 		end
 		return false
-	end
+	end,
 }
 
-minetest.register_chatcommand("mute", mute_player)
-minetest.register_chatcommand("ignore", mute_player)
-minetest.register_chatcommand("unmute", unmute_player)
-minetest.register_chatcommand("unignore", unmute_player)
-minetest.register_chatcommand("list_muted", list_muted)
+core.register_chatcommand("mute", mute_player)
+core.register_chatcommand("ignore", mute_player)
+core.register_chatcommand("unmute", unmute_player)
+core.register_chatcommand("unignore", unmute_player)
+core.register_chatcommand("list_muted", list_muted)

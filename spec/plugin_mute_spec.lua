@@ -7,8 +7,9 @@ mineunit("server")
 sourcefile("init")
 
 describe("mute plugin", function()
-
-	local M = function(s) return require("luassert.match").matches(s) end
+	local M = function(s)
+		return require("luassert.match").matches(s)
+	end
 	local Sam = nil
 	local Doe = nil
 	local Dummy = nil
@@ -34,15 +35,15 @@ describe("mute plugin", function()
 	local function assert_defaults_has_player_muted_player(name1, name2)
 		assert.is_string(name1)
 		assert.is_string(name2)
-		assert.is_false(beerchat.has_player_muted_player(name1, name2), name2.." is muted but shouldn't be")
-		assert.is_false(beerchat.has_player_muted_player(name2, name1), name1.." is muted but shouldn't be")
+		assert.is_false(beerchat.has_player_muted_player(name1, name2), name2 .. " is muted but shouldn't be")
+		assert.is_false(beerchat.has_player_muted_player(name2, name1), name1 .. " is muted but shouldn't be")
 	end
 
 	local function assert_defaults_allow_private_message(name1, name2)
 		assert.is_string(name1)
 		assert.is_string(name2)
-		assert.is_true(beerchat.allow_private_message(name1, name2), name2.." blocking pm without mute")
-		assert.is_true(beerchat.allow_private_message(name2, name1), name1.." blocking pm without mute")
+		assert.is_true(beerchat.allow_private_message(name1, name2), name2 .. " blocking pm without mute")
+		assert.is_true(beerchat.allow_private_message(name2, name1), name1 .. " blocking pm without mute")
 	end
 
 	describe("default behavior", function()
@@ -88,7 +89,6 @@ describe("mute plugin", function()
 		it("allows pm from remote self", function()
 			assert.is_true(beerchat.allow_private_message("[user]", "[user]"), "[user] blocking pm by default")
 		end)
-
 	end)
 
 	describe("beerchat.has_player_muted_player", function()
@@ -129,7 +129,6 @@ describe("mute plugin", function()
 			Doe:send_chat_message("/unmute Sam")
 			assert_defaults_has_player_muted_player("Doe", "Sam")
 		end)
-
 	end)
 
 	describe("beerchat.allow_private_message", function()
@@ -170,7 +169,6 @@ describe("mute plugin", function()
 			Doe:send_chat_message("/unmute Sam")
 			assert_defaults_allow_private_message("Doe", "Sam")
 		end)
-
 	end)
 
 	describe("integrations", function()
@@ -183,15 +181,15 @@ describe("mute plugin", function()
 			Sam:send_chat_message("/mute Doe")
 			spy.on(minetest, "chat_send_player")
 			Doe:send_chat_message("$ " .. message)
-			assert.spy(minetest.chat_send_player).called_with("Dummy", M(message))
-			assert.spy(minetest.chat_send_player).not_called_with("Sam", M(message))
+			assert.spy(core.chat_send_player).called_with("Dummy", M(message))
+			assert.spy(core.chat_send_player).not_called_with("Sam", M(message))
 
 			-- Sam unmutes Doe, Sam receives whispers from Doe
 			Sam:send_chat_message("/unmute Doe")
 			spy.on(minetest, "chat_send_player")
 			Doe:send_chat_message("$ " .. message)
-			assert.spy(minetest.chat_send_player).called_with("Dummy", M(message))
-			assert.spy(minetest.chat_send_player).called_with("Sam", M(message))
+			assert.spy(core.chat_send_player).called_with("Dummy", M(message))
+			assert.spy(core.chat_send_player).called_with("Sam", M(message))
 		end)
 
 		it("pm is muted & unmuted", function()
@@ -201,18 +199,17 @@ describe("mute plugin", function()
 			spy.on(minetest, "chat_send_player")
 			Doe:send_chat_message("@Sam " .. message)
 			Doe:send_chat_message("@Dummy " .. message)
-			assert.spy(minetest.chat_send_player).not_called_with("Sam", M(message))
-			assert.spy(minetest.chat_send_player).called_with("Dummy", M(message))
+			assert.spy(core.chat_send_player).not_called_with("Sam", M(message))
+			assert.spy(core.chat_send_player).called_with("Dummy", M(message))
 
 			-- Sam unmutes Doe, Sam receives private message from Doe
 			Sam:send_chat_message("/unmute Doe")
 			spy.on(minetest, "chat_send_player")
 			Doe:send_chat_message("@Sam " .. message)
 			Doe:send_chat_message("@Dummy " .. message)
-			assert.spy(minetest.chat_send_player).called_with("Sam", M(message))
-			assert.spy(minetest.chat_send_player).called_with("Dummy", M(message))
+			assert.spy(core.chat_send_player).called_with("Sam", M(message))
+			assert.spy(core.chat_send_player).called_with("Dummy", M(message))
 		end)
-
 	end)
 
 	describe("invalid input", function()
@@ -221,16 +218,15 @@ describe("mute plugin", function()
 
 		it("allows before_send_pm nil source", function()
 			assert.not_has_error(function()
-				beerchat.execute_callbacks('before_send_pm', nil, "test message", "Sam")
+				beerchat.execute_callbacks("before_send_pm", nil, "test message", "Sam")
 			end)
 		end)
 
 		it("throws before_send_pm nil destination", function()
 			assert.has_error(function()
-				beerchat.execute_callbacks('before_send_pm', "Sam", "test message", nil)
+				beerchat.execute_callbacks("before_send_pm", "Sam", "test message", nil)
 			end)
 		end)
-
 	end)
 
 	describe("other chatcommands", function()
@@ -240,7 +236,7 @@ describe("mute plugin", function()
 		it("allows /list_muted", function()
 			spy.on(minetest, "chat_send_player")
 			Sam:send_chat_message("/list_muted")
-			assert.spy(minetest.chat_send_player).called_with("Sam", M("not muted any players"))
+			assert.spy(core.chat_send_player).called_with("Sam", M("not muted any players"))
 		end)
 
 		it("lists names with /list_muted", function()
@@ -248,35 +244,34 @@ describe("mute plugin", function()
 			Sam:send_chat_message("/mute SomeoneWhoIsntThere")
 			spy.on(minetest, "chat_send_player")
 			Sam:send_chat_message("/list_muted")
-			assert.spy(minetest.chat_send_player).called_with("Sam", M("Doe.*SomeoneWhoIsntThere"))
+			assert.spy(core.chat_send_player).called_with("Sam", M("Doe.*SomeoneWhoIsntThere"))
 		end)
 
 		it("repeat /mute", function()
 			Sam:send_chat_message("/mute Doe")
 			spy.on(minetest, "chat_send_player")
 			Sam:send_chat_message("/mute Doe")
-			assert.spy(minetest.chat_send_player).called_with("Sam", M("already muted"))
+			assert.spy(core.chat_send_player).called_with("Sam", M("already muted"))
 		end)
 
 		it("repeat /unmute", function()
 			Sam:send_chat_message("/unmute Doe")
 			spy.on(minetest, "chat_send_player")
 			Sam:send_chat_message("/unmute Doe")
-			assert.spy(minetest.chat_send_player).called_with("Sam", M("not muted"))
+			assert.spy(core.chat_send_player).called_with("Sam", M("not muted"))
 		end)
 
 		it("empty /mute", function()
 			spy.on(minetest, "chat_send_player")
 			Sam:send_chat_message("/mute")
-			assert.spy(minetest.chat_send_player).called_with("Sam", M("nvalid.*argument"))
+			assert.spy(core.chat_send_player).called_with("Sam", M("nvalid.*argument"))
 		end)
 
 		it("empty /unmute", function()
 			spy.on(minetest, "chat_send_player")
 			Sam:send_chat_message("/unmute")
-			assert.spy(minetest.chat_send_player).called_with("Sam", M("nvalid.*argument"))
+			assert.spy(core.chat_send_player).called_with("Sam", M("nvalid.*argument"))
 		end)
-
 	end)
 
 	describe("chat", function()
@@ -286,7 +281,7 @@ describe("mute plugin", function()
 		local function assert_chat_delivery(player, message, test)
 			spy.on(minetest, "chat_send_player")
 			player:send_chat_message(message)
-			test(assert.spy(minetest.chat_send_player), message)
+			test(assert.spy(core.chat_send_player), message)
 		end
 
 		it("not blocking by default", function()
@@ -323,7 +318,5 @@ describe("mute plugin", function()
 				spy.not_called_with("Doe", M(msg))
 			end)
 		end)
-
 	end)
-
 end)

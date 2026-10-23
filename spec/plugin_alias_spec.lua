@@ -7,15 +7,18 @@ mineunit("server")
 sourcefile("init")
 
 describe("Alias behavior", function()
-
-	local M = function(s) return require("luassert.match").matches(s) end
+	local M = function(s)
+		return require("luassert.match").matches(s)
+	end
 	local ANY = require("luassert.match")._
 	assert:register("matcher", "has_channelmessage", function(_, args)
 		return function(msg)
 			return type(msg) == "table" and msg.channel == args[1] and msg.message:find(args[2]) ~= nil
 		end
 	end)
-	local CHMSG = function(...) return require("luassert.match").has_channelmessage(...) end
+	local CHMSG = function(...)
+		return require("luassert.match").has_channelmessage(...)
+	end
 
 	local ADMIN = Player("ADMIN", { shout = 1, [beerchat.admin_priv] = 1 })
 	local SX = Player("SX", { shout = 1, ban = 1 })
@@ -160,7 +163,7 @@ describe("Alias behavior", function()
 		-- Test
 		spy.on(minetest, "chat_send_player")
 		Sam:send_chat_message("#alias-nochat-1-A Test message")
-		assert.spy(minetest.chat_send_player).called_with("Sam", ANY)
+		assert.spy(core.chat_send_player).called_with("Sam", ANY)
 	end)
 
 	it("delivers messages 1, join before", function()
@@ -177,7 +180,7 @@ describe("Alias behavior", function()
 		Doe:send_chat_message("#alias-chat-1-B Test message to #alias-chat-1-B")
 		assert.spy(beerchat.execute_callbacks).called_with("before_send", "Sam", ANY, ANY)
 		assert.spy(beerchat.execute_callbacks).called_with("before_send", "Doe", ANY, ANY)
-		assert.spy(minetest.chat_send_player).called(2 * 2) -- 2 players, 2 messages
+		assert.spy(core.chat_send_player).called(2 * 2) -- 2 players, 2 messages
 	end)
 
 	it("delivers messages 2, join after", function()
@@ -194,7 +197,7 @@ describe("Alias behavior", function()
 		Doe:send_chat_message("#alias-chat-2-B Test message to #alias-chat-2-B")
 		assert.spy(beerchat.execute_callbacks).called_with("before_send", "Sam", ANY, ANY)
 		assert.spy(beerchat.execute_callbacks).called_with("before_send", "Doe", ANY, ANY)
-		assert.spy(minetest.chat_send_player).called(2 * 2) -- 2 players, 2 messages
+		assert.spy(core.chat_send_player).called(2 * 2) -- 2 players, 2 messages
 	end)
 
 	it("returns join help for aliases", function()
@@ -204,11 +207,11 @@ describe("Alias behavior", function()
 		-- Test alias
 		spy.on(minetest, "chat_send_player")
 		SX:send_chat_message("#alias-chat-3-A Test message")
-		assert.spy(minetest.chat_send_player).called_with("SX", M("join"))
+		assert.spy(core.chat_send_player).called_with("SX", M("join"))
 		-- Test target channel
 		spy.on(minetest, "chat_send_player")
 		SX:send_chat_message("#alias-chat-3-B Test message")
-		assert.spy(minetest.chat_send_player).called_with("SX", M("join"))
+		assert.spy(core.chat_send_player).called_with("SX", M("join"))
 	end)
 
 	it("delivers messages when only on target channel", function()
@@ -219,11 +222,11 @@ describe("Alias behavior", function()
 		-- Test alias
 		spy.on(minetest, "chat_send_player")
 		SX:send_chat_message("#alias-chat-4-A Test message")
-		assert.spy(minetest.chat_send_player).called_with("SX", M("Test message"))
+		assert.spy(core.chat_send_player).called_with("SX", M("Test message"))
 		-- Test target channel
 		spy.on(minetest, "chat_send_player")
 		SX:send_chat_message("#alias-chat-4-B Test message")
-		assert.spy(minetest.chat_send_player).called_with("SX", M("Test message"))
+		assert.spy(core.chat_send_player).called_with("SX", M("Test message"))
 	end)
 
 	it("delivers /me plugin messages", function()
@@ -236,21 +239,29 @@ describe("Alias behavior", function()
 		spy.on(minetest, "chat_send_player")
 		Sam:send_chat_message("/me Me to #alias-chat-5-A")
 		Doe:send_chat_message("/me Me to #alias-chat-5-B")
-		assert.spy(beerchat.execute_callbacks).called_with("on_send_on_channel", "Sam", CHMSG("alias-chat-5-B", "Me to #alias%-chat%-5%-A"), "Sam")
-		assert.spy(beerchat.execute_callbacks).called_with("on_send_on_channel", "Sam", CHMSG("alias-chat-5-B", "Me to #alias%-chat%-5%-A"), "Doe")
-		assert.spy(beerchat.execute_callbacks).called_with("on_send_on_channel", "Doe", CHMSG("alias-chat-5-B", "Me to #alias%-chat%-5%-B"), "Sam")
-		assert.spy(beerchat.execute_callbacks).called_with("on_send_on_channel", "Doe", CHMSG("alias-chat-5-B", "Me to #alias%-chat%-5%-B"), "Doe")
-		assert.spy(minetest.chat_send_player).called_with("Sam", M("Me to #alias%-chat%-5%-A"))
-		assert.spy(minetest.chat_send_player).called_with("Sam", M("Me to #alias%-chat%-5%-B"))
-		assert.spy(minetest.chat_send_player).called_with("Doe", M("Me to #alias%-chat%-5%-A"))
-		assert.spy(minetest.chat_send_player).called_with("Doe", M("Me to #alias%-chat%-5%-B"))
+		assert
+			.spy(beerchat.execute_callbacks)
+			.called_with("on_send_on_channel", "Sam", CHMSG("alias-chat-5-B", "Me to #alias%-chat%-5%-A"), "Sam")
+		assert
+			.spy(beerchat.execute_callbacks)
+			.called_with("on_send_on_channel", "Sam", CHMSG("alias-chat-5-B", "Me to #alias%-chat%-5%-A"), "Doe")
+		assert
+			.spy(beerchat.execute_callbacks)
+			.called_with("on_send_on_channel", "Doe", CHMSG("alias-chat-5-B", "Me to #alias%-chat%-5%-B"), "Sam")
+		assert
+			.spy(beerchat.execute_callbacks)
+			.called_with("on_send_on_channel", "Doe", CHMSG("alias-chat-5-B", "Me to #alias%-chat%-5%-B"), "Doe")
+		assert.spy(core.chat_send_player).called_with("Sam", M("Me to #alias%-chat%-5%-A"))
+		assert.spy(core.chat_send_player).called_with("Sam", M("Me to #alias%-chat%-5%-B"))
+		assert.spy(core.chat_send_player).called_with("Doe", M("Me to #alias%-chat%-5%-A"))
+		assert.spy(core.chat_send_player).called_with("Doe", M("Me to #alias%-chat%-5%-B"))
 	end)
-
 end)
 
 describe("Alias internal protection", function()
-
-	local M = function(s) return require("luassert.match").matches(s) end
+	local M = function(s)
+		return require("luassert.match").matches(s)
+	end
 	local SX = Player("SX", { shout = 1, ban = 1 })
 
 	setup(function()
@@ -282,7 +293,7 @@ describe("Alias internal protection", function()
 		spy.on(minetest, "chat_send_player")
 		SX:send_chat_message("/dc alias-delete-A1")
 		assert.not_nil(beerchat.channels["alias-delete-A1"])
-		assert.spy(minetest.chat_send_player).called_with("SX", M("alias%-delete%-A1.+alias%-delete%-A2"))
+		assert.spy(core.chat_send_player).called_with("SX", M("alias%-delete%-A1.+alias%-delete%-A2"))
 	end)
 
 	it("allows removal after unlinking", function()
@@ -294,13 +305,11 @@ describe("Alias internal protection", function()
 		spy.on(minetest, "chat_send_player")
 		SX:send_chat_message("/dc alias-delete-B1")
 		assert.is_nil(beerchat.channels["alias-delete-B1"])
-		assert.spy(minetest.chat_send_player).called_with("SX", M("alias%-delete%-B1.+deleted"))
+		assert.spy(core.chat_send_player).called_with("SX", M("alias%-delete%-B1.+deleted"))
 	end)
-
 end)
 
 describe("Alias permissions", function()
-
 	local ANY = require("luassert.match")._
 
 	local SX = Player("SX", { shout = 1, ban = 1 })
@@ -398,5 +407,4 @@ describe("Alias permissions", function()
 		beerchat.execute_callbacks("before_switch_chan", "Beerholder", switch)
 		assert.equals(switch.to, target)
 	end)
-
 end)

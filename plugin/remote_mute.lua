@@ -1,6 +1,6 @@
 local remote_muted = {}
 
-minetest.register_chatcommand("remote_mute", {
+core.register_chatcommand("remote_mute", {
 	params = "<Player Name> [<Player Name> ...]",
 	description = ("Mute remote users. Requires %s privilege."):format(beerchat.jail.priv),
 	privs = { [beerchat.jail.priv] = true },
@@ -13,23 +13,23 @@ minetest.register_chatcommand("remote_mute", {
 			remote_muted[remote_name] = true
 		end
 		return true
-	end
+	end,
 })
 
-minetest.register_chatcommand("remote_unmute", {
+core.register_chatcommand("remote_unmute", {
 	params = "[<Player Name> <Player Name> ...]",
 	description = ("Unmute remote users or list muted remote users. Requires %s privilege."):format(beerchat.jail.priv),
 	privs = { [beerchat.jail.priv] = true },
 	func = function(name, param)
 		if not param or param == "" then
 			local names = {}
-			for remote_name,_ in pairs(remote_muted) do
+			for remote_name, _ in pairs(remote_muted) do
 				table.insert(names, remote_name)
 			end
 			if #names > 0 then
-				minetest.chat_send_player(name, "Muted remote users: " .. table.concat(names, ", "))
+				core.chat_send_player(name, "Muted remote users: " .. table.concat(names, ", "))
 			else
-				minetest.chat_send_player(name, "No muted remote users.")
+				core.chat_send_player(name, "No muted remote users.")
 			end
 		else
 			local names = string.gmatch(param, "[^%s,]+")
@@ -38,10 +38,10 @@ minetest.register_chatcommand("remote_unmute", {
 			end
 		end
 		return true
-	end
+	end,
 })
 
-beerchat.register_callback('on_http_receive', function(msg_data)
+beerchat.register_callback("on_http_receive", function(msg_data)
 	if remote_muted[msg_data.username] then
 		return false
 	end

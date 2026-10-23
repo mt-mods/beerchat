@@ -17,16 +17,16 @@
 
 local send_on_local_channel = function(msg)
 	local message = msg.message
-	for _,player in ipairs(minetest.get_connected_players()) do
+	for _, player in ipairs(core.get_connected_players()) do
 		local target = player:get_player_name()
-		if beerchat.execute_callbacks('on_send_on_channel', msg.name, msg, target) then
+		if beerchat.execute_callbacks("on_send_on_channel", msg.name, msg, target) then
 			beerchat.send_message(target, message, msg)
 		end
 	end
 end
 
 beerchat.send_on_local_channel = function(msg)
-	if beerchat.execute_callbacks('before_send_on_channel', msg.name, msg) then
+	if beerchat.execute_callbacks("before_send_on_channel", msg.name, msg) then
 		send_on_local_channel(msg)
 	end
 end
@@ -34,11 +34,11 @@ end
 beerchat.send_on_channel = function(msg, ...)
 	-- FIXME: Backwards compatibility hack. Remove once everything uses table for message handling.
 	if type(msg) ~= "table" then
-		local arg = {...}
-		msg = {name=msg, channel=arg[1], message=arg[2]}
+		local arg = { ... }
+		msg = { name = msg, channel = arg[1], message = arg[2] }
 	end
 	-- Execute registered event handlers, abort if told to do so
-	if beerchat.execute_callbacks('before_send_on_channel', msg.name, msg) then
+	if beerchat.execute_callbacks("before_send_on_channel", msg.name, msg) then
 		-- Log and deliver message to both local and remote platforms
 		beerchat.on_channel_message(msg.channel, msg.name, msg.message)
 		send_on_local_channel(msg)

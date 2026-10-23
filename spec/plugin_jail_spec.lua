@@ -31,7 +31,6 @@ local function do_after_each()
 end
 
 describe("chat_jail command", function()
-
 	setup(do_setup)
 	teardown(do_teardown)
 	before_each(do_before_each)
@@ -64,11 +63,9 @@ describe("chat_jail command", function()
 		SX:send_chat_message("/chat_jail")
 		assert.equals("main", beerchat.get_player_channel("SX"))
 	end)
-
 end)
 
 describe("chat_unjail command", function()
-
 	setup(do_setup)
 	teardown(do_teardown)
 	before_each(do_before_each)
@@ -102,11 +99,9 @@ describe("chat_unjail command", function()
 		assert.equals("notmain", XX:get_meta():get_string("beerchat:current_channel"))
 		assert.is_nil(XX:get_meta():get("beerchat:jailed"))
 	end)
-
 end)
 
 describe("jail behavior", function()
-
 	setup(do_setup)
 	teardown(do_teardown)
 	before_each(do_before_each)
@@ -119,7 +114,7 @@ describe("jail behavior", function()
 		SX:send_chat_message("Not jailed, jail channel test message 1")
 		SX:send_chat_message("#jailchannel Not jailed, jail channel test message 2")
 		-- check that 4 message were delivered, 2 for each player
-		assert.spy(minetest.chat_send_player).was.called(4)
+		assert.spy(core.chat_send_player).was.called(4)
 	end)
 
 	it("allows jailed chatting", function()
@@ -129,7 +124,6 @@ describe("jail behavior", function()
 		XX:send_chat_message("Jailed, jail channel test message 1")
 		XX:send_chat_message("#jailchannel Jailed, jail channel test message 2")
 		-- check that 4 message were delivered, 2 for each player
-		assert.spy(minetest.chat_send_player).was.called(4)
+		assert.spy(core.chat_send_player).was.called(4)
 	end)
-
 end)

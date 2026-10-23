@@ -1,6 +1,7 @@
-
 local function format_string(s, tab)
-	return (s:gsub('($%b{})', function(w) return tab[w:sub(3, -2)] or w end))
+	return (s:gsub("($%b{})", function(w)
+		return tab[w:sub(3, -2)] or w
+	end))
 end
 
 -- Expose format_string to public
@@ -10,7 +11,7 @@ local function colorize_target_name(s, target)
 	if not target or not s then
 		return s
 	end
-	return s:gsub(target, minetest.colorize("#ff0000", target))
+	return s:gsub(target, core.colorize("#ff0000", target))
 end
 
 beerchat.format_message = function(s, tab)
@@ -30,9 +31,9 @@ beerchat.format_message = function(s, tab)
 	end
 
 	if tab.colorize_all then
-		s = minetest.colorize(color, s)
+		s = core.colorize(color, s)
 	else
-		channel_name = minetest.colorize(color, channel_name)
+		channel_name = core.colorize(color, channel_name)
 	end
 
 	local params = {
@@ -42,7 +43,7 @@ beerchat.format_message = function(s, tab)
 		from_player = tab.from_player,
 		to_player = tab.to_player,
 		message = colorize_target_name(tab.message, tab.to_player),
-		time = os.date("%X")
+		time = os.date("%X"),
 	}
 
 	return format_string(s, params)

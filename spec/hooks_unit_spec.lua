@@ -1,7 +1,6 @@
 require("mineunit")
 
 describe("Hooks unit test", function()
-
 	-- Use `hooks_spec.lua` for integration tests, this is `hooks_unit_spec.lua`.
 	-- This specification is intended to only do bare unit tests for hooks and requires clean environment.
 
@@ -48,5 +47,4 @@ describe("Hooks unit test", function()
 		beerchat.execute_callbacks("before_send")
 		assert.equal(order_index, 5)
 	end)
-
 end)

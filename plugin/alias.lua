@@ -1,14 +1,14 @@
 --luacheck: no_unused_args
 
 beerchat.alias = {
-	priv = minetest.settings:get("beerchat.alias.priv") or "ban"
+	priv = core.settings:get("beerchat.alias.priv") or "ban",
 }
 
 -- Data table for alias targets
-local channels = minetest.deserialize(beerchat.mod_storage:get("alias.channels")) or {}
+local channels = core.deserialize(beerchat.mod_storage:get("alias.channels")) or {}
 
 local function write_storage()
-	local data = minetest.serialize(channels)
+	local data = core.serialize(channels)
 	beerchat.mod_storage:set_string("alias.channels", data)
 end
 
@@ -37,7 +37,7 @@ end
 -- Do recursive resolution and return channel, returns unchanged input if there is no target for given alias
 local function resolve_alias_recursive(alias)
 	local resolved = resolve_alias(alias)
-	while (resolved) do
+	while resolved do
 		alias = resolved
 		resolved = resolve_alias(alias)
 	end
@@ -79,7 +79,7 @@ local function add_alias(alias, target)
 	if success then
 		channels[alias] = target
 		write_storage()
-		for _,player in ipairs(minetest.get_connected_players()) do
+		for _, player in ipairs(core.get_connected_players()) do
 			local name = player:get_player_name()
 			if beerchat.playersChannels[name][target] then
 				beerchat.add_player_channel(name, alias)
@@ -107,8 +107,12 @@ beerchat.register_callback("after_joinplayer", function(player, last_login)
 		local possible_alias = beerchat.get_player_channel(name)
 		local resolved = resolve_alias(possible_alias)
 		if resolved then
-			minetest.chat_send_player(name, "ATTENTION: Your last active chat channel were linked with #" .. resolved
-				.. " and you will be moved there. This is for your information, no action needed from you side.")
+			core.chat_send_player(
+				name,
+				"ATTENTION: Your last active chat channel were linked with #"
+					.. resolved
+					.. " and you will be moved there. This is for your information, no action needed from you side."
+			)
 			switch_player_channel(name, possible_alias, resolved)
 		end
 	end
@@ -121,7 +125,7 @@ beerchat.register_callback("before_send_on_channel", function(name, msg)
 	end
 end, "high")
 
-beerchat.register_callback('before_switch_chan', function(name, switch)
+beerchat.register_callback("before_switch_chan", function(name, switch)
 	local resolved = resolve_alias(switch.to)
 	if resolved then
 		if resolved == switch.from then
@@ -132,14 +136,14 @@ beerchat.register_callback('before_switch_chan', function(name, switch)
 	end
 end, "high")
 
-beerchat.register_callback('before_leave', function(name, channel)
+beerchat.register_callback("before_leave", function(name, channel)
 	local resolved = resolve_alias(channel)
 	if resolved and resolved ~= channel then
 		beerchat.remove_player_channel(name, resolved)
 	end
 end, "low")
 
-beerchat.register_callback('before_delete_channel', function(name, data)
+beerchat.register_callback("before_delete_channel", function(name, data)
 	local resolved = resolve_alias(data.channel)
 	if resolved and resolved ~= data.channel then
 		return false, "ERROR: #" .. data.channel .. " is alias for #" .. resolved .. ". Unlink channel before deleting."
@@ -153,11 +157,13 @@ beerchat.register_callback('before_join', function(name, channel) end)
 beerchat.register_callback('on_forced_join', function(name, target, channel, from_channel) end)
 --]]
 
-minetest.register_chatcommand("channel-alias", {
+core.register_chatcommand("channel-alias", {
 	params = "<Alias name> [<Channel Name>]",
 	description = "Link <Alias name> channel to <Channel Name> channel. Both channels must exist."
 		.. "\nResolves alias to channel name if only first argument is given."
-		.. "\nRequires `" .. beerchat.alias.priv .. "` privileges and channel ownership for alias management.",
+		.. "\nRequires `"
+		.. beerchat.alias.priv
+		.. "` privileges and channel ownership for alias management.",
 	func = function(name, param)
 		local match = param:gmatch("#?([^%s,]+)")
 		local alias, channel = match(), match()
@@ -178,8 +184,12 @@ minetest.register_chatcommand("channel-alias", {
 				end
 			end
 			if #found > 0 then
-				return true, "Resolving #" .. alias .. " failed. " ..
-					"Instead it is regular channel with following aliases:\n" .. table.concat(found, ", ")
+				return true,
+					"Resolving #"
+						.. alias
+						.. " failed. "
+						.. "Instead it is regular channel with following aliases:\n"
+						.. table.concat(found, ", ")
 			end
 			return true, "Could not resolve #" .. alias .. " to channel, it does not seem to be alias."
 		elseif alias == beerchat.main_channel_name then
@@ -192,8 +202,8 @@ minetest.register_chatcommand("channel-alias", {
 		end
 
 		-- Check permissions for alias management
-		if not minetest.check_player_privs(name, beerchat.admin_priv) then
-			if minetest.check_player_privs(name, beerchat.alias.priv) then
+		if not core.check_player_privs(name, beerchat.admin_priv) then
+			if core.check_player_privs(name, beerchat.alias.priv) then
 				if not beerchat.playersChannels[name][alias] then
 					return false, "ERROR: You need to join #" .. alias .. " before linking it to #" .. channel .. "."
 				elseif not beerchat.playersChannels[name][channel] then
@@ -207,13 +217,15 @@ minetest.register_chatcommand("channel-alias", {
 		end
 
 		return add_alias(alias, channel)
-	end
+	end,
 })
 
-minetest.register_chatcommand("channel-unalias", {
+core.register_chatcommand("channel-unalias", {
 	params = "<Alias name>",
 	description = "Unlink <Alias name> channel and make it regular channel."
-		.. "\nRequires `" .. beerchat.alias.priv .. "` privileges and alias ownership for alias management.",
+		.. "\nRequires `"
+		.. beerchat.alias.priv
+		.. "` privileges and alias ownership for alias management.",
 	func = function(name, param)
 		local alias = param:match("^#?(%S+)$")
 		if not alias then
@@ -228,8 +240,8 @@ minetest.register_chatcommand("channel-unalias", {
 		end
 
 		-- Check permissions for alias management
-		if not minetest.check_player_privs(name, beerchat.admin_priv) then
-			if minetest.check_player_privs(name, beerchat.alias.priv) then
+		if not core.check_player_privs(name, beerchat.admin_priv) then
+			if core.check_player_privs(name, beerchat.alias.priv) then
 				if not beerchat.playersChannels[name][resolved] then
 					return false, "ERROR: You need to join #" .. resolved .. " before unlinking #" .. alias .. "."
 				end
@@ -240,5 +252,5 @@ minetest.register_chatcommand("channel-unalias", {
 
 		remove_alias(alias)
 		return true, "Alias #" .. alias .. " converted to regular channel. Delete channel if not needed anymore."
-	end
+	end,
 })
