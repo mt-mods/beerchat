@@ -1,0 +1,13 @@
+{
+  "$schema": "https://content.luanti.org/api/cdb_schema/",
+  "title": "Beerchat",
+  "tags": ["chat", "server_tools", "complex_installation"],
+  "type": "MOD",
+  "dev_state": "MAINTENANCE_ONLY",
+  "ai_disclosure": "NONE",
+  "license": "LGPL-3.0-only",
+  "media_license": "CC-BY-4.0",
+  "repo": "https://github.com/mt-mods/beerchat",
+  "issue_tracker": "https://github.com/mt-mods/beerchat/issues/new/choose/",
+  "short_description": "Standalone chat channel mod."
+}

@@ -5,7 +5,7 @@ beerchat.main_channel_name (Name of main-channel) string main
 beerchat.moderator_channel_name (Name of moderator-channel) string
 
 # Chat administrator privilege allows bypassing owner checks
-beerchat.admin_priv (Privilege for Beer Chat Admins) string server
+beerchat.admin_priv (Privilege for Beerchat Admins) string server
 
 beerchat.matterbridge_url (URL of matterbridge) string http://127.0.0.1:4242
 
