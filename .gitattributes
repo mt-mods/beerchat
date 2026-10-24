@@ -1,0 +1,5 @@
+.* export-ignore
+spec/** export-ignore
+dev/** export-ignore
+*.svg export-ignore
+flint.toml export-ignore
